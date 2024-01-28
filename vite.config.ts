@@ -7,7 +7,11 @@ import tailwindcss from 'tailwindcss'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        configFile: true,
+      }
+    }),
   ],
   resolve: {
     alias: {
@@ -28,9 +32,8 @@ export default defineConfig({
     sourcemap: false,
     commonjsOptions: {},
   },
-  // 配置 Babel
   esbuild: {
-    // 启用 Babel 转换，使用 react 的 createElement 处理 jsx
+    // 使用 react 的 createElement 处理 jsx
     jsxInject: `import React from 'react'`,
   },
   server: {
