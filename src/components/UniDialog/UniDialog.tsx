@@ -1,16 +1,27 @@
+import classNames from "classnames"
 import { observer } from "mobx-react"
-import { FC, useImperativeHandle, useState } from "react"
+import { ForwardRefRenderFunction, forwardRef, useImperativeHandle, useState } from "react"
 import { Modal, ModalProps } from "react-responsive-modal"
 
-export interface UniDialogProps extends Omit<ModalProps, "open"> {
-  name: string
+export interface UniDialogProps extends Omit<ModalProps, "open" | "onClose"> {
+  title?: any
+  onClose?: Function
+  footer?: any
 }
 
-const UniDialog:FC<UniDialogProps> = (props, ref) => {
+export interface UniDialogRef {
+  show: Function
+  hide: Function
+}
+
+const UniDialog:ForwardRefRenderFunction<UniDialogRef, UniDialogProps> = ({ onClose, title, children, footer, ...restProps }, ref) => {
   const [ open, setOpen ] = useState(false)
 
   const show = ():void => setOpen(true)
-  const hide = ():void => setOpen(false)
+  const hide = ():void => {
+    setOpen(false)
+    onClose?.()
+  }
 
   useImperativeHandle(ref, () => ({
     show,
@@ -19,8 +30,23 @@ const UniDialog:FC<UniDialogProps> = (props, ref) => {
 
   return <Modal
     open={open}
-    {...props}
-  />
+    onClose={hide}
+    center
+    classNames={{
+      modal: classNames('w-1/3 h-1/4 rounded-lg')
+    }}
+    {...restProps}
+  >
+    <div className="w-full h-full flex flex-col">
+      {title && <div className="text-xl font-semibold">{title}</div>}
+      <div className="flex-1 w-full py-2">
+        {children}
+      </div>
+      <div>
+        {footer}
+      </div>
+    </div>
+  </Modal>
 }
 
-export default observer(UniDialog)
+export default observer(forwardRef(UniDialog))
