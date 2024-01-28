@@ -13,6 +13,7 @@
     "@remixicon/react": "^4.1.1",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.7",
+    "classnames": "^2.5.1",
     "lodash": "^4.17.21",
     "mobx": "^6.12.0",
     "mobx-react": "^9.1.0",
