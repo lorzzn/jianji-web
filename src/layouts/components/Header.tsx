@@ -14,10 +14,10 @@ const Header:FC = () => {
           <ZImage className='w-full h-full' src="!/logo.png" />
         </a>
 
-        <div className='flex items-center justify-center w-full'>
+        <div className='flex items-center justify-center w-full whitespace-nowrap'>
           <div className='flex space-x-6 w-full justify-center items-center'>
             {
-              menuItems.map(item => <a className='flex items-center justify-center w-full hover:bg-gray-100 hover:text-blue-500 transition ease-in-out duration-300' href={item.href} key={item.label}>
+              menuItems.map(item => <a className='flex items-center justify-center w-full hover:text-blue-500 transition ease-in-out duration-300' href={item.href} key={item.label}>
                 <item.RiIcon className='w-4 mr-2' />
                 {item.label}
               </a>)
