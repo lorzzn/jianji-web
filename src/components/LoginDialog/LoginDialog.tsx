@@ -1,5 +1,5 @@
 import { FC, useRef } from "react"
-import UniDialog, { ZModalRef } from "../ZModal/ZModal"
+import ZModal, { ZModalRef } from "../ZModal/ZModal"
 import { observer } from "mobx-react"
 import rootStore from "@/store"
 
@@ -12,14 +12,14 @@ const LoginDialog:FC = () => {
 
   const dialogStore = rootStore.dialogStore
   
-  return <UniDialog
+  return <ZModal
     ref={setRef}
     title="登录/注册"
   >
     <div className="flex flex-col w-full">
       
     </div>
-  </UniDialog>
+  </ZModal>
 }
 
 export default observer(LoginDialog)
