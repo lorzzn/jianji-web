@@ -2,7 +2,7 @@ import { FC } from "react"
 
 const Content:FC = () => {
   return (
-    <div className="min-h-screen">Content</div>
+    <div className="h-screen">Content</div>
   )
 }
 

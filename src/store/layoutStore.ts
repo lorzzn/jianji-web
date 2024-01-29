@@ -6,16 +6,14 @@ class LayoutStore {
     makeAutoObservable(this)
   }
 
-  sider = {
-    menu: {
-      items: [
-        { href: "/", label: "首页", RiIcon: RiHomeLine },
-        { href: "/", label: "归档", RiIcon: RiArchiveLine },
-        { href: "/", label: "收藏", RiIcon: RiStarLine },
-        { href: "/", label: "分类", RiIcon: RiAlignJustify },
-        { href: "/", label: "标签", RiIcon: RiHashtag },
-      ]
-    }
+  nav = {
+    items: [
+      { href: "/", label: "首页", RiIcon: RiHomeLine },
+      { href: "/", label: "归档", RiIcon: RiArchiveLine },
+      { href: "/", label: "收藏", RiIcon: RiStarLine },
+      { href: "/", label: "分类", RiIcon: RiAlignJustify },
+      { href: "/", label: "标签", RiIcon: RiHashtag },
+    ]
   }
 
 }

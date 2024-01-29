@@ -15,7 +15,7 @@ export const joinAssetsUrl = (url:string|undefined):string => {
   return url
 }
 
-export const UniImage:FC<LazyLoadImageProps> = ({ src, ...restProps}) => {
+export const ZImage:FC<LazyLoadImageProps> = ({ src, ...restProps}) => {
 
   return <LazyLoadImage
     src={joinAssetsUrl(src)}
@@ -23,4 +23,4 @@ export const UniImage:FC<LazyLoadImageProps> = ({ src, ...restProps}) => {
   />
 }
 
-export default UniImage
+export default ZImage

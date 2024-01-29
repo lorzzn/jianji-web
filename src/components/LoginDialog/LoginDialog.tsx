@@ -1,11 +1,11 @@
-import { FC, useEffect, useRef, useState } from "react"
-import UniDialog, { UniDialogRef } from "../UniDialog/UniDialog"
+import { FC, useRef } from "react"
+import UniDialog, { ZModalRef } from "../ZModal/ZModal"
 import { observer } from "mobx-react"
 import rootStore from "@/store"
 
 const LoginDialog:FC = () => {
-  const ref = useRef<UniDialogRef | null>(null)
-  const setRef = (r:UniDialogRef) => {
+  const ref = useRef<ZModalRef | null>(null)
+  const setRef = (r:ZModalRef) => {
     ref.current = r
     dialogStore.register("LoginDialog", ref)
   }
@@ -14,11 +14,10 @@ const LoginDialog:FC = () => {
   
   return <UniDialog
     ref={setRef}
-    title="标题"
-    footer={"脚"}
+    title="登录/注册"
   >
-    <div >
-      你好
+    <div className="flex flex-col w-full">
+      
     </div>
   </UniDialog>
 }
