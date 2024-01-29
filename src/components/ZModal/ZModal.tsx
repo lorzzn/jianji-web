@@ -33,7 +33,7 @@ const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, titl
     onClose={hide}
     center
     classNames={{
-      modal: classNames('w-1/3 h-1/4 rounded-lg')
+      modal: classNames('min-w-96 min-h-52 rounded-lg')
     }}
     {...restProps}
   >
