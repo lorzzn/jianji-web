@@ -1,11 +1,11 @@
-import { UniDialogProps, UniDialogRef } from "@/components/UniDialog/UniDialog";
+import { ZModalProps, ZModalRef } from "@/components/ZModal/ZModal";
 import { merge } from "lodash";
 import { makeAutoObservable } from "mobx";
 import { RefObject } from "react";
 
 interface IDialog {
   name: string
-  ref: RefObject<UniDialogRef>
+  ref: RefObject<ZModalRef>
   config?: any
 }
 
@@ -18,7 +18,7 @@ class DialogStore {
   }
 
   // 注册弹窗，name 值是唯一的
-  register = (name:string, ref: RefObject<UniDialogRef>) => {
+  register = (name:string, ref: RefObject<ZModalRef>) => {
     const existingDialog = this.dialogs.find(dialog => dialog.name === name)
     if (existingDialog) {
       existingDialog.ref = ref
@@ -31,7 +31,7 @@ class DialogStore {
     this.dialogs = this.dialogs.filter(dialog => dialog.name !== name)
   }
 
-  show = (name:string, config?:UniDialogProps) => {
+  show = (name:string, config?:ZModalProps) => {
     const dialog = this.dialogs.find(dialog => dialog.name === name)
     if (dialog) {
       merge(dialog.config, config)
@@ -39,7 +39,7 @@ class DialogStore {
     }
   }
 
-  hide = (name:string, config?:UniDialogProps) => {
+  hide = (name:string, config?:ZModalProps) => {
     const dialog = this.dialogs.find(dialog => dialog.name === name)
     if (dialog) {
       merge(dialog.config, config)

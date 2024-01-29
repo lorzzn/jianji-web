@@ -3,18 +3,18 @@ import { observer } from "mobx-react"
 import { ForwardRefRenderFunction, forwardRef, useImperativeHandle, useState } from "react"
 import { Modal, ModalProps } from "react-responsive-modal"
 
-export interface UniDialogProps extends Omit<ModalProps, "open" | "onClose"> {
+export interface ZModalProps extends Omit<ModalProps, "open" | "onClose"> {
   title?: any
   onClose?: Function
   footer?: any
 }
 
-export interface UniDialogRef {
+export interface ZModalRef {
   show: Function
   hide: Function
 }
 
-const UniDialog:ForwardRefRenderFunction<UniDialogRef, UniDialogProps> = ({ onClose, title, children, footer, ...restProps }, ref) => {
+const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, title, children, footer, ...restProps }, ref) => {
   const [ open, setOpen ] = useState(false)
 
   const show = ():void => setOpen(true)
@@ -49,4 +49,4 @@ const UniDialog:ForwardRefRenderFunction<UniDialogRef, UniDialogProps> = ({ onCl
   </Modal>
 }
 
-export default observer(forwardRef(UniDialog))
+export default observer(forwardRef(ZModal))

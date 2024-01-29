@@ -1,17 +1,17 @@
 import { FC } from 'react'
 import rootStore from '@/store'
 import { observer } from 'mobx-react'
-import UniImage from '@/components/UniImage/UniImage'
+import ZImage from '@/components/ZImage/ZImage'
 import UserInfo from './UserInfo'
 
 const Sider:FC = () => {
-  const menuItems = rootStore.layoutStore.sider.menu.items
+  const menuItems = rootStore.layoutStore.nav.items
 
   return (
     <div className='flex flex-col pt-10 w-52 items-center justify-between bg-white shadow-sm'>
       <div className='w-full'>
         <a href="/" className='flex justify-center'>
-          <UniImage className='h-10 mx-4 w-24' src="!/logo.png" />
+          <ZImage className='h-10 mx-4 w-24' src="!/logo.png" />
         </a>
 
         <div className='flex items-center justify-center py-8 w-full'>
