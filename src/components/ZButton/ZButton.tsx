@@ -10,9 +10,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: classNames('bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 transition'),
-        success: classNames('bg-green-500 text-white hover:bg-green-600 active:bg-green-700 transition'),
-        danger: classNames('bg-red-500 text-white hover:bg-red-600 active:bg-red-700 transition'),
+        primary: classNames('bg-blue-500 text-white enabled:hover:bg-blue-600 enabled:active:bg-blue-700 transition'),
+        success: classNames('bg-green-500 text-white enabled:hover:bg-green-600 enabled:active:bg-green-700 transition'),
+        danger: classNames('bg-red-500 text-white enabled:hover:bg-red-600 enabled:active:bg-red-700 transition'),
       },
       scale: {
         small: classNames('h-6 px-3 text-xs'),
