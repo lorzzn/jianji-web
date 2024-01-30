@@ -7,6 +7,7 @@ import classNames from "classnames"
 import styles from './index.module.scss'
 import ZInput from "../ZInput/ZInput"
 import { useForm } from "react-hook-form"
+import ZButton from "../ZButton/ZButton"
 
 interface ILoginFormData {
   email: string
@@ -52,7 +53,7 @@ const LoginDialog:FC = () => {
         <ZInput placeholder="请输入密码" {...register("password")}/>
         {/* <ZInput /> */}
 
-        <button type="submit">注册/登录</button>
+        <ZButton >登录/注册</ZButton>
       </ZForm>
 
     </div>
