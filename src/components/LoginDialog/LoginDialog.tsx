@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import ZModal, { ZModalRef } from "../ZModal/ZModal"
 import { observer } from "mobx-react"
 import rootStore from "@/store"
@@ -8,31 +8,46 @@ import ZInput from "../ZInput/ZInput"
 import { useForm } from "react-hook-form"
 import ZButton from "../ZButton/ZButton"
 import ZCheckBox from "../ZCheckBox/ZCheckBox"
+import Yup from "@/utils/yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 interface ILoginFormData {
   email: string
   password: string
 }
 
+const yupSchema = Yup.object().shape({
+  email: Yup.string().email('请您输入格式正确的邮箱地址').required('请您输入邮箱'),
+  password: Yup.string().required('请您输入密码'),
+})
+
 const LoginDialog:FC = () => {
   const ref = useRef<ZModalRef | null>(null)
   const [ agreed, setAgreed] = useState<boolean | undefined>(false)
+  const dialogStore = rootStore.dialogStore
 
   const setRef = (r:ZModalRef) => {
     ref.current = r
     dialogStore.register("LoginDialog", ref)
   }
 
-  const dialogStore = rootStore.dialogStore
-
   const loginFormData:ILoginFormData = {
     email: "",
     password: ""
   }
 
-  const { handleSubmit, register } = useForm<ILoginFormData>({
-    defaultValues: loginFormData
+  const { handleSubmit, register, watch, formState: { errors } } = useForm<ILoginFormData>({
+    defaultValues: loginFormData,
+    resolver: yupResolver(yupSchema),
+    mode: "onSubmit",
   })
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) =>
+      console.log(value, name, type)
+    )
+    return () => subscription.unsubscribe()
+  }, [ watch ])
 
   const onAgreedChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked
@@ -49,7 +64,7 @@ const LoginDialog:FC = () => {
     ref={setRef}
     title="登录/注册"
     classNames={{
-      modal: classNames(['rounded-lg h-80', ])
+      modal: classNames(['rounded-lg', ])
     }}
   >
     <div className="flex flex-col w-full h-full">
@@ -59,7 +74,7 @@ const LoginDialog:FC = () => {
       >
         <div>
           <ZInput className="w-full mb-4 mt-4" scale="large" placeholder="请输入邮箱" {...register("email")}/>
-          <ZInput className="w-full mb-2" scale="large" placeholder="请输入密码" {...register("password")}/>
+          <ZInput type="password" className="w-full mb-2" scale="large" placeholder="请输入密码" {...register("password")}/>
           <div className="flex justify-between">
             <span className="text-sm flex items-center space-x-1">
               <ZCheckBox checked={agreed} onChange={onAgreedChange} />
@@ -68,13 +83,14 @@ const LoginDialog:FC = () => {
               <span>和</span>
               <a className="text-blue-500 hover:text-blue-400" href="/">隐私政策</a>
             </span>
-            <a className="text-sm text-blue-500 hover:text-blue-400" href="/">还没有注册, 去注册</a>
+            <a className="text-sm text-blue-500 hover:text-blue-400" href="/">忘记密码</a>
           </div>
+          <div className="text-sm mt-1 text-red-500">{errors.email?.message ?? errors.password?.message}</div>
         </div>
-        {/* <ZInput /> */}
 
-        <div>
-          <ZButton disabled={!agreed} className="w-full" scale="large" >登录</ZButton>
+        <div className="flex flex-col items-center mt-14">
+          <ZButton disabled={!agreed} className="w-full" scale="large" >登录/注册</ZButton>
+          <span className="text-xs text-gray-900 mt-2">未注册的邮箱，我们将帮助您注册账号</span>
         </div>
       </ZForm>
 
