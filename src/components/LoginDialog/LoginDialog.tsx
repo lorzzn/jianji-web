@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useRef, useState } from "react"
 import ZModal, { ZModalRef } from "../ZModal/ZModal"
 import { observer } from "mobx-react"
 import rootStore from "@/store"
@@ -10,11 +10,7 @@ import ZButton from "../ZButton/ZButton"
 import ZCheckBox from "../ZCheckBox/ZCheckBox"
 import Yup from "@/utils/yup"
 import { yupResolver } from "@hookform/resolvers/yup"
-
-interface ILoginFormData {
-  email: string
-  password: string
-}
+import useLogin, { ILoginFormData } from "@/hooks/useLogin"
 
 const yupSchema = Yup.object().shape({
   email: Yup.string().email('请您输入格式正确的邮箱地址').required('请您输入邮箱'),
@@ -26,6 +22,8 @@ const LoginDialog:FC = () => {
   const [ agreed, setAgreed] = useState<boolean | undefined>(false)
   const dialogStore = rootStore.dialogStore
 
+  const { login } =  useLogin()
+
   const setRef = (r:ZModalRef) => {
     ref.current = r
     dialogStore.register("LoginDialog", ref)
@@ -36,28 +34,19 @@ const LoginDialog:FC = () => {
     password: ""
   }
 
-  const { handleSubmit, register, watch, formState: { errors } } = useForm<ILoginFormData>({
+  const { handleSubmit, register, formState: { errors } } = useForm<ILoginFormData>({
     defaultValues: loginFormData,
     resolver: yupResolver(yupSchema),
     mode: "onSubmit",
   })
-
-  useEffect(() => {
-    const subscription = watch((value, { name, type }) =>
-      console.log(value, name, type)
-    )
-    return () => subscription.unsubscribe()
-  }, [ watch ])
 
   const onAgreedChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked
     setAgreed(checked)
   }
 
-  const onSubmit = (...args:any) => {
-
-    console.log(args);
-    
+  const onSubmit = (formData: ILoginFormData) => {
+    login(formData)
   }
 
   return <ZModal
@@ -74,16 +63,17 @@ const LoginDialog:FC = () => {
       >
         <div>
           <ZInput className="w-full mb-4 mt-4" scale="large" placeholder="请输入邮箱" {...register("email")}/>
-          <ZInput type="password" className="w-full mb-2" scale="large" placeholder="请输入密码" {...register("password")}/>
+          <ZInput type="password" className="w-full mb-3" scale="large" placeholder="请输入密码" {...register("password")}/>
           <div className="flex justify-between">
-            <span className="text-sm flex items-center space-x-1">
-              <ZCheckBox checked={agreed} onChange={onAgreedChange} />
-              <span>接受</span>
-              <a className="text-blue-500 hover:text-blue-400" href="/">用户协议</a>
-              <span>和</span>
-              <a className="text-blue-500 hover:text-blue-400" href="/">隐私政策</a>
-            </span>
-            <a className="text-sm text-blue-500 hover:text-blue-400" href="/">忘记密码</a>
+            <ZCheckBox checked={agreed} onChange={onAgreedChange} label={
+              <span className="text-sm flex items-center space-x-1 leading-4">
+                <span>接受</span>
+                <a className="text-blue-500 hover:text-blue-400" href="/">用户协议</a>
+                <span>和</span>
+                <a className="text-blue-500 hover:text-blue-400" href="/">隐私政策</a>
+              </span>
+            }/>
+            <a className="text-sm text-blue-500 hover:text-blue-400 leading-4" href="/">忘记密码</a>
           </div>
           <div className="text-sm mt-1 text-red-500">{errors.email?.message ?? errors.password?.message}</div>
         </div>

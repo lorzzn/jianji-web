@@ -1,7 +1,7 @@
 import { FC } from "react"
 import { LazyLoadImage, LazyLoadImageProps } from 'react-lazy-load-image-component'
 
-export const assetsBaseURL = import.meta.env.VITE_APP_ASSETSBASEURL
+export const assetsBaseURL = import.meta.env.VITE_APP_ASSETS_BASEURL
 
 export const assestsRoot = "!"
 
