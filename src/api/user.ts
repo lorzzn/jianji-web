@@ -1,6 +1,6 @@
 import service from "@/utils/service"
-import { ILoginReq, IRefreshTokenReq } from "./typings/request/user"
-import { ILoginResp, IProfileResp, IRefreshTokenResp } from "./typings/response/user"
+import { ILoginReq, IRefreshTokenReq } from "./types/request/user"
+import { ILoginResp, IProfileResp, IRefreshTokenResp } from "./types/response/user"
 
 
 export const apiUser = {

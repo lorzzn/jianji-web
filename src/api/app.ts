@@ -1,5 +1,5 @@
 import service from "@/utils/service"
-import { IGetAppConfigResp, IGetPublicKeyResp } from "./typings/response/app"
+import { IGetAppConfigResp, IGetPublicKeyResp } from "./types/response/app"
 import pureService from "@/utils/pureService"
 
 export const apiApp = {
