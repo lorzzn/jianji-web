@@ -1,6 +1,6 @@
 import service from "@/utils/service"
-import { ILoginReq } from "./typings/request/user"
-import { ILoginResp } from "./typings/response/user"
+import { ILoginReq, IRefreshTokenReq } from "./typings/request/user"
+import { ILoginResp, IRefreshTokenResp } from "./typings/response/user"
 
 
 export const apiUser = {
@@ -8,8 +8,16 @@ export const apiUser = {
     return service<ILoginResp>({
       url: "api/v1/user/login",
       method: "POST",
-      data,
       encrypt: true,
+      data,
+    })
+  },
+  refreshToken(data: IRefreshTokenReq){
+    return service<IRefreshTokenResp>({
+      url: "api/v1/user/refresh-token",
+      withCredentials: false,
+      method: "POST",
+      data
     })
   }
 }
