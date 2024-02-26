@@ -1,16 +1,19 @@
 import rootStore from '@/store'
 import axios from 'axios'
 import { encryptRSAWithAES } from './rsa'
+import { getStorage } from './storage'
 
 const baseURL = import.meta.env.VITE_APP_BASEURL
+const token = getStorage("token")
 
 const service = axios.create({
   baseURL,
-  withCredentials: true
 })
 
 // 请求拦截器
 service.interceptors.request.use(async (config) => {
+  config.withCredentials = config.withCredentials ?? true
+
   if (config.encrypt) {
      // 标识请求为加密请求
     config.headers.Encrypted = true
@@ -25,7 +28,12 @@ service.interceptors.request.use(async (config) => {
 
     config.data = encryptRSAWithAES(config.data, publicKey)
   }
-  
+
+  // withCredentials 为 true 并且有 token，请求加上Authorization头
+  if (config.withCredentials && token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+
   return config
 })
 

@@ -1,6 +1,6 @@
 import { IApiCommonResp } from "./common";
 
-interface UserInfo {
+export interface IUserInfo {
   id: number;
   uuid: string;
   createdAt: string;
@@ -12,9 +12,16 @@ interface UserInfo {
 
 export interface ILoginResp extends IApiCommonResp {
   data: {
-    userInfo: UserInfo;
+    userInfo: IUserInfo;
     isNewUser: boolean;
     token: string;
     refreshToken: string;
+  }
+}
+
+export interface IRefreshTokenResp extends IApiCommonResp {
+  data: {
+    token: string
+    refreshToken: string
   }
 }

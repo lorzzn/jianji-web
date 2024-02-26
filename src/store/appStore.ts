@@ -2,18 +2,18 @@ import { apiApp } from "@/api/app";
 import errorHandler from "@/utils/errorHandler";
 import { makeAutoObservable } from "mobx";
 
-
 class AppStore {
+
+  publicKey: string|null = null
+  serverTime: number = Date.now()
+
   constructor() {
     makeAutoObservable(this)
-    this.getAppInfo()
+    this.getAppConfig()
   }
 
-  serverTime: number = Date.now()
-  publicKey: string|null = null
-
   // 获取应用信息（运行配置...）
-  getAppInfo = async () => {
+  getAppConfig = async () => {
     try {
       const res = await apiApp.fetchAppConfig()
       this.serverTime = res.data.data.time / 1e6
@@ -22,8 +22,8 @@ class AppStore {
     }
   }
 
-  // 获取应用当前的 publicKey
-  getPublicKey = async (forceUpdate?: boolean): Promise<string|null> => {
+  // 获取 RSA publicKey
+  getPublicKey = async (forceUpdate: boolean = true): Promise<string|null> => {
     if (!this.publicKey || forceUpdate) {
       await this.updatePublicKey()
       return this.publicKey
