@@ -1,4 +1,4 @@
-import { IUserInfo } from "@/api/typings/response/user";
+import { IUserInfo } from "@/api/types/response/user";
 import { apiUser } from "@/api/user";
 import errorHandler from "@/utils/errorHandler";
 import { getStorage, removeStroage, setStorage } from "@/utils/storage";
