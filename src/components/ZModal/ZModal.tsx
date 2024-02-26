@@ -5,6 +5,7 @@ import { Modal, ModalProps } from "react-responsive-modal"
 
 export interface ZModalProps extends Omit<ModalProps, "open" | "onClose"> {
   title?: any
+  titleAlignCenter?: boolean
   onClose?: Function
   footer?: any
 }
@@ -14,7 +15,7 @@ export interface ZModalRef {
   hide: Function
 }
 
-const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, title, children, footer, ...restProps }, ref) => {
+const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, title, titleAlignCenter, children, footer, ...restProps }, ref) => {
   const [ open, setOpen ] = useState(false)
 
   const show = ():void => setOpen(true)
@@ -38,7 +39,7 @@ const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, titl
     {...restProps}
   >
     <div className="w-full h-full flex flex-col">
-      {title && <div className="text-xl font-semibold">{title}</div>}
+      {title && <div className={classNames(["text-xl font-semibold", { "text-center": titleAlignCenter }])}>{title}</div>}
       <div className="flex-1 w-full py-2">
         {children}
       </div>

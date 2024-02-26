@@ -18,6 +18,7 @@
     "classnames": "^2.5.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
+    "framer-motion": "^11.0.6",
     "jsencrypt": "^3.3.2",
     "lodash": "^4.17.21",
     "mobx": "^6.12.0",
