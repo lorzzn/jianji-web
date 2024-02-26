@@ -26,6 +26,7 @@ class UserStore {
     this.refreshToken = getStorage("refreshToken")
 
     this.requestRefreshToken()
+    this.fetchProfile()
   }
 
   setUserInfo = (data: IUserInfo) => {
@@ -53,6 +54,17 @@ class UserStore {
           refreshToken: this.refreshToken
         })
         this.storeToken(res.data.data.token, res.data.data.refreshToken)
+      } catch (error) {
+        errorHandler.handle(error)
+      }
+    }
+  }
+
+  fetchProfile = async () => {
+    if (this.token) {
+      try {
+        const res = await apiUser.profile()
+        this.setUserInfo(res.data.data.userInfo)
       } catch (error) {
         errorHandler.handle(error)
       }

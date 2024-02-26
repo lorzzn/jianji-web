@@ -1,6 +1,6 @@
 import service from "@/utils/service"
 import { ILoginReq, IRefreshTokenReq } from "./typings/request/user"
-import { ILoginResp, IRefreshTokenResp } from "./typings/response/user"
+import { ILoginResp, IProfileResp, IRefreshTokenResp } from "./typings/response/user"
 
 
 export const apiUser = {
@@ -18,6 +18,12 @@ export const apiUser = {
       withCredentials: false,
       method: "POST",
       data
+    })
+  },
+  profile(){
+    return service<IProfileResp>({
+      url: "api/v1/user/profile",
+      method: "POST",
     })
   }
 }

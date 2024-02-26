@@ -25,3 +25,9 @@ export interface IRefreshTokenResp extends IApiCommonResp {
     refreshToken: string
   }
 }
+
+export interface IProfileResp extends IApiCommonResp {
+  data: {
+    userInfo: IUserInfo
+  }
+}
