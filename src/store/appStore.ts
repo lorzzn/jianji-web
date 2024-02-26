@@ -15,7 +15,7 @@ class AppStore {
   // 获取应用信息（运行配置...）
   getAppInfo = async () => {
     try {
-      const res = await apiApp.fetchAppInfo()
+      const res = await apiApp.fetchAppConfig()
       this.serverTime = res.data.data.time / 1e6
     } catch (error) {
       errorHandler.handle(error)

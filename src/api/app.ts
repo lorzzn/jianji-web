@@ -1,5 +1,5 @@
 import service from "@/utils/service"
-import { IGetAppInfoResp, IGetPublicKeyResp } from "./typings/response/app"
+import { IGetAppConfigResp, IGetPublicKeyResp } from "./typings/response/app"
 import pkService from "@/utils/pkService"
 
 
@@ -9,9 +9,9 @@ export const apiApp = {
       url: "/api/common/app/public-key"
     })
   },
-  fetchAppInfo() {
-    return service<IGetAppInfoResp>({
-      url: "/api/common/app/info"
+  fetchAppConfig() {
+    return service<IGetAppConfigResp>({
+      url: "/api/common/app/config"
     })
   }
 }
