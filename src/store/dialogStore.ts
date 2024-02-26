@@ -11,7 +11,7 @@ interface IDialog {
 
 class DialogStore {
 
-  dialogs:IDialog[] = []
+  private dialogList:IDialog[] = []
 
   constructor() {
     makeAutoObservable(this)
@@ -19,20 +19,25 @@ class DialogStore {
 
   // 注册弹窗，name 值是唯一的
   register = (name:string, ref: RefObject<ZModalRef>) => {
-    const existingDialog = this.dialogs.find(dialog => dialog.name === name)
+    const existingDialog = this.dialogList.find(dialog => dialog.name === name)
     if (existingDialog) {
       existingDialog.ref = ref
     } else {
-      this.dialogs.push({ name, ref })
+      this.dialogList.push({ name, ref })
     }
   }
 
   unregister = (name:string) => {
-    this.dialogs = this.dialogs.filter(dialog => dialog.name !== name)
+    this.dialogList = this.dialogList.filter(dialog => dialog.name !== name)
+  }
+
+  dialog = (name: string):ZModalRef|null|undefined => {
+    const dialog = this.dialogList.find(dialog => dialog.name === name)
+    return dialog?.ref.current
   }
 
   show = (name:string, config?:ZModalProps) => {
-    const dialog = this.dialogs.find(dialog => dialog.name === name)
+    const dialog = this.dialogList.find(dialog => dialog.name === name)
     if (dialog) {
       merge(dialog.config, config)
       dialog.ref.current?.show()
@@ -40,7 +45,7 @@ class DialogStore {
   }
 
   hide = (name:string, config?:ZModalProps) => {
-    const dialog = this.dialogs.find(dialog => dialog.name === name)
+    const dialog = this.dialogList.find(dialog => dialog.name === name)
     if (dialog) {
       merge(dialog.config, config)
       dialog.ref.current?.hide()
