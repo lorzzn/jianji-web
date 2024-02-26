@@ -6,7 +6,7 @@ export interface IGetPublicKeyResp extends IApiCommonResp {
   }
 }
 
-export interface IGetAppInfoResp extends IApiCommonResp {
+export interface IGetAppConfigResp extends IApiCommonResp {
   data: {
     time: number
   }
