@@ -3,6 +3,7 @@ import Layout from "./layouts/Layout";
 import { Provider } from "mobx-react";
 import rootStore from "./store";
 import LoginDialog from "./components/LoginDialog/LoginDialog";
+import HolaDialog from "./components/HolaDialog/HolaDialog";
 
 const App:FC = () => {
 
@@ -10,7 +11,9 @@ const App:FC = () => {
   return <Provider rootStore={rootStore}>
     <Layout />
     
+    {/* 注册弹窗 */}
     <LoginDialog />
+    <HolaDialog />
   </Provider>
 }
 

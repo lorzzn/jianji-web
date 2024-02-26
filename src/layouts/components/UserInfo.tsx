@@ -1,15 +1,16 @@
 import ZImage from "@/components/ZImage/ZImage"
+import useDialog, { dialogNames } from "@/hooks/useDialog"
 import rootStore from "@/store"
 import { observer } from "mobx-react"
 import { FC } from "react"
 
 const UserInfo:FC = () => {
 
+  const { dialog } = useDialog(dialogNames.LoginDialog)
   const userInfo = rootStore.userStore.userInfo
-  const dialogStore = rootStore.dialogStore
 
   const onLoginClick = () => {
-    dialogStore.show("LoginDialog")
+    dialog()?.show()
   }
 
   return <div className="hover:text-blue-500 whitespace-nowrap ml-8">

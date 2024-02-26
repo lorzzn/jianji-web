@@ -10,15 +10,12 @@ const useLogin = () => {
 
   const login = async (formData: ILoginFormData) => {
     try {
-      const res = await apiUser.login(formData)
-      console.log(res)
-      
+      return Promise.resolve(await apiUser.login(formData))
     } catch (error) {
       errorHandler.handle(error)
+      return Promise.reject(error)
     }
-    
   }
-
 
   return {
     login,
