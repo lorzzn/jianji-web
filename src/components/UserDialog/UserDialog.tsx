@@ -1,5 +1,5 @@
 import useDialog, { dialogNames } from "@/hooks/useDialog";
-import { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import ZModal from "../ZModal/ZModal";
 import classNames from "classnames";
 import SettingsPage from "../SettingsPage/SettingsPage";
@@ -17,6 +17,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import ZForm from "../ZForm/ZForm";
 import { motion } from 'framer-motion'
 import errorHandler from "@/utils/errorHandler";
+import eventBus, { events } from "@/utils/eventBus";
 
 interface UserInfoItemProps {
   label: ReactNode
@@ -46,6 +47,12 @@ const UserDialog:FC = () => {
   const userInfo = rootStore.userStore.userInfo
   const [ isEdit, setIsEdit ] = useState<boolean>(false)
   const [ saveLoading, setSaveLoading ] = useState<boolean>(false)
+
+  useEffect(() => {
+    eventBus.on(events.afterUserLogout, () => {
+      dialog()?.hide()
+    })
+  }, [])
 
   const newUserInfo: IEditUserInfo = {
     name: userInfo.name
@@ -79,7 +86,6 @@ const UserDialog:FC = () => {
     if (item.value === -1) {
       try {
         await rootStore.userStore.logout()
-        dialog()?.hide()
       } catch (error) {
         errorHandler.handle(error)
       }
@@ -87,8 +93,7 @@ const UserDialog:FC = () => {
   }
 
   const onEditUserInfoClick = () => {
-    setIsEdit(!isEdit)
-
+    setIsEdit(true)
   }
 
   const cancelEditUserInfo = () => {
@@ -144,7 +149,7 @@ const UserDialog:FC = () => {
           >
             <button className="flex items-center text-blue-500 hover:text-blue-600" onClick={cancelEditUserInfo}>
               <RiArrowLeftSLine />
-              <span>取消</span>
+              <span>返回</span>
             </button>
 
             <div className="px-6 mt-3">

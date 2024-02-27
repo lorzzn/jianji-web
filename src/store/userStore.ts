@@ -2,6 +2,7 @@ import { IEditProfileReq } from "@/api/types/request/user";
 import { IUserInfo } from "@/api/types/response/user";
 import { apiUser } from "@/api/user";
 import errorHandler from "@/utils/errorHandler";
+import eventBus, { events } from "@/utils/eventBus";
 import { code } from "@/utils/r/code";
 import { getStorage, removeStroage, setStorage } from "@/utils/storage";
 import { makeAutoObservable } from "mobx";
@@ -27,10 +28,17 @@ class UserStore {
 
     this.token = getStorage("token")
     this.refreshToken = getStorage("refreshToken")
+    this.loading = true
 
-    this.requestRefreshToken()
-    this.fetchProfile()
+    this.requestRefreshToken().then(async () => {
+      await this.fetchProfile()
+      this.setLoading(false)
+    }).catch(() => {
+      this.setLoading(false)
+    })
   }
+
+  setLoading = (loading: boolean) => this.loading = loading
 
   setUserInfo = (data: IUserInfo) => {
     this.userInfo = data
@@ -49,12 +57,14 @@ class UserStore {
   }
 
   resetUserInfo = () => {
+    eventBus.emit(events.beforeResetUserInfo)
     this.setUserInfo({ ...this.initialUserInfo })
   }
 
   logout = async () => {
     try {
       const res = await apiUser.logout()
+      eventBus.emit(events.afterUserLogout)
       this.removeToken()
       this.resetUserInfo()
       return Promise.resolve(res)
@@ -73,10 +83,13 @@ class UserStore {
           refreshToken: this.refreshToken
         })
         this.storeToken(res.data.data.token, res.data.data.refreshToken)
+        return Promise.resolve(res)
       } catch (error) {
         errorHandler.handle(error)
+        return Promise.reject(error)
       }
     }
+    return Promise.reject("skip")
   }
 
   fetchProfile = async () => {
@@ -85,12 +98,13 @@ class UserStore {
         const res = await apiUser.profile()
         if (res.data.code === code.USER_NOT_LOGIN) {
           this.removeToken()
-          return
+        } else {
+          this.setUserInfo(res.data.data.userInfo)
         }
-
-        this.setUserInfo(res.data.data.userInfo)
+        return Promise.resolve(res)
       } catch (error) {
         errorHandler.handle(error)
+        return Promise.reject(error)
       }
     }
   }
