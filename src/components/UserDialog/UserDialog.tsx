@@ -65,11 +65,11 @@ const UserDialog:FC = () => {
     }
   ]
 
-  const handleSettingsNavItemClick = (item: INavItem) => {
+  const onSettingsNavItemClick = (item: INavItem) => {
     console.log(item)
   }
 
-  const handleEditUserInfoClick = () => {
+  const onEditUserInfoClick = () => {
     setIsEdit(!isEdit)
 
   }
@@ -134,7 +134,7 @@ const UserDialog:FC = () => {
 
       {
         item?.value === 0 && <div className="flex items-center justify-center">
-          <ZButton scale={"large"} className="w-48" onClick={isEdit ? handleSubmit(submitNewUserInfo):handleEditUserInfoClick}>{isEdit ? "保存":"编辑资料"}</ZButton>
+          <ZButton scale={"large"} className="w-48" onClick={isEdit ? handleSubmit(submitNewUserInfo):onEditUserInfoClick}>{isEdit ? "保存":"编辑资料"}</ZButton>
         </div>
       }
 
@@ -157,7 +157,7 @@ const UserDialog:FC = () => {
     <SettingsPage
       nav={settingsPageNav}
       defaultNavIndex={0}
-      onClick={handleSettingsNavItemClick}
+      onClick={onSettingsNavItemClick}
       contentRender={settingsPageContentRender}
     />
   </ZModal>
