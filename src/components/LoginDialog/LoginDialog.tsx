@@ -12,6 +12,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import useLogin, { ILoginFormData } from "@/hooks/useLogin"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
 import rootStore from "@/store"
+import errorHandler from "@/utils/errorHandler"
 
 const yupSchema = Yup.object().shape({
   email: Yup.string().email('请您输入格式正确的邮箱地址').required('请您输入邮箱'),
@@ -22,6 +23,7 @@ const LoginDialog:FC = () => {
   const [ agreed, setAgreed] = useState<boolean | undefined>(false)
   const { register: dialogRegister, dialog: loginDialog } = useDialog(dialogNames.LoginDialog)
   const { dialog: holaDialog } = useDialog(dialogNames.HolaDialog)
+  const [ loginLoading, setLoginLoading ] = useState<boolean>(false)
   const { login } =  useLogin()
 
   const loginFormData:ILoginFormData = {
@@ -41,18 +43,23 @@ const LoginDialog:FC = () => {
   }
 
   const onSubmit = async (formData: ILoginFormData) => {
-    const res = await login(formData)
-    // 隐藏登录窗口
-    loginDialog()?.hide()
+    setLoginLoading(true)
+    try {
+      const res = await login(formData)
+      // 隐藏登录窗口
+      loginDialog()?.hide()
 
-    rootStore.userStore.setUserInfo(res.data.data.userInfo)
-    rootStore.userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
+      rootStore.userStore.setUserInfo(res.data.data.userInfo)
+      rootStore.userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
 
-    // 如果是注册用户，展示欢迎窗口
-    if (res.data.data.isNewUser) {
-      holaDialog()?.show()
+      // 如果是注册用户，展示欢迎窗口
+      if (res.data.data.isNewUser) {
+        holaDialog()?.show()
+      }
+    } catch (error) {
+      errorHandler.handle(error)
     }
-
+    setLoginLoading(false)
   }
 
   return <ZModal
@@ -85,7 +92,7 @@ const LoginDialog:FC = () => {
         </div>
 
         <div className="flex flex-col items-center mt-14">
-          <ZButton disabled={!agreed} className="w-full" scale="large" >登录/注册</ZButton>
+          <ZButton disabled={!agreed} className="w-full" scale="large" loading={loginLoading}>登录/注册</ZButton>
           <span className="text-xs text-gray-900 mt-2">未注册的邮箱，我们将帮助您注册账号</span>
         </div>
       </ZForm>

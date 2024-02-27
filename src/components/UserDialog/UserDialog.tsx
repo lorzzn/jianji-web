@@ -45,6 +45,7 @@ const UserDialog:FC = () => {
   const { register: dialogRegister, dialog } = useDialog(dialogNames.UserDialog)
   const userInfo = rootStore.userStore.userInfo
   const [ isEdit, setIsEdit ] = useState<boolean>(false)
+  const [ saveLoading, setSaveLoading ] = useState<boolean>(false)
 
   const newUserInfo: IEditUserInfo = {
     name: userInfo.name
@@ -94,8 +95,14 @@ const UserDialog:FC = () => {
     setIsEdit(false)
   }
 
-  const submitNewUserInfo = (formData: IEditUserInfo) => {
-    rootStore.userStore.editProfile(formData)
+  const submitNewUserInfo = async (formData: IEditUserInfo) => {
+    setSaveLoading(true)
+    try {
+      await rootStore.userStore.editProfile(formData)
+    } catch (error) {
+      errorHandler.handle(error)
+    }
+    setSaveLoading(false)
   }
 
   const settingsPageContentRender = (item: INavItem|undefined) => {
@@ -163,7 +170,7 @@ const UserDialog:FC = () => {
 
       {
         item?.value === 0 && <div className="flex items-center justify-center">
-          <ZButton scale={"large"} className="w-48" onClick={isEdit ? handleSubmit(submitNewUserInfo):onEditUserInfoClick}>{isEdit ? "保存":"编辑资料"}</ZButton>
+          <ZButton scale={"large"} className="w-48" onClick={isEdit ? handleSubmit(submitNewUserInfo):onEditUserInfoClick} loading={saveLoading} >{isEdit ? "保存":"编辑资料"}</ZButton>
         </div>
       }
 
