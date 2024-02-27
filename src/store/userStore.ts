@@ -1,3 +1,4 @@
+import { IEditProfileReq } from "@/api/types/request/user";
 import { IUserInfo } from "@/api/types/response/user";
 import { apiUser } from "@/api/user";
 import errorHandler from "@/utils/errorHandler";
@@ -68,6 +69,15 @@ class UserStore {
       } catch (error) {
         errorHandler.handle(error)
       }
+    }
+  }
+
+  editProfile = async (data: IEditProfileReq) => {
+    try {
+      const res = await apiUser.editProfile(data)
+      this.setUserInfo(res.data.data.userInfo)
+    } catch (error) {
+      errorHandler.handle(error)
     }
   }
 
