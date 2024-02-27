@@ -18,7 +18,7 @@ const useDialog = (dialogName: string) => {
     dialogStore.register(dialogName, ref)
   }
 
-  const dialog = () => dialogStore.dialog(dialogName)
+  const dialog = ():ZModalRef|null|undefined => dialogStore.dialog(dialogName)
 
   return {
     register,

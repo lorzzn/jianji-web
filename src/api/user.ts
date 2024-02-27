@@ -12,6 +12,12 @@ export const apiUser = {
       data,
     })
   },
+  logout() {
+    return service({
+      url: "api/v1/user/logout",
+      method: "POST"
+    })
+  },
   refreshToken(data: IRefreshTokenReq){
     return service<IRefreshTokenResp>({
       url: "api/v1/user/refresh-token",

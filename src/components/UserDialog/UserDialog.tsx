@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ZForm from "../ZForm/ZForm";
 import { motion } from 'framer-motion'
+import errorHandler from "@/utils/errorHandler";
 
 interface UserInfoItemProps {
   label: ReactNode
@@ -41,7 +42,7 @@ const UserInfoItem:FC<UserInfoItemProps> = ({ label, content, border }) => {
 
 const UserDialog:FC = () => {
 
-  const { register: dialogRegister } = useDialog(dialogNames.UserDialog)
+  const { register: dialogRegister, dialog } = useDialog(dialogNames.UserDialog)
   const userInfo = rootStore.userStore.userInfo
   const [ isEdit, setIsEdit ] = useState<boolean>(false)
 
@@ -63,11 +64,25 @@ const UserDialog:FC = () => {
     {
       value: 1,
       label: "个人统计",
+    },
+    {
+      value: -1,
+      label: "退出登录",
+      activable: false,
+      className: classNames(['mt-auto text-red-500'])
     }
   ]
 
-  const onSettingsNavItemClick = (item: INavItem) => {
-    console.log(item)
+  const onSettingsNavItemClick = async (item: INavItem) => {
+    // 退出登录
+    if (item.value === -1) {
+      try {
+        await rootStore.userStore.logout()
+        dialog()?.hide()
+      } catch (error) {
+        errorHandler.handle(error)
+      }
+    }
   }
 
   const onEditUserInfoClick = () => {
