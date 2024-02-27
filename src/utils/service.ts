@@ -4,7 +4,6 @@ import { encryptRSAWithAES } from './rsa'
 import { getStorage } from './storage'
 
 const baseURL = import.meta.env.VITE_APP_BASEURL
-const token = getStorage("token")
 
 const service = axios.create({
   baseURL,
@@ -12,6 +11,7 @@ const service = axios.create({
 
 // 请求拦截器
 service.interceptors.request.use(async (config) => {
+  const token = getStorage("token")
   config.withCredentials = config.withCredentials ?? true
 
   if (config.encrypt) {

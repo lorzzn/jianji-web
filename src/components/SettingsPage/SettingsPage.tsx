@@ -18,7 +18,7 @@ const SettingsPage:FC<SettingsPageProps> = ({ nav, defaultNavIndex, onChange, on
   const onNavItemClick = (item: INavItem) => {
     item = omit(item, "active")
     onClick?.(item)
-    if (activeValue !== item.value) {
+    if (activeValue !== item.value && item.activable !== false) {
       setActiveValue(item)
       onChange?.(item)
     }
@@ -30,8 +30,7 @@ const SettingsPage:FC<SettingsPageProps> = ({ nav, defaultNavIndex, onChange, on
         nav.map(item => {
 
           return <NavItem 
-            value={item.value} 
-            label={item.label} 
+            {...item}
             onClick={onNavItemClick} 
             active={item.value === activeValue?.value}
             key={item.value} 

@@ -2,13 +2,14 @@ import { IEditProfileReq } from "@/api/types/request/user";
 import { IUserInfo } from "@/api/types/response/user";
 import { apiUser } from "@/api/user";
 import errorHandler from "@/utils/errorHandler";
+import { code } from "@/utils/r/code";
 import { getStorage, removeStroage, setStorage } from "@/utils/storage";
 import { makeAutoObservable } from "mobx";
 
 class UserStore {
 
   loading = false
-  userInfo: IUserInfo= {
+  initialUserInfo: IUserInfo= {
     id: 0,
     uuid: "",
     createdAt: "",
@@ -17,6 +18,7 @@ class UserStore {
     avatar: "",
     email: "",
   }
+  userInfo: IUserInfo= { ...this.initialUserInfo }
   token: string|null = null
   refreshToken: string|null = null
 
@@ -46,6 +48,22 @@ class UserStore {
     removeStroage("refreshToken")
   }
 
+  resetUserInfo = () => {
+    this.setUserInfo({ ...this.initialUserInfo })
+  }
+
+  logout = async () => {
+    try {
+      const res = await apiUser.logout()
+      this.removeToken()
+      this.resetUserInfo()
+      return Promise.resolve(res)
+    } catch (error) {
+      errorHandler.handle(error)
+      return Promise.reject(error)
+    }
+  }
+
   // 刷新token
   requestRefreshToken = async () => {
     if (this.refreshToken && this.token) {
@@ -65,6 +83,11 @@ class UserStore {
     if (this.token) {
       try {
         const res = await apiUser.profile()
+        if (res.data.code === code.USER_NOT_LOGIN) {
+          this.removeToken()
+          return
+        }
+
         this.setUserInfo(res.data.data.userInfo)
       } catch (error) {
         errorHandler.handle(error)
