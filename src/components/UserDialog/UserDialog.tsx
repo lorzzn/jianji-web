@@ -15,6 +15,7 @@ import Yup from "@/utils/yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ZForm from "../ZForm/ZForm";
+import { motion } from 'framer-motion'
 
 interface UserInfoItemProps {
   label: ReactNode
@@ -87,48 +88,62 @@ const UserDialog:FC = () => {
 
     return <div className="flex flex-col justify-between h-full overflow-hidden ml-3">
       {
-        item?.value === 0 && !isEdit && <div className="flex flex-col items-center w-full">
-          <ZImage 
-            src={userInfo.avatar+"&s=192"}
-            className="w-24 h-24 rounded-full"
-          />
+        item?.value === 0 && <div className="w-full h-full relative">
+          <motion.div
+            className="flex flex-col items-center w-full h-full absolute"
+            animate={!isEdit ? "show":"hide"}
+            variants={{
+              show: { scale: 1, left: 0 },
+              hide: { scale: .9, left: "-10%" },
+            }}
+          >
+            <ZImage 
+              src={userInfo.avatar+"&s=192"}
+              className="w-24 h-24 rounded-full"
+            />
 
-          <div className="mt-6 mb-6">
-            {userInfo.name}
-          </div>
-
-          <div className="w-full bg-gray-100 px-2 py-2 rounded-lg">
-            <UserInfoItem label={"用户ID"} content={userInfo.id} border />
-            <UserInfoItem label={"邮箱"} content={userInfo.email} border />
-            <UserInfoItem label={"创建时间"} content={dateFormat(userInfo.createdAt)} />
-          </div>
-        </div>
-      }
-
-      {
-        item?.value === 0 && isEdit && <div className="w-full h-full bg-white">
-            <button className="flex items-center text-blue-500 hover:text-blue-600" onClick={cancelEditUserInfo}>
-            <RiArrowLeftSLine />
-            <span>取消</span>
-          </button>
-
-          <div className="px-6 mt-3">
-            <div className="text-lg">头像</div>
-            <div className="text-sm mt-3 mb-3">
-              <span>前往</span>
-              <a className="text-blue-500" href="https://cravatar.com/" target="_blank" rel="noopener noreferrer"> Cravatar 初认头像 </a>
-              <span>修改</span>
+            <div className="mt-6 mb-6">
+              {userInfo.name}
             </div>
-            <div className="text-lg">用户名</div>
-            <ZForm 
-              className="flex flex-col h-full justify-between"
-            >
-              <div>
-                <ZInput scale={"large"} className="mt-3 w-full" placeholder="请输入用户名" {...register("name")} />
+
+            <div className="w-full bg-gray-100 px-2 py-2 rounded-lg">
+              <UserInfoItem label={"用户ID"} content={userInfo.id} border />
+              <UserInfoItem label={"邮箱"} content={userInfo.email} border />
+              <UserInfoItem label={"创建时间"} content={dateFormat(userInfo.createdAt)} />
+            </div>
+          </motion.div>
+
+          <motion.div
+            className={classNames(["w-full h-full bg-white absolute", { "-right-full": !isEdit }])}
+            animate={isEdit ? "show":"hide"}
+            variants={{
+              show: { right: 0, top: 0 },
+              hide: { right: "-100%", top: "0"}
+            }}
+          >
+            <button className="flex items-center text-blue-500 hover:text-blue-600" onClick={cancelEditUserInfo}>
+              <RiArrowLeftSLine />
+              <span>取消</span>
+            </button>
+
+            <div className="px-6 mt-3">
+              <div className="text-lg">头像</div>
+              <div className="text-sm mt-3 mb-3">
+                <span>前往</span>
+                <a className="text-blue-500" href="https://cravatar.com/" target="_blank" rel="noopener noreferrer"> Cravatar 初认头像 </a>
+                <span>修改</span>
               </div>
-              <div className="text-sm mt-1 text-red-500">{errors.name?.message}</div>
-            </ZForm>
-          </div>
+              <div className="text-lg">用户名</div>
+              <ZForm 
+                className="flex flex-col h-full justify-between"
+              >
+                <div>
+                  <ZInput scale={"large"} className="mt-3 w-full" placeholder="请输入用户名" {...register("name")} />
+                </div>
+                <div className="text-sm mt-1 text-red-500">{errors.name?.message}</div>
+              </ZForm>
+            </div>
+          </motion.div>
         </div>
       }
 
