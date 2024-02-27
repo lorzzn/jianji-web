@@ -31,3 +31,9 @@ export interface IProfileResp extends IApiCommonResp {
     userInfo: IUserInfo
   }
 }
+
+export interface IEditProfileResp extends IApiCommonResp {
+  data: {
+    userInfo: IUserInfo
+  }
+}

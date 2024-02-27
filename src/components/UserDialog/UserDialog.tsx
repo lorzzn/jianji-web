@@ -28,7 +28,7 @@ interface IEditUserInfo {
 }
 
 const yupSchema = Yup.object().shape({
-  name: Yup.string().required('请您输入用户名'),
+  name: Yup.string().required('请您输入用户名').max(16, "用户名长度不能超过16"),
 })
 
 const UserInfoItem:FC<UserInfoItemProps> = ({ label, content, border }) => {
@@ -80,8 +80,7 @@ const UserDialog:FC = () => {
   }
 
   const submitNewUserInfo = (formData: IEditUserInfo) => {
-    console.log(formData)
-    
+    rootStore.userStore.editProfile(formData)
   }
 
   const settingsPageContentRender = (item: INavItem|undefined) => {
