@@ -1,22 +1,20 @@
 import { FC } from "react"
-import { ToastContainer, ToastContainerProps } from "react-toastify"
+import { Slide, ToastContainer, ToastContainerProps } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 
 interface ZToastContainerProps extends ToastContainerProps {}
 
-
 const ZToastContainer:FC<ZToastContainerProps> = ({ ...restProps }) => {
 
   return <ToastContainer 
+    transition={Slide}
     position="top-right"
-    autoClose={5000}
-    hideProgressBar={false}
+    autoClose={3000}
+    hideProgressBar
     newestOnTop={false}
-    closeOnClick
-    rtl={false}
-    pauseOnFocusLoss
-    draggable
-    pauseOnHover
+    closeOnClick={false}
+    pauseOnFocusLoss={false}
+    pauseOnHover={false}
     theme="light"
     {...restProps}
   />
