@@ -1,7 +1,9 @@
 import rootStore from '@/store'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { encryptRSAWithAES } from './rsa'
 import { getStorage } from './storage'
+import { IApiCommonResp } from '@/api/types/response/common'
+import ServiceError from './serviceError'
 
 const baseURL = import.meta.env.VITE_APP_BASEURL
 
@@ -38,7 +40,11 @@ service.interceptors.request.use(async (config) => {
 })
 
 
-service.interceptors.response.use((response) => {
+service.interceptors.response.use((response: AxiosResponse<IApiCommonResp>) => {
+
+  if (response.data.code !== 0) {
+    return Promise.reject(new ServiceError(response.data.message))
+  }
   
   return Promise.resolve(response)
 })

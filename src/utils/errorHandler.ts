@@ -1,3 +1,5 @@
+import ServiceError from "./serviceError"
+
 interface IErrorItem {
   date: number
   error: any
@@ -14,7 +16,15 @@ export class ErrorHandler {
       date: Date.now(),
       error
     })
-    console.log(error)
+
+    console.warn({errorList: this.errorList})
+    
+    if (error instanceof ServiceError && error.message) {
+      console.log(error.message);
+      
+    } else {
+      console.error(error)
+    }
   }
 
 
