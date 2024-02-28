@@ -1,3 +1,4 @@
+import { toast } from "react-toastify"
 import ServiceError from "./serviceError"
 
 interface IErrorItem {
@@ -20,7 +21,7 @@ export class ErrorHandler {
     console.warn({errorList: this.errorList})
     
     if (error instanceof ServiceError && error.message) {
-      console.log(error.message);
+      toast.error(error.message)
       
     } else {
       console.error(error)
