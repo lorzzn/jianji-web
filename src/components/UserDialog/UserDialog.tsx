@@ -18,6 +18,7 @@ import ZForm from "../ZForm/ZForm";
 import { motion } from 'framer-motion'
 import errorHandler from "@/utils/errorHandler";
 import eventBus, { events } from "@/utils/eventBus";
+import { toast } from "react-toastify";
 
 interface UserInfoItemProps {
   label: ReactNode
@@ -104,6 +105,7 @@ const UserDialog:FC = () => {
     setSaveLoading(true)
     try {
       await rootStore.userStore.editProfile(formData)
+      toast.success("保存成功")
     } catch (error) {
       errorHandler.handle(error)
     }

@@ -115,7 +115,6 @@ class UserStore {
       this.setUserInfo(res.data.data.userInfo)
       return Promise.resolve(res)
     } catch (error) {
-      errorHandler.handle(error)
       return Promise.reject(error)
     }
   }
