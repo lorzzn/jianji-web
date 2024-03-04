@@ -1,9 +1,8 @@
-import { RiLoader4Fill } from "@remixicon/react"
 import { cva, type VariantProps } from "class-variance-authority"
 import classNames from "classnames"
 import { FC } from "react"
 import { twMerge } from "tailwind-merge"
-import { motion } from 'framer-motion'
+import ZLoading from "../ZLoading/ZLoading"
 
 interface ZButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   loading?: boolean
@@ -45,14 +44,9 @@ const ZButton:FC<ZButtonProps> = ({ className, variant, scale, shape, children, 
       disabled={loading || disabled}
       {...restProps}
     >
-      {loading && <motion.div
-        className="mr-1"
-        initial={{ rotate: '0deg' }}
-        animate={{ rotate: '360deg' }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-      >
-        <RiLoader4Fill />
-      </motion.div>}
+      {loading && <div className="mr-1">
+        <ZLoading />
+      </div>}
       {children}
     </button>
   )
