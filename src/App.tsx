@@ -6,6 +6,7 @@ import LoginDialog from "./components/LoginDialog/LoginDialog";
 import HolaDialog from "./components/HolaDialog/HolaDialog";
 import UserDialog from "./components/UserDialog/UserDialog";
 import ZToastContainer from "./components/ZToastContainer/ZToastContainer";
+import ActiveDialog from "./components/ActiveDialog/ActiveDialog";
 
 const App:FC = () => {
 
@@ -19,6 +20,8 @@ const App:FC = () => {
     <HolaDialog />
     {/* 用户信息弹窗 */}
     <UserDialog />
+    {/* 激活账号提示弹窗 */}
+    <ActiveDialog />
 
     <ZToastContainer />
 

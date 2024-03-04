@@ -4,6 +4,11 @@ export interface ILoginReq {
   password: string
 }
 
+export interface IActiveReq {
+  email: string
+  state: string
+}
+
 export interface IRefreshTokenReq {
   token: string
   refreshToken: string

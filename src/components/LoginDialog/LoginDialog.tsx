@@ -22,7 +22,7 @@ const yupSchema = Yup.object().shape({
 const LoginDialog:FC = () => {
   const [ agreed, setAgreed] = useState<boolean | undefined>(false)
   const { register: dialogRegister, dialog: loginDialog } = useDialog(dialogNames.LoginDialog)
-  const { dialog: holaDialog } = useDialog(dialogNames.HolaDialog)
+  const { dialog: activeDialog } = useDialog(dialogNames.ActiveDialog)
   const [ loginLoading, setLoginLoading ] = useState<boolean>(false)
   const { login } =  useLogin()
 
@@ -49,12 +49,12 @@ const LoginDialog:FC = () => {
       // 隐藏登录窗口
       loginDialog()?.hide()
 
-      rootStore.userStore.setUserInfo(res.data.data.userInfo)
-      rootStore.userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
-
-      // 如果是注册用户，展示欢迎窗口
-      if (res.data.data.isNewUser) {
-        holaDialog()?.show()
+      // 如果是新注册的用户，弹出激活邮箱提示
+      if (res.data.data.userInfo.status === 0) {
+        activeDialog()?.show()
+      } else {
+        rootStore.userStore.setUserInfo(res.data.data.userInfo)
+        rootStore.userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
       }
     } catch (error) {
       errorHandler.handle(error)
