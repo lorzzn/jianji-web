@@ -21,6 +21,7 @@ export const apiUser = {
   active(data: IActiveReq) {
     return service<IActiveResp>({
       url: "api/v1/user/active",
+      method: "POST",
       data
     })
   },

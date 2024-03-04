@@ -1,4 +1,4 @@
-import { IEditProfileReq } from "@/api/types/request/user";
+import { IActiveReq, IEditProfileReq } from "@/api/types/request/user";
 import { IUserInfo } from "@/api/types/response/user";
 import { apiUser } from "@/api/user";
 import errorHandler from "@/utils/errorHandler";
@@ -18,6 +18,7 @@ class UserStore {
     name: "",
     avatar: "",
     email: "",
+    status: 0,
   }
   userInfo: IUserInfo= { ...this.initialUserInfo }
   token: string|null = null
@@ -49,6 +50,18 @@ class UserStore {
     setStorage("token", token)
     setStorage("refreshToken", refreshToken)
   }
+
+  // 激活账户
+  activeUser = async (params: IActiveReq) => {
+    try {
+      const res = await apiUser.active(params)
+      this.setUserInfo(res.data.data.userInfo)
+      this.storeToken(res.data.data.token, res.data.data.refreshToken)
+    } catch (error) {
+      errorHandler.handle(error)
+      return Promise.reject(error)
+    }
+  } 
 
   // 清除token
   removeToken = () => {
