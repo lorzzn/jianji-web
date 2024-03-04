@@ -8,16 +8,18 @@ export interface IUserInfo {
   name: string;
   avatar: string;
   email: string;
+  status: number
 }
 
 export interface ILoginResp extends IApiCommonResp {
   data: {
     userInfo: IUserInfo;
-    isNewUser: boolean;
     token: string;
     refreshToken: string;
   }
 }
+
+export interface IActiveResp extends ILoginResp {}
 
 export interface IRefreshTokenResp extends IApiCommonResp {
   data: {

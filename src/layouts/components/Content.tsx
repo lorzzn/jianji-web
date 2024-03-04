@@ -1,18 +1,18 @@
-import ZButton from "@/components/ZButton/ZButton"
+import Active from "@/pages/Active"
+import Home from "@/pages/Home"
 import { FC } from "react"
-import { toast } from "react-toastify"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
 
 const Content:FC = () => {
 
-  const onShowToastBtnCLick = () => {
-    
-    toast("hahaha")
-  }
-
   return (
-    <div className="h-screen flex flex-col space-y-1">
-      Content
-      <ZButton onClick={onShowToastBtnCLick}>测试弹窗</ZButton>
+    <div className="h-full w-full flex flex-col">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" Component={Home} />
+          <Route path="/active" Component={Active} />
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 }

@@ -8,9 +8,9 @@ const Header:FC = () => {
 
   const menuItems = rootStore.layoutStore.nav.items
   return (
-    <div className="w-screen h-14 flex items-center justify-between border-b shadow-sm px-12">
+    <div className="h-14 flex items-center justify-between border-b shadow-sm px-8">
       <div className='flex items-center'>
-        <a href="/" className='flex justify-center w-24 mr-10'>
+        <a href="/" className='flex justify-center w-24 mr-8'>
           <ZImage className='w-full h-full' src="!/logo.png" />
         </a>
 

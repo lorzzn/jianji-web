@@ -5,7 +5,8 @@ import { useRef } from "react"
 export const dialogNames = {
   LoginDialog: "LoginDialog",
   HolaDialog: "HolaDialog",
-  UserDialog: "UserDialog"
+  UserDialog: "UserDialog",
+  ActiveDialog: "ActiveDialog"
 }
 
 const useDialog = (dialogName: string) => {

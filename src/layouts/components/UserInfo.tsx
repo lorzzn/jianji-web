@@ -19,7 +19,7 @@ const UserInfo:FC = () => {
     userDialog()?.show()
   }
 
-  return !userInfoLoading && <div className="hover:text-blue-500 whitespace-nowrap ml-8">
+  return !userInfoLoading && <div className="hover:text-blue-500 whitespace-nowrap ml-12">
     {
       userInfo.id ? <button onClick={onUserClick} title={userInfo.name}>
         <div className='flex justify-center items-center h-full space-x-2'>
