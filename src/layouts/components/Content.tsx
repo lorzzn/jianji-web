@@ -10,7 +10,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 const Content:FC = () => {
 
   return (
-    <div className="h-full w-full flex flex-col">
+    <div className="flex flex-col flex-1 w-full">
       <BrowserRouter>
         <Routes>
           <Route path="/" Component={Home} />
