@@ -9,10 +9,10 @@ class LayoutStore {
   nav = {
     items: [
       { href: "/", label: "首页", RiIcon: RiHomeLine },
-      { href: "/", label: "归档", RiIcon: RiArchiveLine },
-      { href: "/", label: "收藏", RiIcon: RiStarLine },
-      { href: "/", label: "分类", RiIcon: RiAlignJustify },
-      { href: "/", label: "标签", RiIcon: RiHashtag },
+      { href: "/archives", label: "归档", RiIcon: RiArchiveLine },
+      { href: "/favlist", label: "收藏", RiIcon: RiStarLine },
+      { href: "/categories", label: "分类", RiIcon: RiAlignJustify },
+      { href: "/tags", label: "标签", RiIcon: RiHashtag },
     ]
   }
 
