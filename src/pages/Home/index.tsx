@@ -2,8 +2,11 @@ import { FC } from "react";
 
 const Home:FC = () => {
 
-  return <div className="bg-red-200 w-full h-full">
+  return <div>
     home
+    <div className="h-[3000px] bg-red-50">
+      height: 3000px
+    </div>
   </div>
 }
 

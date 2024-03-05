@@ -7,9 +7,9 @@ import Header from "./components/Header"
 const Layout:FC = () => {
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 min-w-fit">
+    <div className="flex flex-col bg-gray-100 min-w-fit min-h-screen">
       <Header />
-      <div className="flex flex-col flex-1 justify-center items-center overflow-y-auto">
+      <div className="flex flex-col flex-1 items-center overflow-y-auto">
         <Content />
         <Footer />
       </div>
