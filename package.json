@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@mobx-devtools/tools": "^0.0.4",
     "@remixicon/react": "^4.1.1",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.7",
