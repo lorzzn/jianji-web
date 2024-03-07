@@ -9,7 +9,6 @@ const UserInfo:FC = () => {
   const { dialog } = useDialog(dialogNames.LoginDialog)
   const { dialog: userDialog } = useDialog(dialogNames.UserDialog)
   const userInfo = rootStore.userStore.userInfo
-  const userInfoLoading = rootStore.userStore.loading
 
   const onLoginClick = () => {
     dialog()?.show()
@@ -19,7 +18,7 @@ const UserInfo:FC = () => {
     userDialog()?.show()
   }
 
-  return !userInfoLoading && <div className="hover:text-blue-500 whitespace-nowrap flex items-center justify-center">
+  return <div className="hover:text-blue-500 whitespace-nowrap flex items-center justify-center">
     {
       userInfo.id ? <button onClick={onUserClick} title={userInfo.name}>
         <div className='flex justify-center items-center h-full space-x-2'>

@@ -11,6 +11,7 @@ import useDialog, { dialogNames } from "@/hooks/useDialog"
 const Header:FC = () => {
 
   const navigate = useNavigate()
+  const userInfoLoading = rootStore.userStore.loading
   const menuItems = rootStore.layoutStore.nav.items
   const { dialog: searchDialog } = useDialog(dialogNames.SearchDialog)
 
@@ -43,21 +44,23 @@ const Header:FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center">
-        <div className="mx-6 flex items-center flex-nowrap">
-          <ZButton variant={"primary_plain"} className="text-black hover:bg-blue-50 flex-col" onClick={onSearchClick}>
-            <RiSearchLine size={"1.1rem"} />
-          </ZButton>
-          <ZButton variant={"primary_plain"} className="text-black hover:bg-blue-50 flex-col">
-            <div className="flex items-center">
-              <RiAddLine size={"1.1rem"} />
-              <RiArrowDownSFill size={"1.1rem"} />
-            </div>
-          </ZButton>
-        </div>
+      {
+        !userInfoLoading && <div className="flex items-center">
+          <div className="mx-6 flex items-center flex-nowrap">
+            <ZButton variant={"primary_plain"} className="text-black hover:bg-blue-50 flex-col" onClick={onSearchClick}>
+              <RiSearchLine size={"1.1rem"} />
+            </ZButton>
+            <ZButton variant={"primary_plain"} className="text-black hover:bg-blue-50 flex-col">
+              <div className="flex items-center">
+                <RiAddLine size={"1.1rem"} />
+                <RiArrowDownSFill size={"1.1rem"} />
+              </div>
+            </ZButton>
+          </div>
 
-        <UserInfo />
-      </div>
+          <UserInfo />
+        </div>
+      }
     </header>
   )
 }
