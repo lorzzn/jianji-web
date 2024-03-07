@@ -15,7 +15,7 @@ class AppStore {
   // 获取应用信息（运行配置...）
   getAppConfig = async () => {
     try {
-      const res = await apiApp.fetchAppConfig()
+      const res = await apiApp.getAppConfig()
       this.serverTime = res.data.data.time / 1e6
     } catch (error) {
       errorHandler.handle(error)
@@ -34,7 +34,7 @@ class AppStore {
   // 从后端获取 publicKey
   updatePublicKey = async () => {
     try {
-      const res = await apiApp.fetchPublicKey()
+      const res = await apiApp.getPublicKey()
       this.publicKey = res.data.data.publicKey
     } catch (error) {
       this.publicKey = null
