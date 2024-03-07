@@ -16,6 +16,9 @@ const buttonVariants = cva(
         primary: classNames('bg-blue-500 text-white enabled:hover:bg-blue-600 enabled:active:bg-blue-700 transition'),
         success: classNames('bg-green-500 text-white enabled:hover:bg-green-600 enabled:active:bg-green-700 transition'),
         danger: classNames('bg-red-500 text-white enabled:hover:bg-red-600 enabled:active:bg-red-700 transition'),
+        primary_plain: classNames('text-blue-500 enabled:hover:text-blue-600 enabled:active:text-blue-700 transition'),
+        success_plain: classNames('text-green-500 enabled:hover:text-green-600 enabled:active:text-green-700 transition'),
+        danger_plain: classNames('text-red-500 enabled:hover:text-red-600 enabled:active:text-red-700 transition'),
       },
       scale: {
         small: classNames('h-6 px-3 text-xs'),

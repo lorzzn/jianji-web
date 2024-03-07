@@ -6,7 +6,8 @@ export const dialogNames = {
   LoginDialog: "LoginDialog",
   HolaDialog: "HolaDialog",
   UserDialog: "UserDialog",
-  ActiveDialog: "ActiveDialog"
+  ActiveDialog: "ActiveDialog",
+  SearchDialog: "SearchDialog"
 }
 
 const useDialog = (dialogName: string) => {

@@ -7,24 +7,27 @@ import HolaDialog from "./components/HolaDialog/HolaDialog";
 import UserDialog from "./components/UserDialog/UserDialog";
 import ZToastContainer from "./components/ZToastContainer/ZToastContainer";
 import ActiveDialog from "./components/ActiveDialog/ActiveDialog";
+import SearchDialog from "./components/SearchDialog/SearchDialog";
+import { BrowserRouter } from "react-router-dom";
+import { injectStores } from '@mobx-devtools/tools';
+
+injectStores({
+  rootStore
+})
 
 const App:FC = () => {
 
   // Provider 供 inject 使用
   return <Provider rootStore={rootStore}>
-    <Layout />
-    
-    {/* 注册登录弹窗 */}
-    <LoginDialog />
-    {/* 欢迎新注册用户弹窗 */}
-    <HolaDialog />
-    {/* 用户信息弹窗 */}
-    <UserDialog />
-    {/* 激活账号提示弹窗 */}
-    <ActiveDialog />
-
-    <ZToastContainer />
-
+    <BrowserRouter>
+      <Layout />
+      <LoginDialog />
+      <HolaDialog />
+      <UserDialog />
+      <ActiveDialog />
+      <SearchDialog />
+      <ZToastContainer />
+    </BrowserRouter>
   </Provider>
 }
 
