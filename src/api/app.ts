@@ -3,16 +3,16 @@ import { IGetAppConfigResp, IGetPublicKeyResp } from "./types/response/app"
 import pureService from "@/utils/pureService"
 
 export const apiApp = {
-  fetchPublicKey() {
+  getPublicKey() {
     return pureService<IGetPublicKeyResp>({
       url: "/api/common/app/public-key",
       withCredentials: false,
     })
   },
-  fetchAppConfig() {
+  getAppConfig() {
     return service<IGetAppConfigResp>({
       url: "/api/common/app/config",
-      withCredentials: false,
+      withCredentials: true,
       withToken: false
     })
   }

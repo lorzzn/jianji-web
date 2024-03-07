@@ -9,5 +9,10 @@ export interface IGetPublicKeyResp extends IApiCommonResp {
 export interface IGetAppConfigResp extends IApiCommonResp {
   data: {
     time: number
+    sessionId: string
+    location: {
+      country: string
+      city: string
+    }
   }
 }
