@@ -4,6 +4,7 @@ import { apiUser } from "@/api/user";
 import errorHandler from "@/utils/errorHandler";
 import eventBus, { events } from "@/utils/eventBus";
 import { code } from "@/utils/r/code";
+import ServiceError from "@/utils/serviceError";
 import { getStorage, removeStroage, setStorage } from "@/utils/storage";
 import { makeAutoObservable } from "mobx";
 
@@ -98,6 +99,12 @@ class UserStore {
         this.storeToken(res.data.data.token, res.data.data.refreshToken)
         return Promise.resolve(res)
       } catch (error) {
+        // 如果服务器刷新token失败, 清空本地token并重新加载页面
+        if (error instanceof ServiceError && error.response.data.code === code.USER_REFRESHTOKEN_FAILED) {
+          this.removeToken()
+          this.resetUserInfo()
+          window.location.replace("/")
+        }
         errorHandler.handle(error)
         return Promise.reject(error)
       }

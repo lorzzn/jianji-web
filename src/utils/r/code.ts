@@ -1,3 +1,4 @@
 export const code = {
-  "USER_NOT_LOGIN": 10003
+  "USER_NOT_LOGIN": 10003,
+  "USER_REFRESHTOKEN_FAILED": 10004
 }

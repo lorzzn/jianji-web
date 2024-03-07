@@ -13,6 +13,7 @@ export const apiApp = {
     return service<IGetAppConfigResp>({
       url: "/api/common/app/config",
       withCredentials: false,
+      withToken: false
     })
   }
 }
