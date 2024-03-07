@@ -9,6 +9,7 @@ export const apiUser = {
       url: "api/v1/user/login",
       method: "POST",
       encrypt: true,
+      withToken: false,
       data,
     })
   },
@@ -28,7 +29,7 @@ export const apiUser = {
   refreshToken(data: IRefreshTokenReq){
     return service<IRefreshTokenResp>({
       url: "api/v1/user/refresh-token",
-      withCredentials: false,
+      withToken: false,
       method: "POST",
       data
     })

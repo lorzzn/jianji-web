@@ -14,7 +14,10 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(async (config) => {
   const token = getStorage("token")
+  // 携带cookie
   config.withCredentials = config.withCredentials ?? true
+  // 携带token
+  config.withToken = config.withToken ?? true 
 
   if (config.encrypt) {
      // 标识请求为加密请求
@@ -31,8 +34,8 @@ service.interceptors.request.use(async (config) => {
     config.data = encryptRSAWithAES(config.data, publicKey)
   }
 
-  // withCredentials 为 true 并且有 token，请求加上Authorization头
-  if (config.withCredentials && token) {
+  // withToken 为 true 并且有 token，请求加上Authorization头
+  if (config.withToken && token) {
     config.headers.Authorization = `Bearer ${token}`
   }
 
@@ -43,7 +46,7 @@ service.interceptors.request.use(async (config) => {
 service.interceptors.response.use((response: AxiosResponse<IApiCommonResp>) => {
 
   if (response.data.code !== 0) {
-    return Promise.reject(new ServiceError(response.data.message))
+    return Promise.reject(new ServiceError(response))
   }
   
   return Promise.resolve(response)
