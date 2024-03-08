@@ -1,5 +1,7 @@
 import { toast } from "react-toastify"
 import ServiceError from "./serviceError"
+import { code } from "./r/code"
+import rootStore from "@/store"
 
 interface IErrorItem {
   date: number
@@ -19,6 +21,15 @@ export class ErrorHandler {
     })
 
     console.warn({errorList: this.errorList})
+
+    if (error instanceof ServiceError && [
+      code.USER_REFRESHTOKEN_FAILED,
+      code.JWT_AUTHORIZATION_INVALID
+    ].includes(error.response.data.code)) {
+      rootStore.userStore.removeToken()
+      rootStore.userStore.resetUserInfo()
+      window.location.replace("/")
+    }
     
     if (error instanceof ServiceError && error.message) {
       toast.error(error.message)
@@ -27,7 +38,6 @@ export class ErrorHandler {
       console.error(error)
     }
   }
-
 
 
 }
