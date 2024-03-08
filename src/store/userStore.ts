@@ -33,7 +33,7 @@ class UserStore {
     this.loading = true
 
     this.requestRefreshToken().then(async () => {
-      await this.fetchProfile()
+      await this.getProfile()
       this.setLoading(false)
     }).catch(() => {
       this.setLoading(false)
@@ -99,12 +99,6 @@ class UserStore {
         this.storeToken(res.data.data.token, res.data.data.refreshToken)
         return Promise.resolve(res)
       } catch (error) {
-        // 如果服务器刷新token失败, 清空本地token并重新加载页面
-        if (error instanceof ServiceError && error.response.data.code === code.USER_REFRESHTOKEN_FAILED) {
-          this.removeToken()
-          this.resetUserInfo()
-          window.location.replace("/")
-        }
         errorHandler.handle(error)
         return Promise.reject(error)
       }
@@ -112,7 +106,7 @@ class UserStore {
     return Promise.reject("skip")
   }
 
-  fetchProfile = async () => {
+  getProfile = async () => {
     if (this.token) {
       try {
         const res = await apiUser.profile()
