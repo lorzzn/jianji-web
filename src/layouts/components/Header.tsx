@@ -7,15 +7,16 @@ import { RiAddLine, RiArrowDownSFill, RiSearchLine } from "@remixicon/react"
 import ZButton from "@/components/ZButton/ZButton"
 import { useNavigate } from "react-router-dom"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
+import classNames from "classnames"
 
 const Header:FC = () => {
 
   const navigate = useNavigate()
   const userInfoLoading = rootStore.userStore.loading
-  const menuItems = rootStore.layoutStore.nav.items
+  const navItems = rootStore.layoutStore.navItems
   const { dialog: searchDialog } = useDialog(dialogNames.SearchDialog)
 
-  const onMenuItemClick = (item: typeof menuItems[0]) => {
+  const onMenuItemClick = (item: typeof navItems[0]) => {
     if (item.href) {
       navigate(item.href)
     }
@@ -35,7 +36,12 @@ const Header:FC = () => {
         <div className='flex items-center justify-center w-full whitespace-nowrap'>
           <div className='flex space-x-3 w-full justify-center items-center'>
             {
-              menuItems.map(item => <ZButton variant={"primary_plain"} className="text-black text-base" key={item.href} onClick={() => onMenuItemClick(item)}>
+              navItems.map(item => <ZButton 
+                variant={"primary_plain"} 
+                className={classNames(["text-base", { "text-black": !item.active }])} 
+                key={item.href} 
+                onClick={() => onMenuItemClick(item)}
+              >
                 <item.RiIcon className='w-4 mr-2' />
                 {item.label}
               </ZButton>)
