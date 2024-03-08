@@ -1,11 +1,12 @@
 import { FC } from 'react'
-import rootStore from '@/store'
+import { useStore } from '@/store'
 import { observer } from 'mobx-react'
 import ZImage from '@/components/ZImage/ZImage'
 import UserInfo from './UserInfo'
 
 const Sider:FC = () => {
-  const menuItems = rootStore.layoutStore.nav.items
+  const { layoutStore } = useStore()
+  const menuItems = layoutStore.navItems
 
   return (
     <div className='flex flex-col pt-10 w-52 items-center justify-between bg-white shadow-sm'>

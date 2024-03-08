@@ -11,7 +11,7 @@ import Yup from "@/utils/yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import useLogin, { ILoginFormData } from "@/hooks/useLogin"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
-import rootStore from "@/store"
+import { useStore } from "@/store"
 import errorHandler from "@/utils/errorHandler"
 
 const yupSchema = Yup.object().shape({
@@ -25,6 +25,7 @@ const LoginDialog:FC = () => {
   const { dialog: activeDialog } = useDialog(dialogNames.ActiveDialog)
   const [ loginLoading, setLoginLoading ] = useState<boolean>(false)
   const { login } =  useLogin()
+  const { userStore } = useStore()
 
   const loginFormData:ILoginFormData = {
     email: "",
@@ -53,8 +54,8 @@ const LoginDialog:FC = () => {
       if (res.data.data.userInfo.status === 0) {
         activeDialog()?.show()
       } else {
-        rootStore.userStore.setUserInfo(res.data.data.userInfo)
-        rootStore.userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
+        userStore.setUserInfo(res.data.data.userInfo)
+        userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
       }
     } catch (error) {
       errorHandler.handle(error)

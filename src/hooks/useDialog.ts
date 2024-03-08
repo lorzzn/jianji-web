@@ -1,5 +1,5 @@
 import { ZModalRef } from "@/components/ZModal/ZModal"
-import rootStore from "@/store"
+import { useStore } from "@/store"
 import { useRef } from "react"
 
 export const dialogNames = {
@@ -12,7 +12,7 @@ export const dialogNames = {
 
 const useDialog = (dialogName: string) => {
   
-  const dialogStore = rootStore.dialogStore
+  const { dialogStore } = useStore()
   const ref = useRef<ZModalRef | null>(null)
 
   const register = (r: ZModalRef) => {

@@ -4,7 +4,8 @@ const eventBus = mitt()
 
 export const events = {
   beforeResetUserInfo: "beforeResetUserInfo",
-  afterUserLogout: "afterUserLogout" 
+  afterUserLogout: "afterUserLogout",
+  userAuthorizationExpired: "userAuthorizationExpired"
 }
 
 export default eventBus

@@ -1,5 +1,5 @@
 import ZLoading from "@/components/ZLoading/ZLoading";
-import rootStore from "@/store";
+import { useStore } from "@/store";
 import { isNull, some, values } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ const Active:FC = () => {
 
   const query = new URLSearchParams(window.location.search)
   const navigate = useNavigate()
+  const { userStore } = useStore()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -19,7 +20,7 @@ const Active:FC = () => {
 
   const activeAccount = async () => {
     try {
-      await rootStore.userStore.activeUser(params as any)
+      await userStore.activeUser(params as any)
       setSuccess(true)
       toast.success("账号激活成功")
     } catch (error) {

@@ -4,7 +4,6 @@ import { apiUser } from "@/api/user";
 import errorHandler from "@/utils/errorHandler";
 import eventBus, { events } from "@/utils/eventBus";
 import { code } from "@/utils/r/code";
-import ServiceError from "@/utils/serviceError";
 import { getStorage, removeStroage, setStorage } from "@/utils/storage";
 import { makeAutoObservable } from "mobx";
 
@@ -38,12 +37,20 @@ class UserStore {
     }).catch(() => {
       this.setLoading(false)
     })
+
+    eventBus.on(events.userAuthorizationExpired, this.resetAuthorization)
   }
 
   setLoading = (loading: boolean) => this.loading = loading
 
   setUserInfo = (data: IUserInfo) => {
     this.userInfo = data
+  }
+
+  resetAuthorization = () => {
+    this.removeToken()
+    this.resetUserInfo()
+    window.location.replace("/")
   }
 
   // 保存token
