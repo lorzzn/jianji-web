@@ -2,6 +2,8 @@ import classNames from "classnames"
 import { observer } from "mobx-react"
 import { ForwardRefRenderFunction, forwardRef, useImperativeHandle, useState } from "react"
 import { Modal, ModalProps } from "react-responsive-modal"
+import canUseDom from 'rc-util/lib/Dom/canUseDom';
+import useScrollLocker from "@/components/ZModal/hooks/useScrollLocker";
 
 export interface ZModalProps extends Omit<ModalProps, "open" | "onClose"> {
   title?: any
@@ -15,7 +17,7 @@ export interface ZModalRef {
   hide: Function
 }
 
-const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, title, titleAlignCenter, children, footer, ...restProps }, ref) => {
+const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, title, titleAlignCenter, children, footer, blockScroll = true, classNames: propClassNames, ...restProps }, ref) => {
   const [ open, setOpen ] = useState(false)
 
   const show = ():void => setOpen(true)
@@ -23,6 +25,8 @@ const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, titl
     setOpen(false)
     onClose?.()
   }
+
+  useScrollLocker(blockScroll && open && canUseDom())
 
   useImperativeHandle(ref, () => ({
     show,
@@ -34,8 +38,10 @@ const ZModal:ForwardRefRenderFunction<ZModalRef, ZModalProps> = ({ onClose, titl
     onClose={hide}
     center
     classNames={{
-      modal: classNames('min-w-96 min-h-52 rounded-lg')
+      modal: classNames('min-w-96 min-h-52 rounded-lg'),
+      ...propClassNames
     }}
+    blockScroll={false}
     {...restProps}
   >
     <div className="w-full h-full flex flex-col">
