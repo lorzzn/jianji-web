@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { RiAlignJustify, RiArchiveLine, RiHashtag, RiHomeLine, RiStarLine } from '@remixicon/react'
 import { Location } from "react-router-dom";
+import { concat, takeRight } from "lodash";
 
 export interface INavItem {
   href: string
@@ -15,6 +16,7 @@ class LayoutStore {
   focus: boolean | undefined
   layout: "large" | "medium" | "small"
   location: Location | undefined
+  clickTrace: Element[] = []
 
   constructor() {
     this.layout = "large"
@@ -48,6 +50,10 @@ class LayoutStore {
       item.active = location.pathname === item.href.split("?")[0]
       return item
     })
+  }
+
+  updateClickTrace = (elem: Element) => {
+    this.clickTrace = takeRight(concat(this.clickTrace, elem), 50)
   }
 
 }

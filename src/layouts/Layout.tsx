@@ -8,8 +8,11 @@ import { useLocation } from "react-router-dom"
 const Layout:FC = () => {
 
   const location = useLocation()
-  const updateLayoutState = rootStore.layoutStore.updateLayoutState
-  const updateLocationState = rootStore.layoutStore.updateLocationState
+  const {
+    updateLayoutState,
+    updateLocationState,
+    updateClickTrace
+  } = rootStore.layoutStore
 
   const onWindowStateChange = () => {
     const width = window.innerWidth
@@ -18,16 +21,24 @@ const Layout:FC = () => {
     updateLayoutState(width, height, focus)
   }
 
+  const onWindowClick = (e: Event) => {
+    const { target } = e
+    if (target instanceof Element) {
+      updateClickTrace(target)
+    }
+  }
+
   useEffect(() => {
     const listenEvents = [
-      "resize", 
-      "blur", 
-      "focus", 
+      { name: "resize", handler: onWindowStateChange }, 
+      { name: "blur", handler: onWindowStateChange }, 
+      { name: "focus", handler: onWindowStateChange }, 
+      { name: "click", handler: onWindowClick }
     ]
-    listenEvents.forEach(eventName => window.addEventListener(eventName, onWindowStateChange))
+    listenEvents.forEach(({ name, handler }) => window.addEventListener(name, handler))
     updateLocationState(location)
     return () => {
-      listenEvents.forEach(eventName => window.removeEventListener(eventName, onWindowStateChange))
+      listenEvents.forEach(({ name, handler }) => window.removeEventListener(name, handler))
     }
   }, [ location ])
 

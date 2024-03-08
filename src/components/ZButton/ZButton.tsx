@@ -4,11 +4,11 @@ import { FC } from "react"
 import { twMerge } from "tailwind-merge"
 import ZLoading from "../ZLoading/ZLoading"
 
-interface ZButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+interface ZButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof ZButtonVariants> {
   loading?: boolean
 }
 
-const buttonVariants = cva(
+export const ZButtonVariants = cva(
   classNames('inline-flex items-center justify-center disabled:opacity-50'),
   {
     variants: {
@@ -42,9 +42,9 @@ const ZButton:FC<ZButtonProps> = ({ className, variant, scale, shape, children, 
   return (
     <button
       className={twMerge(
-        classNames([buttonVariants({ variant, scale, shape, className }), { "cursor-not-allowed": loading || disabled }])
+        classNames([ZButtonVariants({ variant, scale, shape, className }), { "cursor-not-allowed": loading ?? disabled }])
       )}
-      disabled={loading || disabled}
+      disabled={loading ?? disabled}
       {...restProps}
     >
       {loading && <div className="mr-1">
