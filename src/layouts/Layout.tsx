@@ -2,17 +2,18 @@ import { FC, useEffect } from "react"
 import Content from "./components/Content"
 import Footer from "./components/Footer"
 import Header from "./components/Header"
-import rootStore from "@/store"
+import { useStore } from "@/store"
 import { useLocation } from "react-router-dom"
 
 const Layout:FC = () => {
 
   const location = useLocation()
+  const { layoutStore } = useStore()
   const {
     updateLayoutState,
     updateLocationState,
     updateClickTrace
-  } = rootStore.layoutStore
+  } = layoutStore
 
   const onWindowStateChange = () => {
     const width = window.innerWidth

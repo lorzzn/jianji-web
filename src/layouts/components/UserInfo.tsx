@@ -1,6 +1,6 @@
 import ZImage from "@/components/ZImage/ZImage"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
-import rootStore from "@/store"
+import { useStore } from "@/store"
 import { observer } from "mobx-react"
 import { FC } from "react"
 
@@ -8,7 +8,8 @@ const UserInfo:FC = () => {
 
   const { dialog } = useDialog(dialogNames.LoginDialog)
   const { dialog: userDialog } = useDialog(dialogNames.UserDialog)
-  const userInfo = rootStore.userStore.userInfo
+  const { userStore } = useStore()
+  const { userInfo } = userStore
 
   const onLoginClick = () => {
     dialog()?.show()

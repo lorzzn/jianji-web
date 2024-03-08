@@ -5,7 +5,7 @@ import classNames from "classnames";
 import SettingsPage from "../SettingsPage/SettingsPage";
 import { INavItem } from "../SettingsPage/NavItem";
 import ZImage from "../ZImage/ZImage";
-import rootStore from "@/store";
+import { useStore } from "@/store";
 import { observer } from "mobx-react";
 import { dateFormat } from "@/utils/dateFormat";
 import ZButton from "../ZButton/ZButton";
@@ -44,8 +44,9 @@ const UserInfoItem:FC<UserInfoItemProps> = ({ label, content, border }) => {
 
 const UserDialog:FC = () => {
 
+  const { userStore } = useStore()
   const { register: dialogRegister, dialog } = useDialog(dialogNames.UserDialog)
-  const userInfo = rootStore.userStore.userInfo
+  const userInfo = userStore.userInfo
   const [ isEdit, setIsEdit ] = useState<boolean>(false)
   const [ saveLoading, setSaveLoading ] = useState<boolean>(false)
 
@@ -86,7 +87,7 @@ const UserDialog:FC = () => {
     // 退出登录
     if (item.value === -1) {
       try {
-        await rootStore.userStore.logout()
+        await userStore.logout()
       } catch (error) {
         errorHandler.handle(error)
       }
@@ -104,7 +105,7 @@ const UserDialog:FC = () => {
   const submitNewUserInfo = async (formData: IEditUserInfo) => {
     setSaveLoading(true)
     try {
-      await rootStore.userStore.editProfile(formData)
+      await userStore.editProfile(formData)
       toast.success("保存成功")
     } catch (error) {
       errorHandler.handle(error)

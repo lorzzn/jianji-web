@@ -1,5 +1,5 @@
 import ZImage from "@/components/ZImage/ZImage"
-import rootStore from "@/store"
+import { useStore } from "@/store"
 import { observer } from "mobx-react"
 import { FC } from "react"
 import UserInfo from "./UserInfo"
@@ -20,8 +20,9 @@ const dropdownOptions: DropdownOption[] = [
 const Header:FC = () => {
 
   const navigate = useNavigate()
-  const userInfoLoading = rootStore.userStore.loading
-  const navItems = rootStore.layoutStore.navItems
+  const { userStore, layoutStore } = useStore()
+  const userInfoLoading = userStore.loading
+  const navItems = layoutStore.navItems
   const { dialog: searchDialog } = useDialog(dialogNames.SearchDialog)
 
   const onMenuItemClick = (item: typeof navItems[0]) => {

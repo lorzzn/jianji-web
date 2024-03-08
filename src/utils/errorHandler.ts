@@ -1,7 +1,7 @@
 import { toast } from "react-toastify"
 import ServiceError from "./serviceError"
 import { code } from "./r/code"
-import rootStore from "@/store"
+import eventBus, { events } from "./eventBus"
 
 interface IErrorItem {
   date: number
@@ -26,9 +26,7 @@ export class ErrorHandler {
       code.USER_REFRESHTOKEN_FAILED,
       code.JWT_AUTHORIZATION_INVALID
     ].includes(error.response.data.code)) {
-      rootStore.userStore.removeToken()
-      rootStore.userStore.resetUserInfo()
-      window.location.replace("/")
+      eventBus.emit(events.userAuthorizationExpired)
     }
     
     if (error instanceof ServiceError && error.message) {
