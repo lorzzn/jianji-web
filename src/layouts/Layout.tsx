@@ -3,10 +3,13 @@ import Content from "./components/Content"
 import Footer from "./components/Footer"
 import Header from "./components/Header"
 import rootStore from "@/store"
+import { useLocation } from "react-router-dom"
 
 const Layout:FC = () => {
 
+  const location = useLocation()
   const updateLayoutState = rootStore.layoutStore.updateLayoutState
+  const updateLocationState = rootStore.layoutStore.updateLocationState
 
   const onWindowStateChange = () => {
     const width = window.innerWidth
@@ -22,10 +25,11 @@ const Layout:FC = () => {
       "focus", 
     ]
     listenEvents.forEach(eventName => window.addEventListener(eventName, onWindowStateChange))
+    updateLocationState(location)
     return () => {
       listenEvents.forEach(eventName => window.removeEventListener(eventName, onWindowStateChange))
     }
-  }, [])
+  }, [ location ])
 
   return (
     <div className="flex flex-col bg-gray-100 min-w-fit min-h-screen">
