@@ -1,6 +1,7 @@
 import Active from "@/pages/Active"
 import Archives from "@/pages/Archives"
 import Categories from "@/pages/Categories"
+import Edit from "@/pages/Edit"
 import Favlist from "@/pages/Favlist"
 import Home from "@/pages/Home"
 import Search from "@/pages/Search"
@@ -20,6 +21,7 @@ const Content:FC = () => {
         <Route path="/categories" Component={Categories} />
         <Route path="/tags" Component={Tags} />
         <Route path="/search" Component={Search} />
+        <Route path="/edit" Component={Edit} />
       </Routes>
     </div>
   )

@@ -23,6 +23,7 @@ const Header:FC = () => {
   const userInfoLoading = userStore.loading
   const navItems = layoutStore.navItems
   const searchButtonActive = layoutStore.location?.pathname === "/search"
+  const addButtonActive = [ "/edit" ].includes(layoutStore.location?.pathname ?? "")
 
   const onMenuItemClick = (item: typeof navItems[0]) => {
     if (item.href) {
@@ -31,11 +32,17 @@ const Header:FC = () => {
   }
 
   const onSearchClick = () => {
-    navigate("/search")
+    if (!searchButtonActive) {
+      navigate("/search")
+    }
   }
 
   const onDropDownClick = (type: string, item?: DropdownOption) => {
-    console.log(type, item);
+    if (type === "option") {
+      if (item?.value === "0") {
+        navigate("/edit")
+      }
+    }
     
   }
 
@@ -66,18 +73,19 @@ const Header:FC = () => {
       {
         !userInfoLoading && <div className="flex items-center">
           <div className="mx-6 flex items-center flex-nowrap">
-            {
-              searchButtonActive ? <RiSearchLine className="text-blue-600 mx-3" size={"1.1rem"} /> : <ZButton variant={"primary_plain"} className="text-black hover:bg-blue-50 flex-col" onClick={onSearchClick}>
-                <RiSearchLine size={"1.1rem"} />
-              </ZButton>
-            }
+            <ZButton variant={"primary_plain"} className={classNames(["text-black hover:bg-blue-50 flex-col", { "text-blue-500": searchButtonActive }])} onClick={onSearchClick}>
+              <RiSearchLine size={"1.1rem"} />
+            </ZButton>
             <ZDropdown 
               options={dropdownOptions} 
               classNames={{ menuList: () => classNames(['min-w-20']) }} 
               onClick={onDropDownClick}
               target={
                 <div className={twMerge(
-                  ZButtonVariants({ variant: "primary_plain", className: "text-black hover:text-blue-600 hover:bg-blue-50 active:text-blue-700" })
+                  ZButtonVariants({ 
+                    variant: "primary_plain", 
+                    className: classNames(["text-black hover:text-blue-600 hover:bg-blue-50 active:text-blue-700", { "text-blue-500": addButtonActive }])
+                  })
                 )}>
                   <RiAddLine size={"1.1rem"} />
                   <RiArrowDownSFill size={"1.1rem"} />
