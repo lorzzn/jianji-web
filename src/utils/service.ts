@@ -4,12 +4,32 @@ import { encryptRSAWithAES } from './rsa'
 import { getStorage } from './storage'
 import { IApiCommonResp } from '@/api/types/response/common'
 import ServiceError from './serviceError'
+import { code } from './r/code'
 
 const baseURL = import.meta.env.VITE_APP_BASEURL
 
 const service = axios.create({
   baseURL,
 })
+
+const retryCheck = async (response: AxiosResponse<IApiCommonResp>): Promise<boolean> => {
+  if (response.data.code === code.TOKEN_AUTHORIZATION_INVALID) {
+    await rootStore.userStore.requestRefreshToken()
+    return true
+  }
+
+  return false
+}
+
+const retry = (response: AxiosResponse<IApiCommonResp>) => {
+  const delay = 2000
+
+  return new Promise<AxiosResponse>((resolve) => {
+    setTimeout(() => {
+      resolve(service(response.config))
+    }, delay)
+  })
+}
 
 // 请求拦截器
 service.interceptors.request.use(async (config) => {
@@ -42,13 +62,16 @@ service.interceptors.request.use(async (config) => {
   return config
 })
 
+service.interceptors.response.use(async (response: AxiosResponse<IApiCommonResp>) => {
 
-service.interceptors.response.use((response: AxiosResponse<IApiCommonResp>) => {
+  if (await retryCheck(response)) {
+    return retry(response)
+  }
 
   if (response.data.code !== 0) {
     return Promise.reject(new ServiceError(response))
   }
-  
+
   return Promise.resolve(response)
 })
 
