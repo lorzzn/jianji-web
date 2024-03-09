@@ -7,7 +7,6 @@ import HolaDialog from "./components/HolaDialog/HolaDialog";
 import UserDialog from "./components/UserDialog/UserDialog";
 import ZToastContainer from "./components/ZToastContainer/ZToastContainer";
 import ActiveDialog from "./components/ActiveDialog/ActiveDialog";
-import SearchDialog from "./components/SearchDialog/SearchDialog";
 import { BrowserRouter } from "react-router-dom";
 import { injectStores } from '@mobx-devtools/tools';
 
@@ -26,7 +25,6 @@ const App:FC = () => {
         <HolaDialog />
         <UserDialog />
         <ActiveDialog />
-        <SearchDialog />
         <ZToastContainer />
       </BrowserRouter>
     </StoreContext.Provider>
