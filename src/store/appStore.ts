@@ -1,14 +1,21 @@
 import { apiApp } from "@/api/app";
+import { ILocation } from "@/api/types/response/app";
 import errorHandler from "@/utils/errorHandler";
+import { getFingerprint } from "@/utils/fingerprint";
 import { makeAutoObservable } from "mobx";
 
 class AppStore {
 
   publicKey: string|null = null
-  serverTime: number = Date.now()
+  serverTime: number = 0
+  serverTimeLastUpdate: number = 0
+  sessionId: string = ""
+  location: ILocation = { country: "", city: "" }
+  fingerprint: string = ""
 
   constructor() {
     makeAutoObservable(this)
+    this.fingerprint = getFingerprint()
     this.getAppConfig()
   }
 
@@ -16,10 +23,17 @@ class AppStore {
   getAppConfig = async () => {
     try {
       const res = await apiApp.getAppConfig()
-      this.serverTime = res.data.data.time / 1e6
+      this.serverTime = res.data.data.time
+      this.serverTimeLastUpdate = Date.now()
+      this.location = res.data.data.location
+      this.sessionId = res.data.data.sessionId
     } catch (error) {
       errorHandler.handle(error)
     }
+  }
+
+  getCurrentServerTime = () => {
+    return this.serverTime + Date.now() - this.serverTimeLastUpdate
   }
 
   // 获取 RSA publicKey
