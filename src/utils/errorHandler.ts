@@ -22,22 +22,17 @@ export class ErrorHandler {
 
     console.warn({errorList: this.errorList})
 
-    if (error instanceof ServiceError && [
-      code.USER_REFRESHTOKEN_FAILED,
-      code.JWT_AUTHORIZATION_INVALID
-    ].includes(error.response.data.code)) {
-      eventBus.emit(events.userAuthorizationExpired)
-    }
-    
     if (error instanceof ServiceError && error.message) {
       toast.error(error.message)
-      
+
+      if (error.response.data.code === code.USER_REFRESHTOKEN_FAILED) {
+        eventBus.emit(events.userAuthorizationExpired)
+      }
+
     } else {
       console.error(error)
     }
   }
-
-
 }
 
 const errorHandler = new ErrorHandler()
