@@ -6,7 +6,6 @@ import UserInfo from "./UserInfo"
 import { RiAddLine, RiArrowDownSFill, RiSearchLine } from "@remixicon/react"
 import ZButton, { ZButtonVariants } from "@/components/ZButton/ZButton"
 import { useNavigate } from "react-router-dom"
-import useDialog, { dialogNames } from "@/hooks/useDialog"
 import classNames from "classnames"
 import ZDropdown, { DropdownOption } from "@/components/ZDropdown/ZDropdown"
 import { twMerge } from "tailwind-merge"
@@ -23,7 +22,7 @@ const Header:FC = () => {
   const { userStore, layoutStore } = useStore()
   const userInfoLoading = userStore.loading
   const navItems = layoutStore.navItems
-  const { dialog: searchDialog } = useDialog(dialogNames.SearchDialog)
+  const searchButtonActive = layoutStore.location?.pathname === "/search"
 
   const onMenuItemClick = (item: typeof navItems[0]) => {
     if (item.href) {
@@ -32,7 +31,7 @@ const Header:FC = () => {
   }
 
   const onSearchClick = () => {
-    searchDialog()?.show()
+    navigate("/search")
   }
 
   const onDropDownClick = (type: string, item?: DropdownOption) => {
@@ -67,9 +66,11 @@ const Header:FC = () => {
       {
         !userInfoLoading && <div className="flex items-center">
           <div className="mx-6 flex items-center flex-nowrap">
-            <ZButton variant={"primary_plain"} className="text-black hover:bg-blue-50 flex-col" onClick={onSearchClick}>
-              <RiSearchLine size={"1.1rem"} />
-            </ZButton>
+            {
+              searchButtonActive ? <RiSearchLine className="text-blue-600 mx-3" size={"1.1rem"} /> : <ZButton variant={"primary_plain"} className="text-black hover:bg-blue-50 flex-col" onClick={onSearchClick}>
+                <RiSearchLine size={"1.1rem"} />
+              </ZButton>
+            }
             <ZDropdown 
               options={dropdownOptions} 
               classNames={{ menuList: () => classNames(['min-w-20']) }} 
