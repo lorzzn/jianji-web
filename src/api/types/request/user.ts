@@ -2,6 +2,7 @@
 export interface ILoginReq {
   email: string
   password: string
+  fingerprint?: string
 }
 
 export interface IActiveReq {

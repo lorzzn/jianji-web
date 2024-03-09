@@ -25,7 +25,7 @@ const LoginDialog:FC = () => {
   const { dialog: activeDialog } = useDialog(dialogNames.ActiveDialog)
   const [ loginLoading, setLoginLoading ] = useState<boolean>(false)
   const { login } =  useLogin()
-  const { userStore } = useStore()
+  const { userStore, appStore } = useStore()
 
   const loginFormData:ILoginFormData = {
     email: "",
@@ -46,6 +46,7 @@ const LoginDialog:FC = () => {
   const onSubmit = async (formData: ILoginFormData) => {
     setLoginLoading(true)
     try {
+      formData.fingerprint = appStore.fingerprint
       const res = await login(formData)
       // 隐藏登录窗口
       loginDialog()?.hide()
