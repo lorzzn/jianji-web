@@ -1,3 +1,8 @@
+import { toast } from "react-toastify"
+import ServiceError from "./serviceError"
+import { code } from "./r/code"
+import eventBus, { events } from "./eventBus"
+
 interface IErrorItem {
   date: number
   error: any
@@ -14,11 +19,20 @@ export class ErrorHandler {
       date: Date.now(),
       error
     })
-    console.log(error)
+
+    console.warn({errorList: this.errorList})
+
+    if (error instanceof ServiceError && error.message) {
+      toast.error(error.message)
+
+      if (error.response.data.code === code.USER_REFRESHTOKEN_FAILED) {
+        eventBus.emit(events.userAuthorizationExpired)
+      }
+
+    } else {
+      console.error(error)
+    }
   }
-
-
-
 }
 
 const errorHandler = new ErrorHandler()

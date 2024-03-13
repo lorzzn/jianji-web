@@ -1,7 +1,6 @@
-import { FC, useRef, useState } from "react"
-import ZModal, { ZModalRef } from "../ZModal/ZModal"
+import { FC, useState } from "react"
+import ZModal from "../ZModal/ZModal"
 import { observer } from "mobx-react"
-import rootStore from "@/store"
 import ZForm from "../ZForm/ZForm"
 import classNames from "classnames"
 import ZInput from "../ZInput/ZInput"
@@ -11,6 +10,9 @@ import ZCheckBox from "../ZCheckBox/ZCheckBox"
 import Yup from "@/utils/yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import useLogin, { ILoginFormData } from "@/hooks/useLogin"
+import useDialog, { dialogNames } from "@/hooks/useDialog"
+import { useStore } from "@/store"
+import errorHandler from "@/utils/errorHandler"
 
 const yupSchema = Yup.object().shape({
   email: Yup.string().email('请您输入格式正确的邮箱地址').required('请您输入邮箱'),
@@ -18,16 +20,12 @@ const yupSchema = Yup.object().shape({
 })
 
 const LoginDialog:FC = () => {
-  const ref = useRef<ZModalRef | null>(null)
   const [ agreed, setAgreed] = useState<boolean | undefined>(false)
-  const dialogStore = rootStore.dialogStore
-
+  const { register: dialogRegister, dialog: loginDialog } = useDialog(dialogNames.LoginDialog)
+  const { dialog: activeDialog } = useDialog(dialogNames.ActiveDialog)
+  const [ loginLoading, setLoginLoading ] = useState<boolean>(false)
   const { login } =  useLogin()
-
-  const setRef = (r:ZModalRef) => {
-    ref.current = r
-    dialogStore.register("LoginDialog", ref)
-  }
+  const { userStore, appStore } = useStore()
 
   const loginFormData:ILoginFormData = {
     email: "",
@@ -45,12 +43,29 @@ const LoginDialog:FC = () => {
     setAgreed(checked)
   }
 
-  const onSubmit = (formData: ILoginFormData) => {
-    login(formData)
+  const onSubmit = async (formData: ILoginFormData) => {
+    setLoginLoading(true)
+    try {
+      formData.fingerprint = appStore.fingerprint
+      const res = await login(formData)
+      // 隐藏登录窗口
+      loginDialog()?.hide()
+
+      // 如果是新注册的用户，弹出激活邮箱提示
+      if (res.data.data.userInfo.status === 0) {
+        activeDialog()?.show()
+      } else {
+        userStore.setUserInfo(res.data.data.userInfo)
+        userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
+      }
+    } catch (error) {
+      errorHandler.handle(error)
+    }
+    setLoginLoading(false)
   }
 
   return <ZModal
-    ref={setRef}
+    ref={dialogRegister}
     title="登录/注册"
     classNames={{
       modal: classNames(['rounded-lg', ])
@@ -79,7 +94,7 @@ const LoginDialog:FC = () => {
         </div>
 
         <div className="flex flex-col items-center mt-14">
-          <ZButton disabled={!agreed} className="w-full" scale="large" >登录/注册</ZButton>
+          <ZButton disabled={!agreed} className="w-full" scale="large" loading={loginLoading}>登录/注册</ZButton>
           <span className="text-xs text-gray-900 mt-2">未注册的邮箱，我们将帮助您注册账号</span>
         </div>
       </ZForm>
