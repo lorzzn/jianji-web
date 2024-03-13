@@ -47,7 +47,7 @@ const Header:FC = () => {
   }
 
   return (
-    <header className="h-14 flex items-center justify-between border-b shadow-sm px-8 sticky top-0 bg-white">
+    <header className="h-14 flex items-center justify-between border-b shadow-sm px-8 sticky top-0 bg-white z-[500]">
       <div className='flex items-center'>
         <a href="/" className='flex justify-center w-24 mr-8'>
           <ZImage className='w-full h-full' src="!/logo.png" />
