@@ -1,17 +1,19 @@
 import service from "@/utils/service"
-import { IGetAppInfoResp, IGetPublicKeyResp } from "./typings/response/app"
-import pkService from "@/utils/pkService"
-
+import { IGetAppConfigResp, IGetPublicKeyResp } from "./types/response/app"
+import pureService from "@/utils/pureService"
 
 export const apiApp = {
-  fetchPublicKey() {
-    return pkService<IGetPublicKeyResp>({
-      url: "/api/common/app/public-key"
+  getPublicKey() {
+    return pureService<IGetPublicKeyResp>({
+      url: "/api/common/app/public-key",
+      withCredentials: false,
     })
   },
-  fetchAppInfo() {
-    return service<IGetAppInfoResp>({
-      url: "/api/common/app/info"
+  getAppConfig() {
+    return service<IGetAppConfigResp>({
+      url: "/api/common/app/config",
+      withCredentials: true,
+      withToken: false
     })
   }
 }

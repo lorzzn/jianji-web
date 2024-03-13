@@ -1,5 +1,5 @@
 export interface IApiCommonResp {
   code: number
-  message: string
+  message: string | null
   data: any
 }
