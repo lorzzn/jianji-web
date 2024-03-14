@@ -19,7 +19,7 @@ const yupSchema = Yup.object().shape({
   password: Yup.string().required("请您输入密码"),
 })
 
-const LoginDialog: FC = () => {
+const LoginDialog: FC = observer(() => {
   const [agreed, setAgreed] = useState<boolean | undefined>(false)
   const { register: dialogRegister, dialog: loginDialog } = useDialog(dialogNames.LoginDialog)
   const { dialog: activeDialog } = useDialog(dialogNames.ActiveDialog)
@@ -121,6 +121,6 @@ const LoginDialog: FC = () => {
       </div>
     </ZModal>
   )
-}
+})
 
-export default observer(LoginDialog)
+export default LoginDialog
