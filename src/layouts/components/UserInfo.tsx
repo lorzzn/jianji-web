@@ -4,7 +4,7 @@ import { useStore } from "@/store"
 import { observer } from "mobx-react"
 import { FC } from "react"
 
-const UserInfo: FC = () => {
+const UserInfo: FC = observer(() => {
   const { dialog } = useDialog(dialogNames.LoginDialog)
   const { dialog: userDialog } = useDialog(dialogNames.UserDialog)
   const { userStore } = useStore()
@@ -34,6 +34,6 @@ const UserInfo: FC = () => {
       )}
     </div>
   )
-}
+})
 
-export default observer(UserInfo)
+export default UserInfo

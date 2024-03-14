@@ -48,7 +48,7 @@ const UserInfoItem: FC<UserInfoItemProps> = ({ label, content, border }) => {
   )
 }
 
-const UserDialog: FC = () => {
+const UserDialog: FC = observer(() => {
   const { userStore } = useStore()
   const { register: dialogRegister, dialog } = useDialog(dialogNames.UserDialog)
   const userInfo = userStore.userInfo
@@ -216,6 +216,6 @@ const UserDialog: FC = () => {
       />
     </ZModal>
   )
-}
+})
 
-export default observer(UserDialog)
+export default UserDialog

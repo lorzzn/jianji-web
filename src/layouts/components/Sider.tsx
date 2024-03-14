@@ -4,7 +4,7 @@ import { observer } from "mobx-react"
 import { FC } from "react"
 import UserInfo from "./UserInfo"
 
-const Sider: FC = () => {
+const Sider: FC = observer(() => {
   const { layoutStore } = useStore()
   const menuItems = layoutStore.navItems
 
@@ -34,6 +34,6 @@ const Sider: FC = () => {
       <UserInfo />
     </div>
   )
-}
+})
 
-export default observer(Sider)
+export default Sider

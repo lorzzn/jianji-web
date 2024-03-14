@@ -16,7 +16,7 @@ const dropdownOptions: DropdownOption[] = [
   { label: "标签", value: "2" },
 ]
 
-const Header: FC = () => {
+const Header: FC = observer(() => {
   const navigate = useNavigate()
   const { userStore, layoutStore } = useStore()
   const userInfoLoading = userStore.loading
@@ -106,6 +106,6 @@ const Header: FC = () => {
       )}
     </header>
   )
-}
+})
 
-export default observer(Header)
+export default Header

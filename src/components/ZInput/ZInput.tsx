@@ -1,6 +1,6 @@
 import { VariantProps, cva } from "class-variance-authority"
 import classNames from "classnames"
-import { ForwardRefRenderFunction, forwardRef } from "react"
+import { forwardRef } from "react"
 import { twMerge } from "tailwind-merge"
 
 interface ZInputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariant> {}
@@ -32,10 +32,7 @@ const inputVariant = cva(
   },
 )
 
-const ZInput: ForwardRefRenderFunction<HTMLInputElement, ZInputProps> = (
-  { className, variant, scale, shape, ...restProps },
-  ref,
-) => {
+const ZInput = forwardRef<HTMLInputElement, ZInputProps>(({ className, variant, scale, shape, ...restProps }, ref) => {
   return (
     <input
       ref={ref}
@@ -43,6 +40,6 @@ const ZInput: ForwardRefRenderFunction<HTMLInputElement, ZInputProps> = (
       {...restProps}
     />
   )
-}
+})
 
-export default forwardRef(ZInput)
+export default ZInput
