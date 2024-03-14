@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, ImageElementType } from "../custom-types"
 
-const ImageElement = (props: RenderElementProps) => {
-  if (props.element.type !== "image") return
+const ImageElement = (props: CustomElementProps<ImageElementType>) => {
+  if (props.element.type !== "image") return <></>
 
   return (
     <div {...props.attributes} className="group relative flex max-w-lg flex-col">

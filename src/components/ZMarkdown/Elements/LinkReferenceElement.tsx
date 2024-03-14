@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, LinkReferenceElementType } from "../custom-types"
 
-const LinkReferenceElement = (props: RenderElementProps) => {
-  return <div></div>
+const LinkReferenceElement = (props: CustomElementProps<LinkReferenceElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default LinkReferenceElement

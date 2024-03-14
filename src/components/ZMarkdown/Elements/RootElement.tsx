@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, RootElementType } from "../custom-types"
 
-const RootElement = (props: RenderElementProps) => {
-  return <div></div>
+const RootElement = (props: CustomElementProps<RootElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default RootElement

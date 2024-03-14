@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, FootnoteReferenceElementType } from "../custom-types"
 
-const FootnoteReferenceElement = (props: RenderElementProps) => {
-  return <div></div>
+const FootnoteReferenceElement = (props: CustomElementProps<FootnoteReferenceElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default FootnoteReferenceElement

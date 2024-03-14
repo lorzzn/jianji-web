@@ -1,9 +1,9 @@
-import { RenderElementProps } from "slate-react"
+import { CodeElementType, CustomElementProps } from "../custom-types"
 
-const CodeElement = (props: RenderElementProps) => {
+const CodeElement = (props: CustomElementProps<CodeElementType>) => {
   return (
-    <pre className="rounded bg-gray-100 p-8 font-mono text-sm text-gray-800">
-      <code {...props.attributes}>{props.children}</code>
+    <pre {...props.attributes} className="rounded bg-gray-100 p-8 font-mono text-sm text-gray-800">
+      <code>{props.children}</code>
     </pre>
   )
 }

@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, HtmlElementType } from "../custom-types"
 
-const HtmlElement = (props: RenderElementProps) => {
-  return <div></div>
+const HtmlElement = (props: CustomElementProps<HtmlElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default HtmlElement

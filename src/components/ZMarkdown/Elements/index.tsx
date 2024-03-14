@@ -1,11 +1,39 @@
-import { CustomElement, CustomElementStrings } from "@/components/ZMarkdown/custom-types"
-import { Editor, Transforms } from "slate"
-import { DefaultElement, RenderElementProps } from "slate-react"
+import {
+  BlockquoteElementType,
+  BreakElementType,
+  CodeElementType,
+  CustomElementProps,
+  DefinitionElementType,
+  DeleteElementType,
+  EmphasisElementType,
+  FootnoteDefinitionElementType,
+  FootnoteReferenceElementType,
+  HeadingElementType,
+  HtmlElementType,
+  ImageElementType,
+  ImageReferenceElementType,
+  InlineCodeElementType,
+  LinkElementType,
+  LinkReferenceElementType,
+  ListElementType,
+  ListItemElementType,
+  MathElementType,
+  ParagraphElementType,
+  RootElementType,
+  StrongElementType,
+  TableCellElementType,
+  TableElementType,
+  TableRowElementType,
+  TextElementType,
+  ThematicBreakElementType,
+  YamlElementType,
+} from "@/components/ZMarkdown/custom-types"
+import { RenderElementProps } from "slate-react"
+import BlockQuoteElement from "./BlockQuoteElement"
 import BreakElement from "./BreakElement"
 import CodeElement from "./CodeElement"
 import DefinitionElement from "./DefinitionElement"
 import DeleteElement from "./DeleteElement"
-import DividerElement from "./DividerElement"
 import EmphasisElement from "./EmphasisElement"
 import FootnoteDefinitionElement from "./FootnoteDefinitionElement"
 import FootnoteReferenceElement from "./FootnoteReferenceElement"
@@ -17,128 +45,108 @@ import InlineCodeElement from "./InlineCodeElement"
 import LinkElement from "./LinkElement"
 import LinkReferenceElement from "./LinkReferenceElement"
 import ListElement from "./ListElement"
+import ListItemElement from "./ListItemElement"
 import MathElement from "./MathElement"
-import QuoteElement from "./QuoteElement"
+import ParagraphElement from "./ParagraphElement"
 import RootElement from "./RootElement"
 import StrongElement from "./StrongElement"
 import TableCellElement from "./TableCellElement"
 import TableElement from "./TableElement"
 import TableRowElement from "./TableRowElement"
 import TextElement from "./TextElement"
-import TodoElement from "./TodoElement"
+import ThematicBreakElement from "./ThematicBreakElement"
 import YamlElement from "./YamlElement"
 
-type ElementMetadata = {
-  key?: [string, string | Record<string, Partial<CustomElement>>]
-  symbol?: string | JSX.Element
-  afterClick?: (editor: Editor) => void
-  component: (x: RenderElementProps) => JSX.Element | undefined
-}
+const Elements = (rprops: RenderElementProps) => {
+  const ElementRenderer = (props: RenderElementProps) => {
+    switch (props.element.type) {
+      case "paragraph":
+        return <ParagraphElement {...(props as CustomElementProps<ParagraphElementType>)} />
 
-type ElementMap = Record<CustomElementStrings, ElementMetadata>
+      case "heading":
+        return <HeadingElement {...(props as CustomElementProps<HeadingElementType>)} />
 
-const Elements: ElementMap = {
-  paragraph: {
-    component: DefaultElement,
-  },
-  heading: {
-    key: [
-      "ctrl",
-      {
-        "1": { depth: 1 },
-        "2": { depth: 2 },
-        "3": { depth: 3 },
-        "4": { depth: 4 },
-        "5": { depth: 5 },
-        "6": { depth: 6 },
-      },
-    ],
-    symbol: "H",
-    component: HeadingElement,
-  },
-  code: {
-    key: ["ctrl", "/"],
-    component: CodeElement,
-  },
-  blockquote: {
-    key: ["ctrl", "q"],
-    component: QuoteElement,
-  },
-  thematicBreak: {
-    key: ["ctrl", "d"],
-    afterClick: (editor: Editor) => {
-      if (!editor.selection) return
-      const currentSelection = Editor.unhangRange(editor, editor.selection)
-      Transforms.select(editor, { path: [currentSelection.anchor.path[0] + 1, 0], offset: 0 })
-    },
-    component: DividerElement,
-  },
-  listItem: {
-    component: TodoElement,
-  },
-  image: {
-    component: ImageElement,
-  },
-  break: {
-    component: BreakElement,
-  },
-  definition: {
-    component: DefinitionElement,
-  },
-  delete: {
-    component: DeleteElement,
-  },
-  emphasis: {
-    component: EmphasisElement,
-  },
-  footnoteDefinition: {
-    component: FootnoteDefinitionElement,
-  },
-  footnoteReference: {
-    component: FootnoteReferenceElement,
-  },
-  html: {
-    component: HtmlElement,
-  },
-  imageReference: {
-    component: ImageReferenceElement,
-  },
-  inlineCode: {
-    component: InlineCodeElement,
-  },
-  link: {
-    component: LinkElement,
-  },
-  linkReference: {
-    component: LinkReferenceElement,
-  },
-  list: {
-    component: ListElement,
-  },
-  root: {
-    component: RootElement,
-  },
-  strong: {
-    component: StrongElement,
-  },
-  table: {
-    component: TableElement,
-  },
-  tableRow: {
-    component: TableRowElement,
-  },
-  tableCell: {
-    component: TableCellElement,
-  },
-  text: {
-    component: TextElement,
-  },
-  yaml: {
-    component: YamlElement,
-  },
-  math: {
-    component: MathElement,
-  },
+      case "code":
+        return <CodeElement {...(props as CustomElementProps<CodeElementType>)} />
+
+      case "blockquote":
+        return <BlockQuoteElement {...(props as CustomElementProps<BlockquoteElementType>)} />
+
+      case "thematicBreak":
+        return <ThematicBreakElement {...(props as CustomElementProps<ThematicBreakElementType>)} />
+
+      case "listItem":
+        return <ListItemElement {...(props as CustomElementProps<ListItemElementType>)} />
+
+      case "image":
+        return <ImageElement {...(props as CustomElementProps<ImageElementType>)} />
+
+      case "break":
+        return <BreakElement {...(props as CustomElementProps<BreakElementType>)} />
+
+      case "definition":
+        return <DefinitionElement {...(props as CustomElementProps<DefinitionElementType>)} />
+
+      case "delete":
+        return <DeleteElement {...(props as CustomElementProps<DeleteElementType>)} />
+
+      case "emphasis":
+        return <EmphasisElement {...(props as CustomElementProps<EmphasisElementType>)} />
+
+      case "footnoteDefinition":
+        return <FootnoteDefinitionElement {...(props as CustomElementProps<FootnoteDefinitionElementType>)} />
+
+      case "footnoteReference":
+        return <FootnoteReferenceElement {...(props as CustomElementProps<FootnoteReferenceElementType>)} />
+
+      case "html":
+        return <HtmlElement {...(props as CustomElementProps<HtmlElementType>)} />
+
+      case "imageReference":
+        return <ImageReferenceElement {...(props as CustomElementProps<ImageReferenceElementType>)} />
+
+      case "inlineCode":
+        return <InlineCodeElement {...(props as CustomElementProps<InlineCodeElementType>)} />
+
+      case "link":
+        return <LinkElement {...(props as CustomElementProps<LinkElementType>)} />
+
+      case "linkReference":
+        return <LinkReferenceElement {...(props as CustomElementProps<LinkReferenceElementType>)} />
+
+      case "list":
+        return <ListElement {...(props as CustomElementProps<ListElementType>)} />
+
+      case "root":
+        return <RootElement {...(props as CustomElementProps<RootElementType>)} />
+
+      case "strong":
+        return <StrongElement {...(props as CustomElementProps<StrongElementType>)} />
+
+      case "table":
+        return <TableElement {...(props as CustomElementProps<TableElementType>)} />
+
+      case "tableRow":
+        return <TableRowElement {...(props as CustomElementProps<TableRowElementType>)} />
+
+      case "tableCell":
+        return <TableCellElement {...(props as CustomElementProps<TableCellElementType>)} />
+
+      case "text":
+        return <TextElement {...(props as CustomElementProps<TextElementType>)} />
+
+      case "yaml":
+        return <YamlElement {...(props as CustomElementProps<YamlElementType>)} />
+
+      case "math":
+        return <MathElement {...(props as CustomElementProps<MathElementType>)} />
+
+      default:
+        return <></>
+    }
+  }
+
+  return <ElementRenderer {...rprops} />
 }
 
 export default Elements

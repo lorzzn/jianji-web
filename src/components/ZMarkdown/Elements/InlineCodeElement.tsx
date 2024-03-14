@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, InlineCodeElementType } from "../custom-types"
 
-const InlineCodeElement = (props: RenderElementProps) => {
-  return <div></div>
+const InlineCodeElement = (props: CustomElementProps<InlineCodeElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default InlineCodeElement

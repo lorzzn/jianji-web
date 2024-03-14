@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { BreakElementType, CustomElementProps } from "../custom-types"
 
-const BreakElement = (props: RenderElementProps) => {
-  return <div></div>
+const BreakElement = (props: CustomElementProps<BreakElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default BreakElement
