@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, MathElementType } from "../custom-types"
 
-const MathElement = (props: RenderElementProps) => {
-  return <div></div>
+const MathElement = (props: CustomElementProps<MathElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default MathElement

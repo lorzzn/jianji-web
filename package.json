@@ -28,6 +28,7 @@
     "framer-motion": "^11.0.6",
     "jsencrypt": "^3.3.2",
     "lodash": "^4.17.21",
+    "mdast-util-to-markdown": "^2.1.0",
     "micromark": "^4.0.0",
     "micromark-extension-frontmatter": "^2.0.0",
     "micromark-extension-gfm": "^3.0.0",

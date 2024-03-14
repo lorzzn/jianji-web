@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, EmphasisElementType } from "../custom-types"
 
-const EmphasisElement = (props: RenderElementProps) => {
-  return <div></div>
+const EmphasisElement = (props: CustomElementProps<EmphasisElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default EmphasisElement

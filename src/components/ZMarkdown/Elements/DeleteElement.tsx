@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, DeleteElementType } from "../custom-types"
 
-const DeleteElement = (props: RenderElementProps) => {
-  return <div></div>
+const DeleteElement = (props: CustomElementProps<DeleteElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default DeleteElement

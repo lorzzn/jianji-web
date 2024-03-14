@@ -1,7 +1,11 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, YamlElementType } from "../custom-types"
 
-const YamlElement = (props: RenderElementProps) => {
-  return <div></div>
+const YamlElement = (props: CustomElementProps<YamlElementType>) => {
+  return (
+    <pre {...props.attributes}>
+      <code className="language-yaml">{props.children}</code>
+    </pre>
+  )
 }
 
 export default YamlElement

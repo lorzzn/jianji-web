@@ -1,6 +1,6 @@
 import { RenderElementProps } from "slate-react"
 
-const DividerElement = (props: RenderElementProps) => {
+const ThematicBreakElement = (props: RenderElementProps) => {
   return (
     <div {...props.attributes} className="flex items-center" contentEditable={false}>
       <span className="hidden select-none">{props.children}</span>
@@ -9,4 +9,4 @@ const DividerElement = (props: RenderElementProps) => {
   )
 }
 
-export default DividerElement
+export default ThematicBreakElement

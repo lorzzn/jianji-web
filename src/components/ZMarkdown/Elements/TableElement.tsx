@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, TableElementType } from "../custom-types"
 
-const TableElement = (props: RenderElementProps) => {
-  return <div></div>
+const TableElement = (props: CustomElementProps<TableElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default TableElement

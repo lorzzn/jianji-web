@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, StrongElementType } from "../custom-types"
 
-const StrongElement = (props: RenderElementProps) => {
-  return <div></div>
+const StrongElement = (props: CustomElementProps<StrongElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default StrongElement

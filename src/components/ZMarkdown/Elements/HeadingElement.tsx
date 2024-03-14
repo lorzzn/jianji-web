@@ -1,11 +1,9 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, HeadingElementType } from "../custom-types"
 
-const HeadingElement = (props: RenderElementProps) => {
-  if (props.element.type !== "heading") return
-
+const HeadingElement = (props: CustomElementProps<HeadingElementType>) => {
   const CustomTag = `h${props.element.depth}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
 
-  return <CustomTag>{props.children}</CustomTag>
+  return <CustomTag {...props.attributes}>{props.children}</CustomTag>
 }
 
 export default HeadingElement

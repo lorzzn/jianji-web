@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, ImageReferenceElementType } from "../custom-types"
 
-const ImageReferenceElement = (props: RenderElementProps) => {
-  return <div></div>
+const ImageReferenceElement = (props: CustomElementProps<ImageReferenceElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default ImageReferenceElement

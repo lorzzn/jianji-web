@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, DefinitionElementType } from "../custom-types"
 
-const DefinitionElement = (props: RenderElementProps) => {
-  return <div></div>
+const DefinitionElement = (props: CustomElementProps<DefinitionElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default DefinitionElement

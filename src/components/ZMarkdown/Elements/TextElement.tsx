@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react"
+import { CustomElementProps, TextElementType } from "../custom-types"
 
-const TextElement = (props: RenderElementProps) => {
-  return <div></div>
+const TextElement = (props: CustomElementProps<TextElementType>) => {
+  return <div {...props.attributes}>{props.children}</div>
 }
 
 export default TextElement
