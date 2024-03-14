@@ -1,11 +1,7 @@
-import { FC } from "react";
+import { FC } from "react"
 
-
-const Search:FC = () => {
-
-  return <div>
-    搜索
-  </div>
+const Search: FC = () => {
+  return <div>搜索</div>
 }
 
 export default Search

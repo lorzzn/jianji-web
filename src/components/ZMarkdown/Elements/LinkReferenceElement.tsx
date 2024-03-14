@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react";
+import { RenderElementProps } from "slate-react"
 
 const LinkReferenceElement = (props: RenderElementProps) => {
-  return <div></div>;
-};
+  return <div></div>
+}
 
-export default LinkReferenceElement;
+export default LinkReferenceElement

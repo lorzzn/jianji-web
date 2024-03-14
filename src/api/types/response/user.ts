@@ -1,21 +1,21 @@
-import { IApiCommonResp } from "./common";
+import { IApiCommonResp } from "./common"
 
 export interface IUserInfo {
-  id: number;
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  avatar: string;
-  email: string;
+  id: number
+  uuid: string
+  createdAt: string
+  updatedAt: string
+  name: string
+  avatar: string
+  email: string
   status: number
 }
 
 export interface ILoginResp extends IApiCommonResp {
   data: {
-    userInfo: IUserInfo;
-    token: string;
-    refreshToken: string;
+    userInfo: IUserInfo
+    token: string
+    refreshToken: string
   }
 }
 

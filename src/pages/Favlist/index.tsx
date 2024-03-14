@@ -1,11 +1,7 @@
-import { FC } from "react";
+import { FC } from "react"
 
-
-const Favlist:FC = () => {
-
-  return <div>
-    Favlist
-  </div>
+const Favlist: FC = () => {
+  return <div>Favlist</div>
 }
 
 export default Favlist

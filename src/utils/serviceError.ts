@@ -6,10 +6,9 @@ class ServiceError extends Error {
 
   constructor(e: AxiosResponse<IApiCommonResp, any>) {
     super(e.data.message ?? undefined)
-    this.name = 'ServiceError'
+    this.name = "ServiceError"
     this.response = e
   }
-
 }
 
 export default ServiceError

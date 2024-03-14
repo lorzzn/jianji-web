@@ -1,7 +1,7 @@
-import { makeAutoObservable } from "mobx";
-import { RiAlignJustify, RiArchiveLine, RiHashtag, RiHomeLine, RiStarLine } from '@remixicon/react'
-import { Location } from "react-router-dom";
-import { concat, takeRight } from "lodash";
+import { RiAlignJustify, RiArchiveLine, RiHashtag, RiHomeLine, RiStarLine } from "@remixicon/react"
+import { concat, takeRight } from "lodash"
+import { makeAutoObservable } from "mobx"
+import { Location } from "react-router-dom"
 
 export interface INavItem {
   href: string
@@ -46,7 +46,7 @@ class LayoutStore {
 
   updateLocationState = (location: Location) => {
     this.location = location
-    this.navItems = this.navItems.map(item => {
+    this.navItems = this.navItems.map((item) => {
       item.active = location.pathname === item.href.split("?")[0]
       return item
     })
@@ -55,7 +55,6 @@ class LayoutStore {
   updateClickTrace = (elem: Element) => {
     this.clickTrace = takeRight(concat(this.clickTrace, elem), 50)
   }
-
 }
 
 export default LayoutStore

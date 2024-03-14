@@ -1,7 +1,6 @@
-import { RenderElementProps } from "slate-react";
+import { RenderElementProps } from "slate-react"
 
 const EmphasisElement = (props: RenderElementProps) => {
-
   return <div></div>
 }
 

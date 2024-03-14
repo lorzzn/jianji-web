@@ -9,8 +9,7 @@ import Tags from "@/pages/Tags"
 import { FC } from "react"
 import { Route, Routes } from "react-router-dom"
 
-const Content:FC = () => {
-
+const Content: FC = () => {
   return (
     <div className="flex flex-col flex-1 w-full">
       <Routes>

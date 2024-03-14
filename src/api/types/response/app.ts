@@ -1,4 +1,4 @@
-import { IApiCommonResp } from "./common";
+import { IApiCommonResp } from "./common"
 
 export interface IGetPublicKeyResp extends IApiCommonResp {
   data: {

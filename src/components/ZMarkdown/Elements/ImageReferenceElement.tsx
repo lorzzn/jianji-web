@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react";
+import { RenderElementProps } from "slate-react"
 
 const ImageReferenceElement = (props: RenderElementProps) => {
-  return <div></div>;
-};
+  return <div></div>
+}
 
-export default ImageReferenceElement;
+export default ImageReferenceElement
