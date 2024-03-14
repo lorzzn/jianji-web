@@ -7,7 +7,6 @@ export interface ILoginFormData {
 }
 
 const useLogin = () => {
-
   const login = (formData: ILoginFormData) => apiUser.login(formData)
 
   return {

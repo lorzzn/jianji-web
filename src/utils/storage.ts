@@ -1,5 +1,3 @@
-
-
 export const setStorage = (key: string, value: any) => {
   try {
     return localStorage.setItem(key, JSON.stringify(value))
@@ -17,7 +15,7 @@ export const getStorage = (key: string) => {
   }
 }
 
-export const removeStroage = (key:string) => {
+export const removeStroage = (key: string) => {
   return localStorage.removeItem(key)
 }
 

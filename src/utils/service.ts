@@ -1,10 +1,10 @@
-import rootStore from '@/store'
-import axios, { AxiosResponse } from 'axios'
-import { encryptRSAWithAES } from './rsa'
-import { getStorage } from './storage'
-import { IApiCommonResp } from '@/api/types/response/common'
-import ServiceError from './serviceError'
-import { code } from './r/code'
+import { IApiCommonResp } from "@/api/types/response/common"
+import rootStore from "@/store"
+import axios, { AxiosResponse } from "axios"
+import { code } from "./r/code"
+import { encryptRSAWithAES } from "./rsa"
+import ServiceError from "./serviceError"
+import { getStorage } from "./storage"
 
 const baseURL = import.meta.env.VITE_APP_BASEURL
 
@@ -37,10 +37,10 @@ service.interceptors.request.use(async (config) => {
   // 携带cookie
   config.withCredentials = config.withCredentials ?? true
   // 携带token
-  config.withToken = config.withToken ?? true 
+  config.withToken = config.withToken ?? true
 
   if (config.encrypt) {
-     // 标识请求为加密请求
+    // 标识请求为加密请求
     config.headers.Encrypted = true
 
     // 获取rsa publicKey， 对请求参数进行加密
@@ -48,7 +48,7 @@ service.interceptors.request.use(async (config) => {
 
     // 没有 publicKey 返回错误
     if (!publicKey) {
-      return Promise.reject(new axios.Cancel('公钥获取失败'));
+      return Promise.reject(new axios.Cancel("公钥获取失败"))
     }
 
     config.data = encryptRSAWithAES(config.data, publicKey)
@@ -63,7 +63,6 @@ service.interceptors.request.use(async (config) => {
 })
 
 service.interceptors.response.use(async (response: AxiosResponse<IApiCommonResp>) => {
-
   if (await retryCheck(response)) {
     return retry(response)
   }

@@ -1,11 +1,7 @@
-import { FC } from "react";
+import { FC } from "react"
 
-
-const Archives:FC = () => {
-
-  return <div>
-    Archives
-  </div>
+const Archives: FC = () => {
+  return <div>Archives</div>
 }
 
 export default Archives

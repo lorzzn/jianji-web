@@ -1,12 +1,11 @@
-import { apiApp } from "@/api/app";
-import { ILocation } from "@/api/types/response/app";
-import errorHandler from "@/utils/errorHandler";
-import { getFingerprint } from "@/utils/fingerprint";
-import { makeAutoObservable } from "mobx";
+import { apiApp } from "@/api/app"
+import { ILocation } from "@/api/types/response/app"
+import errorHandler from "@/utils/errorHandler"
+import { getFingerprint } from "@/utils/fingerprint"
+import { makeAutoObservable } from "mobx"
 
 class AppStore {
-
-  publicKey: string|null = null
+  publicKey: string | null = null
   serverTime: number = 0
   serverTimeLastUpdate: number = 0
   sessionId: string = ""
@@ -37,7 +36,7 @@ class AppStore {
   }
 
   // 获取 RSA publicKey
-  getPublicKey = async (forceUpdate: boolean = true): Promise<string|null> => {
+  getPublicKey = async (forceUpdate: boolean = true): Promise<string | null> => {
     if (!this.publicKey || forceUpdate) {
       await this.updatePublicKey()
       return this.publicKey

@@ -1,5 +1,7 @@
-import { RenderElementProps } from "slate-react";
+import { RenderElementProps } from "slate-react"
 
-const TextElement = (props: RenderElementProps) => {  return <div></div>}
+const TextElement = (props: RenderElementProps) => {
+  return <div></div>
+}
 
 export default TextElement

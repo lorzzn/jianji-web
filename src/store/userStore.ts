@@ -1,16 +1,15 @@
-import { IActiveReq, IEditProfileReq } from "@/api/types/request/user";
-import { IUserInfo } from "@/api/types/response/user";
-import { apiUser } from "@/api/user";
-import errorHandler from "@/utils/errorHandler";
-import eventBus, { events } from "@/utils/eventBus";
-import { code } from "@/utils/r/code";
-import { getStorage, removeStroage, setStorage } from "@/utils/storage";
-import { makeAutoObservable } from "mobx";
+import { IActiveReq, IEditProfileReq } from "@/api/types/request/user"
+import { IUserInfo } from "@/api/types/response/user"
+import { apiUser } from "@/api/user"
+import errorHandler from "@/utils/errorHandler"
+import eventBus, { events } from "@/utils/eventBus"
+import { code } from "@/utils/r/code"
+import { getStorage, removeStroage, setStorage } from "@/utils/storage"
+import { makeAutoObservable } from "mobx"
 
 class UserStore {
-
   loading = false
-  initialUserInfo: IUserInfo= {
+  initialUserInfo: IUserInfo = {
     id: 0,
     uuid: "",
     createdAt: "",
@@ -20,9 +19,9 @@ class UserStore {
     email: "",
     status: 0,
   }
-  userInfo: IUserInfo= { ...this.initialUserInfo }
-  token: string|null = null
-  refreshToken: string|null = null
+  userInfo: IUserInfo = { ...this.initialUserInfo }
+  token: string | null = null
+  refreshToken: string | null = null
 
   constructor() {
     makeAutoObservable(this)
@@ -31,17 +30,19 @@ class UserStore {
     this.refreshToken = getStorage("refreshToken")
     this.loading = true
 
-    this.requestRefreshToken().then(async () => {
-      await this.getProfile()
-      this.setLoading(false)
-    }).catch(() => {
-      this.setLoading(false)
-    })
+    this.requestRefreshToken()
+      .then(async () => {
+        await this.getProfile()
+        this.setLoading(false)
+      })
+      .catch(() => {
+        this.setLoading(false)
+      })
 
     eventBus.on(events.userAuthorizationExpired, this.resetAuthorization)
   }
 
-  setLoading = (loading: boolean) => this.loading = loading
+  setLoading = (loading: boolean) => (this.loading = loading)
 
   setUserInfo = (data: IUserInfo) => {
     this.userInfo = data
@@ -69,7 +70,7 @@ class UserStore {
       errorHandler.handle(error)
       return Promise.reject(error)
     }
-  } 
+  }
 
   // 清除token
   removeToken = () => {
@@ -101,7 +102,7 @@ class UserStore {
       try {
         const res = await apiUser.refreshToken({
           token: this.token,
-          refreshToken: this.refreshToken
+          refreshToken: this.refreshToken,
         })
         this.storeToken(res.data.data.token, res.data.data.refreshToken)
         return Promise.resolve(res)
@@ -139,7 +140,6 @@ class UserStore {
       return Promise.reject(error)
     }
   }
-
 }
 
 export default UserStore

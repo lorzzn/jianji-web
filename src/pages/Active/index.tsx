@@ -1,12 +1,11 @@
-import ZLoading from "@/components/ZLoading/ZLoading";
-import { useStore } from "@/store";
-import { isNull, some, values } from "lodash";
-import { FC, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify'
+import ZLoading from "@/components/ZLoading/ZLoading"
+import { useStore } from "@/store"
+import { isNull, some, values } from "lodash"
+import { FC, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 
-const Active:FC = () => {
-
+const Active: FC = () => {
   const query = new URLSearchParams(window.location.search)
   const navigate = useNavigate()
   const { userStore } = useStore()
@@ -15,7 +14,7 @@ const Active:FC = () => {
 
   const params = {
     email: query.get("email"),
-    state: query.get("state")
+    state: query.get("state"),
   }
 
   const activeAccount = async () => {
@@ -38,13 +37,15 @@ const Active:FC = () => {
     }
   }, [])
 
-  return <div className="w-full h-full flex items-center justify-center">
-    <div className="flex flex-col items-center justify-center text-gray-500">
-      <ZLoading />
-      {loading && <div>正在激活您的账号...</div>}
-      {success && <div>激活成功</div>}
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center text-gray-500">
+        <ZLoading />
+        {loading && <div>正在激活您的账号...</div>}
+        {success && <div>激活成功</div>}
+      </div>
     </div>
-  </div>
+  )
 }
 
 export default Active

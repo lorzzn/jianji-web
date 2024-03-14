@@ -1,8 +1,4 @@
-import { BaseEditor, Descendant, ExtendedType } from 'slate'
-import { Node } from 'unist'
-import { ReactEditor, RenderElementProps } from 'slate-react'
-import { HistoryEditor } from 'slate-history'
-import { 
+import {
   Blockquote,
   Break,
   Code,
@@ -24,12 +20,15 @@ import {
   Root,
   Strong,
   Table,
-  TableRow,
   TableCell,
+  TableRow,
   Text,
   ThematicBreak,
   Yaml,
-} from 'mdast'
+} from "mdast"
+import { BaseEditor, Descendant } from "slate"
+import { HistoryEditor } from "slate-history"
+import { ReactEditor, RenderElementProps } from "slate-react"
 
 export type BlockquoteElementType = Omit<Blockquote, "children"> & {
   children: Descendant[]
@@ -135,12 +134,12 @@ export type YamlElementType = Omit<Yaml, "children"> & {
 }
 
 export type MathElementType = {
-  type: "math",
-  value: string,
+  type: "math"
+  value: string
   children: Descendant[]
 }
 
-type CustomElement =  
+type CustomElement =
   | BlockquoteElementType
   | BreakElementType
   | CodeElementType
@@ -169,11 +168,11 @@ type CustomElement =
   | YamlElementType
   | MathElementType
 
-export type CustomElementStrings<T = CustomElement> = T['type']
+export type CustomElementStrings<T = CustomElement> = T["type"]
 
 export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor
 
-declare module 'slate' {
+declare module "slate" {
   interface CustomTypes {
     Editor: CustomEditor
     Element: BaseElement & CustomElement

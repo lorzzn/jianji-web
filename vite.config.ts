@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { join } from 'node:path'
-import autoprefixer from 'autoprefixer'
-import tailwindcss from 'tailwindcss'
+import react from "@vitejs/plugin-react"
+import autoprefixer from "autoprefixer"
+import { join } from "node:path"
+import tailwindcss from "tailwindcss"
+import { defineConfig } from "vite"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,25 +10,22 @@ export default defineConfig({
     react({
       babel: {
         configFile: true,
-      }
+      },
     }),
   ],
   resolve: {
     alias: {
-      '@': join(__dirname, 'src')
-    }
+      "@": join(__dirname, "src"),
+    },
   },
   css: {
     postcss: {
-      plugins: [
-        autoprefixer(),
-        tailwindcss()
-      ],
+      plugins: [autoprefixer(), tailwindcss()],
     },
   },
   build: {
-    outDir: join(__dirname, 'dist'),
-    minify: 'terser',
+    outDir: join(__dirname, "dist"),
+    minify: "terser",
     sourcemap: false,
     commonjsOptions: {},
   },
@@ -39,13 +36,13 @@ export default defineConfig({
   server: {
     port: 5173,
     open: false,
-    host: 'localhost',
+    host: "localhost",
     proxy: {
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
         rewrite: (path) => path,
-      }
-    }
+      },
+    },
   },
 })

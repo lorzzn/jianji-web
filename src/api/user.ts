@@ -1,7 +1,6 @@
 import service from "@/utils/service"
-import { ILoginReq, IRefreshTokenReq, IEditProfileReq, IActiveReq } from "./types/request/user"
+import { IActiveReq, IEditProfileReq, ILoginReq, IRefreshTokenReq } from "./types/request/user"
 import { IActiveResp, IEditProfileResp, ILoginResp, IProfileResp, IRefreshTokenResp } from "./types/response/user"
-
 
 export const apiUser = {
   login(data: ILoginReq) {
@@ -16,35 +15,35 @@ export const apiUser = {
   logout() {
     return service({
       url: "api/v1/user/logout",
-      method: "POST"
+      method: "POST",
     })
   },
   active(data: IActiveReq) {
     return service<IActiveResp>({
       url: "api/v1/user/active",
       method: "POST",
-      data
+      data,
     })
   },
-  refreshToken(data: IRefreshTokenReq){
+  refreshToken(data: IRefreshTokenReq) {
     return service<IRefreshTokenResp>({
       url: "api/v1/user/refresh-token",
       withToken: false,
       method: "POST",
-      data
+      data,
     })
   },
-  profile(){
+  profile() {
     return service<IProfileResp>({
       url: "api/v1/user/profile",
       method: "POST",
     })
   },
-  editProfile(data: IEditProfileReq){
+  editProfile(data: IEditProfileReq) {
     return service<IEditProfileResp>({
       url: "api/v1/user/edit-profile",
       method: "POST",
       data,
     })
-  }
+  },
 }

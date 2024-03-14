@@ -1,7 +1,7 @@
-import { RenderElementProps } from "slate-react";
+import { RenderElementProps } from "slate-react"
 
 const ListElement = (props: RenderElementProps) => {
-  return <div></div>;
-};
+  return <div></div>
+}
 
-export default ListElement;
+export default ListElement

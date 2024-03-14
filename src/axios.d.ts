@@ -1,8 +1,8 @@
-import 'axios';
+import "axios"
 
-declare module 'axios' {   
+declare module "axios" {
   export interface AxiosRequestConfig {
-    encrypt?: boolean;   
-    withToken?: boolean;
+    encrypt?: boolean
+    withToken?: boolean
   }
 }
