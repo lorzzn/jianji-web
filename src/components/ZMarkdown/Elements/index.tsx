@@ -57,96 +57,92 @@ import TextElement from "./TextElement"
 import ThematicBreakElement from "./ThematicBreakElement"
 import YamlElement from "./YamlElement"
 
-const Elements = (rprops: RenderElementProps) => {
-  const ElementRenderer = (props: RenderElementProps) => {
-    switch (props.element.type) {
-      case "paragraph":
-        return <ParagraphElement {...(props as CustomElementProps<ParagraphElementType>)} />
+const Elements = (props: RenderElementProps) => {
+  switch (props.element.type) {
+    case "paragraph":
+      return <ParagraphElement {...(props as CustomElementProps<ParagraphElementType>)} />
 
-      case "heading":
-        return <HeadingElement {...(props as CustomElementProps<HeadingElementType>)} />
+    case "heading":
+      return <HeadingElement {...(props as CustomElementProps<HeadingElementType>)} />
 
-      case "code":
-        return <CodeElement {...(props as CustomElementProps<CodeElementType>)} />
+    case "code":
+      return <CodeElement {...(props as CustomElementProps<CodeElementType>)} />
 
-      case "blockquote":
-        return <BlockQuoteElement {...(props as CustomElementProps<BlockquoteElementType>)} />
+    case "blockquote":
+      return <BlockQuoteElement {...(props as CustomElementProps<BlockquoteElementType>)} />
 
-      case "thematicBreak":
-        return <ThematicBreakElement {...(props as CustomElementProps<ThematicBreakElementType>)} />
+    case "thematicBreak":
+      return <ThematicBreakElement {...(props as CustomElementProps<ThematicBreakElementType>)} />
 
-      case "listItem":
-        return <ListItemElement {...(props as CustomElementProps<ListItemElementType>)} />
+    case "listItem":
+      return <ListItemElement {...(props as CustomElementProps<ListItemElementType>)} />
 
-      case "image":
-        return <ImageElement {...(props as CustomElementProps<ImageElementType>)} />
+    case "image":
+      return <ImageElement {...(props as CustomElementProps<ImageElementType>)} />
 
-      case "break":
-        return <BreakElement {...(props as CustomElementProps<BreakElementType>)} />
+    case "break":
+      return <BreakElement {...(props as CustomElementProps<BreakElementType>)} />
 
-      case "definition":
-        return <DefinitionElement {...(props as CustomElementProps<DefinitionElementType>)} />
+    case "definition":
+      return <DefinitionElement {...(props as CustomElementProps<DefinitionElementType>)} />
 
-      case "delete":
-        return <DeleteElement {...(props as CustomElementProps<DeleteElementType>)} />
+    case "delete":
+      return <DeleteElement {...(props as CustomElementProps<DeleteElementType>)} />
 
-      case "emphasis":
-        return <EmphasisElement {...(props as CustomElementProps<EmphasisElementType>)} />
+    case "emphasis":
+      return <EmphasisElement {...(props as CustomElementProps<EmphasisElementType>)} />
 
-      case "footnoteDefinition":
-        return <FootnoteDefinitionElement {...(props as CustomElementProps<FootnoteDefinitionElementType>)} />
+    case "footnoteDefinition":
+      return <FootnoteDefinitionElement {...(props as CustomElementProps<FootnoteDefinitionElementType>)} />
 
-      case "footnoteReference":
-        return <FootnoteReferenceElement {...(props as CustomElementProps<FootnoteReferenceElementType>)} />
+    case "footnoteReference":
+      return <FootnoteReferenceElement {...(props as CustomElementProps<FootnoteReferenceElementType>)} />
 
-      case "html":
-        return <HtmlElement {...(props as CustomElementProps<HtmlElementType>)} />
+    case "html":
+      return <HtmlElement {...(props as CustomElementProps<HtmlElementType>)} />
 
-      case "imageReference":
-        return <ImageReferenceElement {...(props as CustomElementProps<ImageReferenceElementType>)} />
+    case "imageReference":
+      return <ImageReferenceElement {...(props as CustomElementProps<ImageReferenceElementType>)} />
 
-      case "inlineCode":
-        return <InlineCodeElement {...(props as CustomElementProps<InlineCodeElementType>)} />
+    case "inlineCode":
+      return <InlineCodeElement {...(props as CustomElementProps<InlineCodeElementType>)} />
 
-      case "link":
-        return <LinkElement {...(props as CustomElementProps<LinkElementType>)} />
+    case "link":
+      return <LinkElement {...(props as CustomElementProps<LinkElementType>)} />
 
-      case "linkReference":
-        return <LinkReferenceElement {...(props as CustomElementProps<LinkReferenceElementType>)} />
+    case "linkReference":
+      return <LinkReferenceElement {...(props as CustomElementProps<LinkReferenceElementType>)} />
 
-      case "list":
-        return <ListElement {...(props as CustomElementProps<ListElementType>)} />
+    case "list":
+      return <ListElement {...(props as CustomElementProps<ListElementType>)} />
 
-      case "root":
-        return <RootElement {...(props as CustomElementProps<RootElementType>)} />
+    case "root":
+      return <RootElement {...(props as CustomElementProps<RootElementType>)} />
 
-      case "strong":
-        return <StrongElement {...(props as CustomElementProps<StrongElementType>)} />
+    case "strong":
+      return <StrongElement {...(props as CustomElementProps<StrongElementType>)} />
 
-      case "table":
-        return <TableElement {...(props as CustomElementProps<TableElementType>)} />
+    case "table":
+      return <TableElement {...(props as CustomElementProps<TableElementType>)} />
 
-      case "tableRow":
-        return <TableRowElement {...(props as CustomElementProps<TableRowElementType>)} />
+    case "tableRow":
+      return <TableRowElement {...(props as CustomElementProps<TableRowElementType>)} />
 
-      case "tableCell":
-        return <TableCellElement {...(props as CustomElementProps<TableCellElementType>)} />
+    case "tableCell":
+      return <TableCellElement {...(props as CustomElementProps<TableCellElementType>)} />
 
-      case "text":
-        return <TextElement {...(props as CustomElementProps<TextElementType>)} />
+    case "text":
+      return <TextElement {...(props as CustomElementProps<TextElementType>)} />
 
-      case "yaml":
-        return <YamlElement {...(props as CustomElementProps<YamlElementType>)} />
+    case "yaml":
+      return <YamlElement {...(props as CustomElementProps<YamlElementType>)} />
 
-      case "math":
-        return <MathElement {...(props as CustomElementProps<MathElementType>)} />
+    case "math":
+      return <MathElement {...(props as CustomElementProps<MathElementType>)} />
 
-      default:
-        return <></>
-    }
+    default:
+      return <></>
   }
-
-  return <ElementRenderer {...rprops} />
 }
 
 export default Elements
