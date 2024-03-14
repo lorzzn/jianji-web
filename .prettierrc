@@ -3,14 +3,11 @@
   "singleQuote": false,
   "jsxSingleQuote": false,
   "bracketSpacing": true,
-  "noTrailingSpaces": true,
   "tabWidth": 2,
   "useTabs": false,
   "trailingComma": "all",
   "endOfLine": "lf",
-  "printWidth": 160,
+  "printWidth": 120,
   "arrowParens": "always",
-  "plugins": [
-    "prettier-plugin-organize-imports"
-  ]
+  "plugins": ["prettier-plugin-organize-imports"]
 }
