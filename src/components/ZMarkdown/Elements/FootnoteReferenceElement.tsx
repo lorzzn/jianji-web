@@ -1,4 +1,4 @@
-import { CustomElementProps, FootnoteReferenceElementType } from "../custom-types"
+import { CustomElementProps, FootnoteReferenceElementType } from "../customTypes"
 
 const FootnoteReferenceElement = (props: CustomElementProps<FootnoteReferenceElementType>) => {
   return <div {...props.attributes}>{props.children}</div>

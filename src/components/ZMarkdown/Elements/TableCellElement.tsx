@@ -1,7 +1,7 @@
-import { CustomElementProps, TableCellElementType } from "../custom-types"
+import { CustomElementProps, TableCellElementType } from "../customTypes"
 
 const TableCellElement = (props: CustomElementProps<TableCellElementType>) => {
-  return <div {...props.attributes}>{props.children}</div>
+  return <td {...props.attributes}>{props.children}</td>
 }
 
 export default TableCellElement

@@ -1,4 +1,4 @@
-import { CustomElementProps, YamlElementType } from "../custom-types"
+import { CustomElementProps, YamlElementType } from "../customTypes"
 
 const YamlElement = (props: CustomElementProps<YamlElementType>) => {
   return (

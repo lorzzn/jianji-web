@@ -1,5 +1,5 @@
 import { Editor, Transforms } from "slate"
-import { CustomElement, CustomElementProps, CustomElementStrings, FilterElementType } from "../custom-types"
+import { CustomElement, CustomElementProps, CustomElementStrings, FilterElementType } from "../customTypes"
 import BlockQuoteElement from "./BlockQuoteElement"
 import BreakElement from "./BreakElement"
 import CodeElement from "./CodeElement"

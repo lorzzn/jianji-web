@@ -1,4 +1,4 @@
-import { BreakElementType, CustomElementProps } from "../custom-types"
+import { BreakElementType, CustomElementProps } from "../customTypes"
 
 const BreakElement = (props: CustomElementProps<BreakElementType>) => {
   return <div {...props.attributes}>{props.children}</div>

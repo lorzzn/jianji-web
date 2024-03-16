@@ -77,6 +77,9 @@ Unordered
     * Ac tristique libero volutpat at
     + Facilisis in pretium nisl aliquet
     - Nulla volutpat aliquam velit
+    - [ ] undo task
+    - [x] done task
+    - normal item
 + Very easy!
 
 Ordered

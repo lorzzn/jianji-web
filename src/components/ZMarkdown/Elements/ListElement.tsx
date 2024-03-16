@@ -1,7 +1,7 @@
-import { CustomElementProps, ListElementType } from "../custom-types"
+import { CustomElementProps, ListElementType } from "../customTypes"
 
 const ListElement = (props: CustomElementProps<ListElementType>) => {
-  return <div {...props.attributes}>{props.children}</div>
+  return <ul {...props.attributes}>{props.children}</ul>
 }
 
 export default ListElement

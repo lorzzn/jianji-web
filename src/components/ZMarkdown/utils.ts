@@ -1,5 +1,5 @@
 import { Editor, Element, Transforms } from "slate"
-import { CustomElement, CustomElementStrings } from "./custom-types"
+import { CustomElement, CustomElementStrings } from "./customTypes"
 
 export const isBlockActive = (editor: Editor, type: CustomElementStrings) => {
   if (!editor.selection) return false

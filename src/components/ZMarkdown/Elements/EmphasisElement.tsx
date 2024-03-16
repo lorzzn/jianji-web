@@ -1,4 +1,4 @@
-import { CustomElementProps, EmphasisElementType } from "../custom-types"
+import { CustomElementProps, EmphasisElementType } from "../customTypes"
 
 const EmphasisElement = (props: CustomElementProps<EmphasisElementType>) => {
   return <div {...props.attributes}>{props.children}</div>

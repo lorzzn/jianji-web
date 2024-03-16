@@ -1,4 +1,4 @@
-import { CustomElementProps, ImageElementType } from "../custom-types"
+import { CustomElementProps, ImageElementType } from "../customTypes"
 
 const ImageElement = (props: CustomElementProps<ImageElementType>) => {
   if (props.element.type !== "image") return <></>

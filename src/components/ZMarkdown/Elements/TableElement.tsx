@@ -1,7 +1,11 @@
-import { CustomElementProps, TableElementType } from "../custom-types"
+import { CustomElementProps, TableElementType } from "../customTypes"
 
 const TableElement = (props: CustomElementProps<TableElementType>) => {
-  return <div {...props.attributes}>{props.children}</div>
+  return (
+    <table {...props.attributes}>
+      <tbody>{props.children}</tbody>
+    </table>
+  )
 }
 
 export default TableElement

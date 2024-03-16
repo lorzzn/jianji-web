@@ -1,4 +1,4 @@
-import { BlockquoteElementType, CustomElementProps } from "../custom-types"
+import { BlockquoteElementType, CustomElementProps } from "../customTypes"
 
 const BlockQuoteElement = (props: CustomElementProps<BlockquoteElementType>) => {
   return (
