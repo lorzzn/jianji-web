@@ -1,20 +1,21 @@
-import { CustomElementStrings } from "@/components/ZMarkdown/custom-types"
+import { CustomElementStrings } from "@/components/ZMarkdown/customTypes"
 import classNames from "classnames"
 import { get, isObject, keys } from "lodash"
+import { RootContent } from "mdast"
 import { CSSProperties, FC, KeyboardEvent, KeyboardEventHandler, useCallback, useMemo, useRef, useState } from "react"
-import { Descendant, createEditor } from "slate"
+import { Descendant, NodeEntry, Range, Transforms, createEditor } from "slate"
 import { withHistory } from "slate-history"
 import { Editable, RenderElementProps, RenderLeafProps, Slate, withReact } from "slate-react"
 import { twMerge } from "tailwind-merge"
 import Elements from "./Elements"
 import { elementMap } from "./Elements/elementMap"
-import { markdownExample } from "./markdown_example"
-import { markdownParser } from "./parser"
+import { markdownExample } from "./markdownExample"
+import markdownToDescendant from "./parser"
 import { toggleCurrentBlock } from "./utils"
 import { withParser } from "./withParser"
 
 console.log({
-  test: markdownParser(markdownExample),
+  xx: markdownToDescendant(markdownExample),
 })
 
 interface ZMarkdownProps {
@@ -24,7 +25,17 @@ interface ZMarkdownProps {
 
 const ZMarkdown: FC<ZMarkdownProps> = ({ className, style }) => {
   const value = useRef<Descendant[]>()
-  const [initialValue] = useState<Descendant[]>(markdownParser(markdownExample))
+  const mdastRootContent = useRef<RootContent[]>()
+  const [initialValue] = useState<Descendant[]>([
+    {
+      type: "paragraph",
+      children: [
+        {
+          text: "",
+        },
+      ],
+    },
+  ])
   const editor = useMemo(() => withParser(withReact(withHistory(createEditor()))), [])
   const renderElement = useCallback((props: RenderElementProps) => <Elements {...props} />, [])
   const renderLeaf = useCallback(
@@ -47,6 +58,12 @@ const ZMarkdown: FC<ZMarkdownProps> = ({ className, style }) => {
         toggleCurrentBlock(editor, match[0] as CustomElementStrings, props)
         return
       }
+    } else if (e.key.toLowerCase() === "enter") {
+      Transforms.insertNodes(editor, {
+        type: "paragraph",
+        children: [{ text: "" }],
+      })
+      e.preventDefault()
     }
   }
 
@@ -54,6 +71,14 @@ const ZMarkdown: FC<ZMarkdownProps> = ({ className, style }) => {
     value.current = v
     console.log("value: ", value)
     console.log(editor)
+  }
+
+  const decorate = (entry: NodeEntry): Range[] => {
+    console.log({ entry })
+
+    const range: Range[] = []
+
+    return range
   }
 
   return (
@@ -64,6 +89,7 @@ const ZMarkdown: FC<ZMarkdownProps> = ({ className, style }) => {
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           onKeyDown={handleKeyDown}
+          decorate={decorate}
         />
       </Slate>
     </div>

@@ -1,12 +1,19 @@
-import { RenderElementProps } from "slate-react"
+import { isNull } from "lodash"
+import { CustomElementProps, ListItemElementType } from "../customTypes"
 
-const ListItemElement = (props: RenderElementProps) => {
-  return (
-    <div {...props.attributes} className="mb-4 flex items-center">
-      <input type="checkbox" className="mr-2 h-5 w-5 cursor-pointer accent-blue-300 checked:border-0" />
-      {props.children}
-    </div>
-  )
+const ListItemElement = (props: CustomElementProps<ListItemElementType>) => {
+  const isTaskList = !isNull(props.element.checked)
+
+  if (isTaskList) {
+    return (
+      <div {...props.attributes} className="flex items-center -ml-4 my-[0.5rem]">
+        <input type="checkbox" disabled checked={!!props.element.checked} className="cursor-pointer mr-2" />
+        {props.children}
+      </div>
+    )
+  } else {
+    return <li {...props.attributes}>{props.children}</li>
+  }
 }
 
 export default ListItemElement

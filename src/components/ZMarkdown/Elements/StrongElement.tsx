@@ -1,4 +1,4 @@
-import { CustomElementProps, StrongElementType } from "../custom-types"
+import { CustomElementProps, StrongElementType } from "../customTypes"
 
 const StrongElement = (props: CustomElementProps<StrongElementType>) => {
   return <div {...props.attributes}>{props.children}</div>

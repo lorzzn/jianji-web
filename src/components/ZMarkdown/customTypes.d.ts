@@ -31,7 +31,7 @@ import { HistoryEditor } from "slate-history"
 import { ReactEditor, RenderElementProps } from "slate-react"
 
 export type BaseCustomElementType = {
-  rawText?: string
+  raw?: string
   children: Descendant[]
 }
 
@@ -98,6 +98,14 @@ export type CustomElement =
 export type CustomElementStrings = CustomElement["type"]
 
 export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor
+
+export type CustomLeaf =
+  | StrongElementType
+  | TextElementType
+  | ThematicBreakElementType
+  | DeleteElementType
+  | EmphasisElementType
+;["type"]
 
 declare module "slate" {
   interface CustomTypes {

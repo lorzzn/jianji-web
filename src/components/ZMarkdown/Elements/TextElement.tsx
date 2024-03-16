@@ -1,7 +1,7 @@
-import { CustomElementProps, TextElementType } from "../custom-types"
+import { CustomElementProps, TextElementType } from "../customTypes"
 
 const TextElement = (props: CustomElementProps<TextElementType>) => {
-  return <div {...props.attributes}>{props.children}</div>
+  return <span {...props.attributes}>{props.children}</span>
 }
 
 export default TextElement

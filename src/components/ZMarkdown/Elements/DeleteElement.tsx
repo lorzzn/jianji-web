@@ -1,7 +1,11 @@
-import { CustomElementProps, DeleteElementType } from "../custom-types"
+import { CustomElementProps, DeleteElementType } from "../customTypes"
 
 const DeleteElement = (props: CustomElementProps<DeleteElementType>) => {
-  return <div {...props.attributes}>{props.children}</div>
+  return (
+    <span {...props.attributes} className="line-through">
+      {props.children}
+    </span>
+  )
 }
 
 export default DeleteElement

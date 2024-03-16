@@ -1,7 +1,7 @@
-import { CustomElementProps, TableRowElementType } from "../custom-types"
+import { CustomElementProps, TableRowElementType } from "../customTypes"
 
 const TableRowElement = (props: CustomElementProps<TableRowElementType>) => {
-  return <div {...props.attributes}>{props.children}</div>
+  return <tr {...props.attributes}>{props.children}</tr>
 }
 
 export default TableRowElement

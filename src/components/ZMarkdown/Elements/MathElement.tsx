@@ -1,4 +1,4 @@
-import { CustomElementProps, MathElementType } from "../custom-types"
+import { CustomElementProps, MathElementType } from "../customTypes"
 
 const MathElement = (props: CustomElementProps<MathElementType>) => {
   return <div {...props.attributes}>{props.children}</div>

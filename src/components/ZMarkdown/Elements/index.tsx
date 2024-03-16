@@ -27,7 +27,7 @@ import {
   TextElementType,
   ThematicBreakElementType,
   YamlElementType,
-} from "@/components/ZMarkdown/custom-types"
+} from "@/components/ZMarkdown/customTypes"
 import { RenderElementProps } from "slate-react"
 import BlockQuoteElement from "./BlockQuoteElement"
 import BreakElement from "./BreakElement"
@@ -57,7 +57,9 @@ import TextElement from "./TextElement"
 import ThematicBreakElement from "./ThematicBreakElement"
 import YamlElement from "./YamlElement"
 
-const Elements = (props: RenderElementProps) => {
+interface ElementsProps extends RenderElementProps {}
+
+const Elements = (props: ElementsProps) => {
   switch (props.element.type) {
     case "paragraph":
       return <ParagraphElement {...(props as CustomElementProps<ParagraphElementType>)} />

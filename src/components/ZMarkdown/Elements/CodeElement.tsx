@@ -1,4 +1,4 @@
-import { CodeElementType, CustomElementProps } from "../custom-types"
+import { CodeElementType, CustomElementProps } from "../customTypes"
 
 const CodeElement = (props: CustomElementProps<CodeElementType>) => {
   return (

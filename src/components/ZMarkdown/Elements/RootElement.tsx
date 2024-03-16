@@ -1,4 +1,4 @@
-import { CustomElementProps, RootElementType } from "../custom-types"
+import { CustomElementProps, RootElementType } from "../customTypes"
 
 const RootElement = (props: CustomElementProps<RootElementType>) => {
   return <div {...props.attributes}>{props.children}</div>
