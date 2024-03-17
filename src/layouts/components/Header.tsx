@@ -2,12 +2,12 @@ import ZButton, { ZButtonVariants } from "@/components/ZButton/ZButton"
 import ZDropdown, { DropdownOption } from "@/components/ZDropdown/ZDropdown"
 import ZImage from "@/components/ZImage/ZImage"
 import { useStore } from "@/store"
+import { twclx } from "@/utils/twclx"
 import { RiAddLine, RiArrowDownSFill, RiSearchLine } from "@remixicon/react"
 import classNames from "classnames"
 import { observer } from "mobx-react"
 import { FC } from "react"
 import { useNavigate } from "react-router-dom"
-import { twMerge } from "tailwind-merge"
 import UserInfo from "./UserInfo"
 
 const dropdownOptions: DropdownOption[] = [
@@ -84,7 +84,7 @@ const Header: FC = observer(() => {
               onClick={onDropDownClick}
               target={
                 <div
-                  className={twMerge(
+                  className={twclx(
                     ZButtonVariants({
                       variant: "primary_plain",
                       className: classNames([

@@ -1,7 +1,7 @@
+import { twclx } from "@/utils/twclx"
 import { VariantProps, cva } from "class-variance-authority"
 import classNames from "classnames"
 import { forwardRef } from "react"
-import { twMerge } from "tailwind-merge"
 
 interface ZInputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariant> {}
 
@@ -33,13 +33,7 @@ const inputVariant = cva(
 )
 
 const ZInput = forwardRef<HTMLInputElement, ZInputProps>(({ className, variant, scale, shape, ...restProps }, ref) => {
-  return (
-    <input
-      ref={ref}
-      className={twMerge(classNames(inputVariant({ variant, scale, shape, className })))}
-      {...restProps}
-    />
-  )
+  return <input ref={ref} className={twclx(inputVariant({ variant, scale, shape, className }))} {...restProps} />
 })
 
 export default ZInput
