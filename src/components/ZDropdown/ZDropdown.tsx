@@ -1,8 +1,7 @@
-import classNames from "classnames"
+import { twclx } from "@/utils/twclx"
 import { omit } from "lodash"
 import { CSSProperties, ReactNode, forwardRef, useImperativeHandle, useRef, useState } from "react"
 import Select, { ClassNamesConfig, SelectInstance, SingleValue, StylesConfig } from "react-select"
-import { twMerge } from "tailwind-merge"
 
 export interface DropdownOption {
   readonly value: string
@@ -60,15 +59,10 @@ const ZDropdown = forwardRef<ZDropdownRef, ZDropdownProps>(
     }
 
     const selectClassNames: ClassNamesConfig<DropdownOption, false> = {
-      menu: (props) => twMerge(classNames(["bg-white rounded-md shadow-md", propClassNames?.menu?.(props)])),
-      menuList: (props) => twMerge(classNames(["px-[4px]", propClassNames?.menuList?.(props)])),
+      menu: (props) => twclx(["bg-white rounded-md shadow-md", propClassNames?.menu?.(props)]),
+      menuList: (props) => twclx(["px-[4px]", propClassNames?.menuList?.(props)]),
       option: (props) =>
-        twMerge(
-          classNames([
-            "text-center rounded-md hover:text-blue-600 !text-sm !cursor-pointer",
-            propClassNames?.option?.(props),
-          ]),
-        ),
+        twclx(["text-center rounded-md hover:text-blue-600 !text-sm !cursor-pointer", propClassNames?.option?.(props)]),
       ...omit(propClassNames, "menu", "menuList", "option"),
     }
 

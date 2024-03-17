@@ -1,7 +1,7 @@
+import { twclx } from "@/utils/twclx"
 import { cva, type VariantProps } from "class-variance-authority"
 import classNames from "classnames"
 import { FC } from "react"
-import { twMerge } from "tailwind-merge"
 import ZLoading from "../ZLoading/ZLoading"
 
 interface ZButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof ZButtonVariants> {
@@ -38,12 +38,10 @@ export const ZButtonVariants = cva(classNames("inline-flex items-center justify-
 const ZButton: FC<ZButtonProps> = ({ className, variant, scale, shape, children, loading, disabled, ...restProps }) => {
   return (
     <button
-      className={twMerge(
-        classNames([
-          ZButtonVariants({ variant, scale, shape, className }),
-          { "cursor-not-allowed": loading ?? disabled },
-        ]),
-      )}
+      className={twclx([
+        ZButtonVariants({ variant, scale, shape, className }),
+        { "cursor-not-allowed": loading ?? disabled },
+      ])}
       disabled={loading ?? disabled}
       {...restProps}
     >
