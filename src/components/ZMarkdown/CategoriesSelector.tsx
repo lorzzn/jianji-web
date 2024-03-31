@@ -1,7 +1,9 @@
 import { ICategories } from "@/api/types/response/categories"
+import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import { RiArrowDownSLine, RiArrowRightSLine } from "@remixicon/react"
 import Tree from "rc-tree"
+import DropIndicator from "rc-tree/lib/DropIndicator"
 import { DataNode, TreeNodeProps } from "rc-tree/lib/interface"
 import { FC, useEffect, useRef, useState } from "react"
 import tw from "twin.macro"
@@ -63,25 +65,57 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({ categories }) => {
       <ZModal ref={modalRef}>
         <div className="flex flex-col">
           <Tree
-            className={css`
-              user-select: none;
-              .rc-tree-treenode span.rc-tree-switcher {
-                background-image: none;
-                width: auto;
-              }
-              .rc-tree-treenode span.rc-tree-node-selected {
-                ${tw`bg-blue-100`}
-                box-shadow: 0 0 0 1px #000;
-              }
-            `}
+            className={twclx(
+              "categories-selector",
+              css`
+                user-select: none;
+                .rc-tree-treenode {
+                  & span.rc-tree-switcher {
+                    background-image: none;
+                    margin-right: 0;
+                    width: auto;
+                  }
+                  & span.rc-tree-node-selected {
+                    box-shadow: none;
+                    ${tw`bg-blue-200 ring-2 ring-inset ring-blue-300`}
+                  }
+                  & span.rc-tree-node-content-wrapper {
+                    ${tw`px-1 hover:bg-blue-100 rounded-sm`}
+                  }
+                  &.drop-target {
+                    ${tw`bg-blue-100`}
+                  }
+                  &.drop-container ~ .rc-tree-treenode {
+                    ${tw`!border-l-blue-400`}
+                  }
+                }
+              `,
+            )}
             showLine
+            draggable
             showIcon={false}
             switcherIcon={switcherIconRender}
+            dropIndicatorRender={(props) => {
+              return (
+                <div
+                  className={css`
+                    div {
+                      ${tw`!bg-blue-400`}
+                    }
+                  `}
+                >
+                  <DropIndicator {...props} />
+                </div>
+              )
+            }}
             onExpand={onExpand}
             expandAction={"doubleClick"}
             onSelect={onSelect}
             treeData={treeData}
             height={150}
+            onClick={(e) => {
+              console.log(e)
+            }}
             onActiveChange={(key) => console.log("Active:", key)}
           />
 
