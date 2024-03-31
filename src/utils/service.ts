@@ -1,4 +1,4 @@
-import { IApiCommonResp } from "@/api/types/response/common"
+import { IApiCommonResponse } from "@/api/types/response/common"
 import rootStore from "@/store"
 import axios, { AxiosResponse } from "axios"
 import { code } from "./r/code"
@@ -12,7 +12,7 @@ const service = axios.create({
   baseURL,
 })
 
-const retryCheck = async (response: AxiosResponse<IApiCommonResp>): Promise<boolean> => {
+const retryCheck = async (response: AxiosResponse<IApiCommonResponse>): Promise<boolean> => {
   if (response.data.code === code.TOKEN_AUTHORIZATION_INVALID) {
     await rootStore.userStore.requestRefreshToken()
     return true
@@ -21,7 +21,7 @@ const retryCheck = async (response: AxiosResponse<IApiCommonResp>): Promise<bool
   return false
 }
 
-const retry = (response: AxiosResponse<IApiCommonResp>) => {
+const retry = (response: AxiosResponse<IApiCommonResponse>) => {
   const delay = 2000
 
   return new Promise<AxiosResponse>((resolve) => {
@@ -62,7 +62,7 @@ service.interceptors.request.use(async (config) => {
   return config
 })
 
-service.interceptors.response.use(async (response: AxiosResponse<IApiCommonResp>) => {
+service.interceptors.response.use(async (response: AxiosResponse<IApiCommonResponse>) => {
   if (await retryCheck(response)) {
     return retry(response)
   }

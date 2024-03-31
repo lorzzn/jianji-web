@@ -1,4 +1,4 @@
-import { IActiveReq, IEditProfileReq } from "@/api/types/request/user"
+import { IActiveRequest, IEditProfileRequest } from "@/api/types/request/user"
 import { IUserInfo } from "@/api/types/response/user"
 import { apiUser } from "@/api/user"
 import errorHandler from "@/utils/errorHandler"
@@ -61,7 +61,7 @@ class UserStore {
   }
 
   // 激活账户
-  activeUser = async (params: IActiveReq) => {
+  activeUser = async (params: IActiveRequest) => {
     try {
       const res = await apiUser.active(params)
       this.setUserInfo(res.data.data.userInfo)
@@ -131,7 +131,7 @@ class UserStore {
     }
   }
 
-  editProfile = async (data: IEditProfileReq) => {
+  editProfile = async (data: IEditProfileRequest) => {
     try {
       const res = await apiUser.editProfile(data)
       this.setUserInfo(res.data.data.userInfo)
