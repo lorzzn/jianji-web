@@ -1,6 +1,6 @@
-import { IApiCommonResp } from "./common"
+import { IApiCommonResponse } from "./common"
 
-export interface IGetPublicKeyResp extends IApiCommonResp {
+export interface IGetPublicKeyResponse extends IApiCommonResponse {
   data: {
     publicKey: string
   }
@@ -11,7 +11,7 @@ export interface ILocation {
   city: string
 }
 
-export interface IGetAppConfigResp extends IApiCommonResp {
+export interface IGetAppConfigResponse extends IApiCommonResponse {
   data: {
     time: number
     sessionId: string
