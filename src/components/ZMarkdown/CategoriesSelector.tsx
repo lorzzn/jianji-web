@@ -100,7 +100,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     console.log(info)
 
     let parent: CategoriesNode
-    const { dragNode, node, dropPosition } = info
+    const { dragNode, node, dropPosition, dropToGap } = info
     const oldParent = treeDataRecord[dragNode.data.parentValue ?? 0]
 
     if (dropPosition === -1) {
@@ -108,17 +108,18 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     } else if (dropPosition === 0) {
       parent = treeDataRecord[node.data.value]
     } else {
-      parent = treeDataRecord[node.data.parentValue ?? 0]
+      if (dropToGap) {
+        parent = treeDataRecord[node.data.parentValue ?? 0]
+      } else {
+        parent = treeDataRecord[node.data.value]
+      }
     }
 
     // 计算新的次序
-    let targetIndex = dropPosition
-    if (targetIndex < 0) {
-      targetIndex = 0
-    }
     dragNode.data.parentValue = parent.data.value || null
     oldParent.children = oldParent.children.filter((item) => item.data.value !== dragNode.data.value)
-    parent.children.splice(targetIndex, 0, dragNode)
+    const targetIndex = parent.children.findIndex((item) => item.data.value === node.data.value)
+    parent.children.splice(targetIndex + 1, 0, dragNode)
     parent.children.forEach((item, index) => (item.data.ordinalNumber = index + 1))
 
     onUpdate([...parent.children, ...oldParent.children].map((item) => item.data))
