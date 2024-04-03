@@ -1,10 +1,10 @@
 import { FC, useState } from "react"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
-import Editor from "./Editor"
 import Preview from "./Preview"
+import Textarea from "./Textarea"
 import ToolBar from "./ToolBar"
 
-const ZMarkdown: FC = () => {
+const ZPostEditor: FC = () => {
   const [value, setValue] = useState<string>("")
 
   const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -16,7 +16,7 @@ const ZMarkdown: FC = () => {
       <ToolBar />
       <PanelGroup direction="horizontal" className="flex-1">
         <Panel minSize={25} order={1} className="shadow-sm rounded-md">
-          <Editor value={value} onChange={handleValueChange} className="w-full h-full p-3" />
+          <Textarea value={value} onChange={handleValueChange} className="w-full h-full p-3" />
         </Panel>
         <PanelResizeHandle className="w-2 flex justify-center items-center active:bg-black hover:bg-black transition rounded-sm">
           <div className="flex flex-col space-y-1">
@@ -35,4 +35,4 @@ const ZMarkdown: FC = () => {
   )
 }
 
-export default ZMarkdown
+export default ZPostEditor

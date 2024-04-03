@@ -118,7 +118,10 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     // 计算新的次序
     dragNode.data.parentValue = parent.data.value || null
     oldParent.children = oldParent.children.filter((item) => item.data.value !== dragNode.data.value)
-    const targetIndex = parent.children.findIndex((item) => item.data.value === node.data.value)
+    let targetIndex = parent.children.findIndex((item) => item.data.value === node.data.value)
+    if (dropPosition === -1) {
+      targetIndex -= 1
+    }
     parent.children.splice(targetIndex + 1, 0, dragNode)
     parent.children.forEach((item, index) => (item.data.ordinalNumber = index + 1))
 
