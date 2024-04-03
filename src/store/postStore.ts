@@ -7,24 +7,37 @@ import { makeAutoObservable } from "mobx"
 class PostStore {
   categories: ICategories[] = []
   categoriesLoading: boolean = false
+  selectedCategory: ICategories | null = null
 
   constructor() {
     makeAutoObservable(this)
   }
 
+  setCategories = (categories: ICategories[]) => {
+    this.categories = categories
+  }
+
+  setCategoriesLoading = (loading: boolean) => {
+    this.categoriesLoading = loading
+  }
+
+  setSelectedCategory = (category: ICategories | null) => {
+    this.selectedCategory = category
+  }
+
   getCategories = async () => {
-    this.categoriesLoading = true
+    this.setCategoriesLoading(true)
     try {
       const res = await apiCategories.list()
-      this.categories = res.data.data
+      this.setCategories(res.data.data)
     } catch (error) {
       errorHandler.handle(error)
     }
-    this.categoriesLoading = false
+    this.setCategoriesLoading(false)
   }
 
   updateCategories = async (data: ICategories[]) => {
-    this.categoriesLoading = true
+    this.setCategoriesLoading(true)
     try {
       const res = await apiCategories.update({ data })
       res.data.data.forEach((item) => {
@@ -35,11 +48,11 @@ class PostStore {
           assign(target, item)
         }
       })
-      this.categories = clone(this.categories)
+      this.setCategories(clone(this.categories))
     } catch (error) {
       errorHandler.handle(error)
     }
-    this.categoriesLoading = false
+    this.setCategoriesLoading(false)
   }
 }
 

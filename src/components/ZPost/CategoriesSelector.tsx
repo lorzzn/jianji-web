@@ -6,9 +6,10 @@ import { clone, fromPairs, partition, values } from "lodash"
 import Tree, { TreeProps } from "rc-tree"
 import DropIndicator from "rc-tree/lib/DropIndicator"
 import { DataNode, Key, TreeNodeProps } from "rc-tree/lib/interface"
-import { FC, useEffect, useMemo, useRef, useState } from "react"
+import { FC, useMemo, useRef, useState } from "react"
 import tw from "twin.macro"
 import ZButton from "../ZButton/ZButton"
+import { ZFloatingMenu, ZFloatingMenuItem } from "../ZFloatingMenu/ZFloatingMenu"
 import ZLoadingContent from "../ZLoadingContent/ZLoadingContent"
 import ZModal, { ZModalRef } from "../ZModal/ZModal"
 
@@ -16,7 +17,7 @@ export interface CategoriesSelectorProps {
   loading?: boolean
   categories: ICategories[]
   onUpdate: (data: ICategories[]) => void
-  onSelect: (keys: Key[], value: CategoriesNode[]) => void
+  onSelect: (key: Key, value: ICategories) => void
 }
 
 export interface CategoriesNode extends DataNode {
@@ -31,12 +32,17 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   onSelect: propOnSelect,
 }) => {
   const modalRef = useRef<ZModalRef>(null)
-  const [selectedNode, setSelectedNode] = useState<CategoriesNode>()
-  const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
+  const [selectedKey, setSelectedKey] = useState<Key>(0)
   const [expandKeys, setExpandKeys] = useState<Key[]>([])
+  const treeContainerRef = useRef<HTMLDivElement>(null)
 
   const showModal = () => modalRef.current?.show()
-  const onSelect: TreeProps<CategoriesNode>["onSelect"] = (selectedKeys) => setSelectedKeys(selectedKeys)
+  const onSelect: TreeProps<CategoriesNode>["onSelect"] = (selectedKeys, info) => {
+    if (selectedKeys[0] !== undefined) {
+      setSelectedKey(selectedKeys[0])
+      propOnSelect?.(info.node.key, info.node.data)
+    }
+  }
   const onExpand: TreeProps<CategoriesNode>["onExpand"] = (expandedKeys) => setExpandKeys(expandedKeys)
 
   const treeDataRecord = useMemo<Record<number, CategoriesNode>>(() => {
@@ -78,14 +84,6 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     return treeDataRecord[0].children
   }, [treeDataRecord])
 
-  useEffect(() => {
-    const node = treeDataRecord[selectedKeys[0] as number]
-    if (node) {
-      setSelectedNode(node)
-      propOnSelect?.(selectedKeys, [node])
-    }
-  }, [treeDataRecord, selectedKeys])
-
   const switcherIconRender = (props: TreeNodeProps) => {
     if (props.isLeaf) {
       return <RiFolderLine size={"1rem"} />
@@ -97,8 +95,6 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   }
 
   const onDrop: TreeProps<CategoriesNode>["onDrop"] = (info) => {
-    console.log(info)
-
     let parent: CategoriesNode
     const { dragNode, node, dropPosition, dropToGap } = info
     const oldParent = treeDataRecord[dragNode.data.parentValue ?? 0]
@@ -129,8 +125,8 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   }
 
   const createCategories = () => {
-    if (!selectedNode?.data) return
-    const { data } = selectedNode
+    if (!selectedKey) return
+    const data = treeDataRecord[selectedKey as number].data
 
     const newCategories = {
       value: Date.now(),
@@ -143,7 +139,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
       prev.push(data.value)
       return clone(prev)
     })
-    setSelectedKeys([newCategories.value])
+    setSelectedKey(newCategories.value)
   }
 
   return (
@@ -152,67 +148,74 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
       <ZModal ref={modalRef} title={"选择文章分类"}>
         <div className="flex flex-col">
           <ZLoadingContent loading={loading}>
-            <Tree
-              className={twclx(
-                "categories-selector min-h-48",
-                css`
-                  user-select: none;
-                  border-width: 0;
-                  .rc-tree-treenode {
-                    & span.rc-tree-switcher {
-                      background-image: none;
-                      margin-right: 0;
-                      width: auto;
-                    }
-                    & span.rc-tree-node-selected {
-                      box-shadow: none;
-                      ${tw`bg-blue-200 ring-2 ring-inset ring-blue-300`}
-                    }
-                    & span.rc-tree-node-content-wrapper {
-                      ${tw`px-1 hover:bg-blue-100 rounded-sm`}
-                    }
-                    &.drop-target {
-                      ${tw`bg-blue-100`}
-                    }
-                    &.drop-container ~ .rc-tree-treenode {
-                      ${tw`!border-l-blue-400`}
-                    }
-                  }
-                `,
-              )}
-              showLine
-              draggable
-              onDrop={onDrop}
-              showIcon={false}
-              switcherIcon={switcherIconRender}
-              dropIndicatorRender={(props) => {
-                return (
-                  <div
-                    className={css`
-                      div {
-                        ${tw`!bg-blue-400`}
+            <div ref={treeContainerRef}>
+              <Tree
+                className={twclx(
+                  "categories-selector min-h-48",
+                  css`
+                    user-select: none;
+                    border-width: 0;
+                    .rc-tree-treenode {
+                      & span.rc-tree-switcher {
+                        background-image: none;
+                        margin-right: 0;
+                        width: auto;
                       }
-                    `}
-                  >
-                    <DropIndicator {...props} />
-                  </div>
-                )
-              }}
-              selectedKeys={selectedKeys}
-              expandedKeys={expandKeys}
-              onExpand={onExpand}
-              expandAction={"click"}
-              onSelect={onSelect}
-              treeData={treeData}
-              height={360}
-              virtual
-              onClick={(e) => {
-                console.log(e)
-              }}
-              onActiveChange={(key) => console.log("Active:", key)}
-            />
-          </ZLoadingContent>
+                      & span.rc-tree-node-selected {
+                        box-shadow: none;
+                        ${tw`bg-blue-200 ring-2 ring-inset ring-blue-300`}
+                      }
+                      & span.rc-tree-node-content-wrapper {
+                        ${tw`px-1 hover:bg-blue-100 rounded-sm`}
+                      }
+                      &.drop-target {
+                        ${tw`bg-blue-100`}
+                      }
+                      &.drop-container ~ .rc-tree-treenode {
+                        ${tw`!border-l-blue-400`}
+                      }
+                    }
+                  `,
+                )}
+                virtual
+                showLine
+                draggable
+                onDrop={onDrop}
+                showIcon={false}
+                switcherIcon={switcherIconRender}
+                dropIndicatorRender={(props) => {
+                  return (
+                    <div
+                      className={css`
+                        div {
+                          ${tw`!bg-blue-400`}
+                        }
+                      `}
+                    >
+                      <DropIndicator {...props} />
+                    </div>
+                  )
+                }}
+                selectedKeys={[selectedKey]}
+                expandedKeys={expandKeys}
+                onExpand={onExpand}
+                expandAction={"click"}
+                onSelect={onSelect}
+                treeData={treeData}
+                height={360}
+              />
+            </div>
 
+            <ZFloatingMenu contextMenuTrigger={treeContainerRef}>
+              <ZFloatingMenuItem label="新建分类" />
+              <ZFloatingMenuItem label="重命名" />
+              <ZFloatingMenuItem label="删除" />
+              <ZFloatingMenu label="移动">
+                <ZFloatingMenuItem label="上移" />
+                <ZFloatingMenuItem label="下移" />
+              </ZFloatingMenu>
+            </ZFloatingMenu>
+          </ZLoadingContent>
           <div className="flex justify-between pt-6">
             <ZButton onClick={createCategories}>新建分类</ZButton>
             <div className="space-x-2">

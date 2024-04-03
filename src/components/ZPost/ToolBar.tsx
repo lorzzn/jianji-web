@@ -5,15 +5,14 @@ import CategoriesSelector, { CategoriesSelectorProps } from "./CategoriesSelecto
 
 const ToolBar: FC = observer(() => {
   const { postStore } = useStore()
-  const { categories, categoriesLoading, getCategories, updateCategories } = postStore
+  const { categories, categoriesLoading, getCategories, updateCategories, setSelectedCategory } = postStore
 
   useEffect(() => {
     getCategories()
   }, [])
 
-  const onCategoriesSelected: CategoriesSelectorProps["onSelect"] = (selectedKeys, info) => {
-    console.log(selectedKeys)
-    console.log(info)
+  const onCategoriesSelected: CategoriesSelectorProps["onSelect"] = (_, category) => {
+    setSelectedCategory(category)
   }
 
   return (

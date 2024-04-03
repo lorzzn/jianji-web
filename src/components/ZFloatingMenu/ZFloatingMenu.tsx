@@ -89,7 +89,7 @@ interface ZFloatingMenuProps {
   label?: string
   nested?: boolean
   children?: ReactNode
-  contextMenuTrigger?: MutableRefObject<HTMLElement>
+  contextMenuTrigger?: MutableRefObject<HTMLElement | null>
 }
 
 interface ZFloatingMenuRef {
