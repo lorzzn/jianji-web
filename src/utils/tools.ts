@@ -14,3 +14,9 @@ export const preget: typeof get = (
 
   return target
 }
+
+export const arrayMoveItem = (arr: any[], sourceIndex: number, targetIndex: number) => {
+  const sourceItem = arr.splice(sourceIndex, 1)[0]
+  arr.splice(targetIndex, 0, sourceItem)
+  return arr
+}
