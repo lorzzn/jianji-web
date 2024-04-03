@@ -33,6 +33,7 @@ import {
   Dispatch,
   forwardRef,
   HTMLProps,
+  MutableRefObject,
   ReactNode,
   SetStateAction,
   useContext,
@@ -85,9 +86,10 @@ const ZFloatingMenuContext = createContext<{
 })
 
 interface ZFloatingMenuProps {
-  label: string
+  label?: string
   nested?: boolean
   children?: ReactNode
+  contextMenuTrigger?: MutableRefObject<HTMLElement>
 }
 
 interface ZFloatingMenuRef {
@@ -97,7 +99,7 @@ interface ZFloatingMenuRef {
 }
 
 export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps & HTMLProps<HTMLButtonElement>>(
-  ({ children, label, ...props }, forwardedRef) => {
+  ({ children, label, contextMenuTrigger, ...props }, forwardedRef) => {
     const nodeRef = useRef<HTMLButtonElement | null>(null)
     const [isOpen, setIsOpen] = useState(false)
     const [hasFocusInside, setHasFocusInside] = useState(false)
@@ -187,6 +189,55 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
       }
     }, [tree, isOpen, nodeId, parentId])
 
+    const allowMouseUpCloseRef = useRef<boolean>()
+
+    useEffect(() => {
+      if (!contextMenuTrigger?.current) return
+      const triggerElement = contextMenuTrigger.current
+      let timeout: number
+
+      const onContextMenu = (e: MouseEvent) => {
+        e.preventDefault()
+
+        refs.setPositionReference({
+          getBoundingClientRect() {
+            return {
+              width: 0,
+              height: 0,
+              x: e.clientX,
+              y: e.clientY,
+              top: e.clientY,
+              right: e.clientX,
+              bottom: e.clientY,
+              left: e.clientX,
+            }
+          },
+        })
+
+        setIsOpen(true)
+        clearTimeout(timeout)
+
+        allowMouseUpCloseRef.current = false
+        timeout = window.setTimeout(() => {
+          allowMouseUpCloseRef.current = true
+        }, 300)
+      }
+
+      function onMouseUp() {
+        if (allowMouseUpCloseRef.current) {
+          setIsOpen(false)
+        }
+      }
+
+      triggerElement.addEventListener("contextmenu", onContextMenu)
+      triggerElement.addEventListener("mouseup", onMouseUp)
+      return () => {
+        triggerElement.removeEventListener("contextmenu", onContextMenu)
+        triggerElement.removeEventListener("mouseup", onMouseUp)
+        clearTimeout(timeout)
+      }
+    }, [refs])
+
     const show = () => setIsOpen(true)
     const hide = () => setIsOpen(false)
     useImperativeHandle(forwardedRef, () => ({ show, hide, current: nodeRef.current }))
@@ -200,7 +251,7 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
           data-open={isOpen ? "" : undefined}
           data-nested={isNested ? "" : undefined}
           data-focus-inside={hasFocusInside ? "" : undefined}
-          className={isNested ? MenuItemCSS : RootMenuCSS}
+          className={label && (isNested ? MenuItemCSS : RootMenuCSS)}
           {...getReferenceProps(
             parent.getItemProps({
               ...props,
