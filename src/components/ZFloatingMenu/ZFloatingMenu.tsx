@@ -1,5 +1,6 @@
 // https://codesandbox.io/p/sandbox/admiring-lamport-5wt3yg
 
+import { css } from "@emotion/css"
 import {
   autoUpdate,
   flip,
@@ -25,13 +26,55 @@ import {
   useRole,
   useTypeahead,
 } from "@floating-ui/react"
-import * as React from "react"
+import { RiArrowRightSLine } from "@remixicon/react"
+import {
+  ButtonHTMLAttributes,
+  createContext,
+  Dispatch,
+  forwardRef,
+  HTMLProps,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react"
+import tw from "twin.macro"
 
-const MenuContext = React.createContext<{
-  getItemProps: (userProps?: React.HTMLProps<HTMLElement>) => Record<string, unknown>
+const RootMenuCSS = css`
+  ${tw`p-1 rounded-md border border-blue-100`}
+
+  &[data-open],
+  &:hover {
+    ${tw`bg-blue-500 text-white`}
+  }
+`
+
+const MenuCSS = css`
+  ${tw`bg-white p-1 border rounded-md shadow-md z-[1000]`}
+`
+
+const MenuItemCSS = css`
+  ${tw`flex justify-between items-center w-full rounded min-w-28 p-1`}
+
+  &[disabled] {
+    ${tw`cursor-not-allowed text-gray-400`}
+  }
+
+  &:focus,
+  &[data-nested][data-open]:not([data-focus-inside]),
+  &[data-focus-inside][data-open] {
+    ${tw`bg-blue-500 text-white`}
+  }
+`
+
+const ZFloatingMenuContext = createContext<{
+  getItemProps: (userProps?: HTMLProps<HTMLElement>) => Record<string, unknown>
   activeIndex: number | null
-  setActiveIndex: React.Dispatch<React.SetStateAction<number | null>>
-  setHasFocusInside: React.Dispatch<React.SetStateAction<boolean>>
+  setActiveIndex: Dispatch<SetStateAction<number | null>>
+  setHasFocusInside: Dispatch<SetStateAction<boolean>>
   isOpen: boolean
 }>({
   getItemProps: () => ({}),
@@ -41,21 +84,28 @@ const MenuContext = React.createContext<{
   isOpen: false,
 })
 
-interface MenuProps {
+interface ZFloatingMenuProps {
   label: string
   nested?: boolean
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
-export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & React.HTMLProps<HTMLButtonElement>>(
-  ({ children, label, ...props }, forwardedRef) => {
-    const [isOpen, setIsOpen] = React.useState(false)
-    const [hasFocusInside, setHasFocusInside] = React.useState(false)
-    const [activeIndex, setActiveIndex] = React.useState<number | null>(null)
+interface ZFloatingMenuRef {
+  show: () => void
+  hide: () => void
+  current: HTMLButtonElement | null
+}
 
-    const elementsRef = React.useRef<Array<HTMLButtonElement | null>>([])
-    const labelsRef = React.useRef<Array<string | null>>([])
-    const parent = React.useContext(MenuContext)
+export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps & HTMLProps<HTMLButtonElement>>(
+  ({ children, label, ...props }, forwardedRef) => {
+    const nodeRef = useRef<HTMLButtonElement | null>(null)
+    const [isOpen, setIsOpen] = useState(false)
+    const [hasFocusInside, setHasFocusInside] = useState(false)
+    const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
+    const elementsRef = useRef<Array<HTMLButtonElement | null>>([])
+    const labelsRef = useRef<Array<string | null>>([])
+    const parent = useContext(ZFloatingMenuContext)
 
     const tree = useFloatingTree()
     const nodeId = useFloatingNodeId()
@@ -109,7 +159,7 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
     // Event emitter allows you to communicate across tree components.
     // This effect closes all menus when an item gets clicked anywhere
     // in the tree.
-    React.useEffect(() => {
+    useEffect(() => {
       if (!tree) return
 
       function handleTreeClick() {
@@ -131,22 +181,26 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
       }
     }, [tree, nodeId, parentId])
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (isOpen && tree) {
         tree.events.emit("menuopen", { parentId, nodeId })
       }
     }, [tree, isOpen, nodeId, parentId])
 
+    const show = () => setIsOpen(true)
+    const hide = () => setIsOpen(false)
+    useImperativeHandle(forwardedRef, () => ({ show, hide, current: nodeRef.current }))
+
     return (
       <FloatingNode id={nodeId}>
         <button
-          ref={useMergeRefs([refs.setReference, item.ref, forwardedRef])}
+          ref={useMergeRefs([refs.setReference, item.ref, nodeRef])}
           tabIndex={!isNested ? undefined : parent.activeIndex === item.index ? 0 : -1}
           role={isNested ? "menuitem" : undefined}
           data-open={isOpen ? "" : undefined}
           data-nested={isNested ? "" : undefined}
           data-focus-inside={hasFocusInside ? "" : undefined}
-          className={isNested ? "MenuItem" : "RootMenu"}
+          className={isNested ? MenuItemCSS : RootMenuCSS}
           {...getReferenceProps(
             parent.getItemProps({
               ...props,
@@ -159,13 +213,9 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
           )}
         >
           {label}
-          {isNested && (
-            <span aria-hidden style={{ marginLeft: 10, fontSize: 10 }}>
-              ▶
-            </span>
-          )}
+          {isNested && <RiArrowRightSLine size={"1.2rem"} />}
         </button>
-        <MenuContext.Provider
+        <ZFloatingMenuContext.Provider
           value={{
             activeIndex,
             setActiveIndex,
@@ -183,29 +233,29 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
                   initialFocus={isNested ? -1 : 0}
                   returnFocus={!isNested}
                 >
-                  <div ref={refs.setFloating} className="Menu" style={floatingStyles} {...getFloatingProps()}>
+                  <div ref={refs.setFloating} className={MenuCSS} style={floatingStyles} {...getFloatingProps()}>
                     {children}
                   </div>
                 </FloatingFocusManager>
               </FloatingPortal>
             )}
           </FloatingList>
-        </MenuContext.Provider>
+        </ZFloatingMenuContext.Provider>
       </FloatingNode>
     )
   },
 )
 
-interface MenuItemProps {
+interface ZFloatingMenuItemProps {
   label: string
   disabled?: boolean
 }
 
-export const MenuItem = React.forwardRef<
+export const ZFloatingMenuItem = forwardRef<
   HTMLButtonElement,
-  MenuItemProps & React.ButtonHTMLAttributes<HTMLButtonElement>
+  ZFloatingMenuItemProps & ButtonHTMLAttributes<HTMLButtonElement>
 >(({ label, disabled, ...props }, forwardedRef) => {
-  const menu = React.useContext(MenuContext)
+  const menu = useContext(ZFloatingMenuContext)
   const item = useListItem({ label: disabled ? null : label })
   const tree = useFloatingTree()
   const isActive = item.index === menu.activeIndex
@@ -216,7 +266,7 @@ export const MenuItem = React.forwardRef<
       ref={useMergeRefs([item.ref, forwardedRef])}
       type="button"
       role="menuitem"
-      className="MenuItem"
+      className={MenuItemCSS}
       tabIndex={isActive ? 0 : -1}
       disabled={disabled}
       {...menu.getItemProps({
@@ -235,18 +285,18 @@ export const MenuItem = React.forwardRef<
   )
 })
 
-export const ZFloatingMenu = React.forwardRef<HTMLButtonElement, MenuProps & React.HTMLProps<HTMLButtonElement>>(
+export const ZFloatingMenu = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps & HTMLProps<HTMLButtonElement>>(
   (props, ref) => {
     const parentId = useFloatingParentNodeId()
 
     if (parentId === null) {
       return (
         <FloatingTree>
-          <MenuComponent {...props} ref={ref} />
+          <ZFloatingMenuComponent {...props} ref={ref} />
         </FloatingTree>
       )
     }
 
-    return <MenuComponent {...props} ref={ref} />
+    return <ZFloatingMenuComponent {...props} ref={ref} />
   },
 )
