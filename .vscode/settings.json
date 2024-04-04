@@ -4,6 +4,7 @@
   "files.eol": "\n",
   "tailwindCSS.experimental.classRegex": [
     "tw`([^`]*)", // tw`...`
+    "'([^']*)'",
     "classNames\\(([^)]+)\\)"
   ]
 }

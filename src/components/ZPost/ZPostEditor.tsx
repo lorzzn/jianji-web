@@ -2,7 +2,6 @@ import { FC, useState } from "react"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
 import Preview from "./Preview"
 import Textarea from "./Textarea"
-import ToolBar from "./ToolBar"
 
 const ZPostEditor: FC = () => {
   const [value, setValue] = useState<string>("")
@@ -13,7 +12,6 @@ const ZPostEditor: FC = () => {
 
   return (
     <div className="flex-1 flex flex-col">
-      <ToolBar />
       <PanelGroup direction="horizontal" className="flex-1">
         <Panel minSize={25} order={1} className="shadow-sm rounded-md">
           <Textarea value={value} onChange={handleValueChange} className="w-full h-full p-3" />
