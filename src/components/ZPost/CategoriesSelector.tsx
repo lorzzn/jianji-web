@@ -114,6 +114,10 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
         scale={"small"}
         className="w-full text-sm !ring-0 bg-transparent border-none"
         onBlur={onTitleEditingBlur}
+        onClick={(e) => {
+          e.stopPropagation()
+          e.preventDefault()
+        }}
         defaultValue={node.data.label}
       />
     ) : (
@@ -234,7 +238,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     setContextMenuNode(node)
   }
 
-  const draggableFn: DraggableFn = (node): boolean => editingKey === (node as CategoriesNode).data.value
+  const draggableFn: DraggableFn = (node): boolean => editingKey !== (node as CategoriesNode).data.value
 
   return (
     <div>
