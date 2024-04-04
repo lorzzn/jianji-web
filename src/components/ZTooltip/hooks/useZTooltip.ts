@@ -30,7 +30,7 @@ export const useZTooltip = ({
     onOpenChange: setOpen,
     whileElementsMounted: autoUpdate,
     middleware: [
-      offset(0),
+      offset(5),
       flip({
         crossAxis: placement.includes("-"),
         fallbackAxisSideDirection: "start",
