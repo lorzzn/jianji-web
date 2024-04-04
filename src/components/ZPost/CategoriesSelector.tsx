@@ -5,11 +5,13 @@ import { RiFolder2Line, RiFolderLine, RiFolderOpenLine } from "@remixicon/react"
 import { first, fromPairs, partition, values } from "lodash"
 import Tree, { TreeProps } from "rc-tree"
 import DropIndicator from "rc-tree/lib/DropIndicator"
+import { DraggableFn } from "rc-tree/lib/Tree"
 import { DataNode, Key, TreeNodeProps } from "rc-tree/lib/interface"
-import { FC, useMemo, useRef, useState } from "react"
+import { FC, FocusEventHandler, useMemo, useRef, useState } from "react"
 import tw from "twin.macro"
 import ZButton from "../ZButton/ZButton"
 import { ZFloatingMenu, ZFloatingMenuItem, ZFloatingMenuItemProps } from "../ZFloatingMenu/ZFloatingMenu"
+import ZInput from "../ZInput/ZInput"
 import ZLoadingContent from "../ZLoadingContent/ZLoadingContent"
 import ZModal, { ZModalRef } from "../ZModal/ZModal"
 
@@ -41,6 +43,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
 }) => {
   const modalRef = useRef<ZModalRef>(null)
   const [expandKeys, setExpandKeys] = useState<Key[]>([])
+  const [editingKey, setEditingKey] = useState<Key | null>(null)
   const treeContainerRef = useRef<HTMLDivElement>(null)
   const selectedKey = useMemo<number>(() => selectedCategory?.value || 0, [selectedCategory])
 
@@ -93,9 +96,30 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     return treeDataRecord[0].children
   }, [treeDataRecord])
 
-  const treeTitleRender: TreeProps<CategoriesNode>["titleRender"] = (node) => (
-    <div data-value={node.data.value}>{node.data.label}</div>
-  )
+  const renameCategory = (value: number, label: string) => {
+    const node = treeDataRecord[value]
+    if (!node) return
+    node.data.label = label
+    onUpdate([node.data])
+  }
+
+  const treeTitleRender: TreeProps<CategoriesNode>["titleRender"] = (node) => {
+    const onTitleEditingBlur: FocusEventHandler<HTMLInputElement> = (e) => {
+      setEditingKey(null)
+      renameCategory(node.data.value, e.target.value)
+    }
+
+    return editingKey === node.data.value ? (
+      <ZInput
+        scale={"small"}
+        className="w-full text-sm !ring-0 bg-transparent border-none"
+        onBlur={onTitleEditingBlur}
+        defaultValue={node.data.label}
+      />
+    ) : (
+      <div data-value={node.data.value}>{node.data.label}</div>
+    )
+  }
 
   const switcherIconRender = (props: TreeNodeProps) => {
     if (props.isLeaf) {
@@ -193,6 +217,12 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
         case "delete":
           deleteCategories()
           break
+        case "rename":
+          setEditingKey(node.data.value)
+          break
+
+        default:
+          break
       }
     }
 
@@ -203,6 +233,8 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     propOnSelect?.(node.data.value, node.data)
     setContextMenuNode(node)
   }
+
+  const draggableFn: DraggableFn = (node): boolean => editingKey === (node as CategoriesNode).data.value
 
   return (
     <div>
@@ -241,7 +273,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
                 )}
                 virtual
                 showLine
-                draggable
+                draggable={draggableFn}
                 treeData={treeData}
                 onDrop={onDrop}
                 showIcon={false}
