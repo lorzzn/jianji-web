@@ -23,6 +23,7 @@ export interface CategoriesSelectorProps {
   onCreate: (data: Partial<ICategory>[], callback?: (created: ICategory[] | null) => void) => void
   onSelect: (key: Key, value: ICategory) => void
   onDelete: (value: number | number[]) => void
+  onConfirm?: (data: ICategory) => void
 }
 
 export interface CategoriesNode extends DataNode {
@@ -40,6 +41,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   onCreate,
   onDelete,
   onSelect: propOnSelect,
+  onConfirm: propOnConfirm,
 }) => {
   const modalRef = useRef<ZModalRef>(null)
   const [expandKeys, setExpandKeys] = useState<Key[]>([])
@@ -48,6 +50,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   const selectedKey = useMemo<number>(() => selectedCategory?.value || 0, [selectedCategory])
 
   const showModal = () => modalRef.current?.show()
+  const hideModal = () => modalRef.current?.hide()
   const onSelect: TreeProps<CategoriesNode>["onSelect"] = (selectedKeys, info) => {
     if (selectedKeys[0] !== undefined) {
       propOnSelect?.(info.node.key, info.node.data)
@@ -119,6 +122,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
           e.preventDefault()
         }}
         defaultValue={node.data.label}
+        maxLength={32}
       />
     ) : (
       <div data-value={node.data.value}>{node.data.label}</div>
@@ -240,6 +244,16 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
 
   const draggableFn: DraggableFn = (node): boolean => editingKey !== (node as CategoriesNode).data.value
 
+  const onConfirm = () => {
+    if (selectedCategory) {
+      propOnConfirm?.(selectedCategory)
+    }
+  }
+
+  const onCancel = () => {
+    hideModal()
+  }
+
   return (
     <div>
       <ZButton onClick={showModal}>选择分类</ZButton>
@@ -299,7 +313,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
                 selectedKeys={[selectedKey]}
                 expandedKeys={expandKeys}
                 onExpand={onExpand}
-                expandAction={"click"}
+                expandAction={"doubleClick"}
                 onSelect={onSelect}
               />
             </div>
@@ -313,8 +327,10 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
           <div className="flex justify-between">
             <div></div>
             <div className="space-x-2">
-              <ZButton>确认</ZButton>
-              <ZButton>取消</ZButton>
+              <ZButton disabled={!selectedKey} onClick={onConfirm}>
+                确认
+              </ZButton>
+              <ZButton onClick={onCancel}>取消</ZButton>
             </div>
           </div>
         </div>
