@@ -1,7 +1,7 @@
 import { ICategory } from "@/api/types/response/categories"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
-import { RiFolder2Line, RiFolderLine, RiFolderOpenLine } from "@remixicon/react"
+import { RiFolder2Line, RiFolderLine, RiFolderOpenLine, RiInformation2Line } from "@remixicon/react"
 import { first, fromPairs, partition, values } from "lodash"
 import Tree, { TreeProps } from "rc-tree"
 import DropIndicator from "rc-tree/lib/DropIndicator"
@@ -14,6 +14,7 @@ import { ZFloatingMenu, ZFloatingMenuItem, ZFloatingMenuItemProps } from "../ZFl
 import ZInput from "../ZInput/ZInput"
 import ZLoadingContent from "../ZLoadingContent/ZLoadingContent"
 import ZModal, { ZModalRef } from "../ZModal/ZModal"
+import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
 
 export interface CategoriesSelectorProps {
   loading?: boolean
@@ -325,7 +326,17 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
             </ZFloatingMenu>
           </ZLoadingContent>
           <div className="flex justify-between">
-            <div></div>
+            <ZTooltip>
+              <ZTooltipTrigger>
+                <RiInformation2Line size={"1rem"} className="text-gray-950 hover:text-blue-500" />
+              </ZTooltipTrigger>
+              <ZTooltipContent>
+                <div>拖动分类可以排序</div>
+                <div>右键可以选择更多操作</div>
+                <div>点击图标或者双击分类名称展开/收起子分类</div>
+                <div>注意：删除分类时子分类也会一起被删除</div>
+              </ZTooltipContent>
+            </ZTooltip>
             <div className="space-x-2">
               <ZButton disabled={!selectedKey} onClick={onConfirm}>
                 确认
