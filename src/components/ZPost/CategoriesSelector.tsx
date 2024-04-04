@@ -1,4 +1,4 @@
-import { ICategories } from "@/api/types/response/categories"
+import { ICategory } from "@/api/types/response/categories"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import { RiFolder2Line, RiFolderLine, RiFolderOpenLine } from "@remixicon/react"
@@ -15,15 +15,16 @@ import ZModal, { ZModalRef } from "../ZModal/ZModal"
 
 export interface CategoriesSelectorProps {
   loading?: boolean
-  categories: ICategories[]
-  selectedCategory: ICategories | null
-  onUpdate: (data: ICategories[]) => void
-  onCreate: (data: Partial<ICategories>[], callback?: (created: ICategories[] | null) => void) => void
-  onSelect: (key: Key, value: ICategories) => void
+  categories: ICategory[]
+  selectedCategory: ICategory | null
+  onUpdate: (data: ICategory[]) => void
+  onCreate: (data: Partial<ICategory>[], callback?: (created: ICategory[] | null) => void) => void
+  onSelect: (key: Key, value: ICategory) => void
+  onDelete: (value: number | number[]) => void
 }
 
 export interface CategoriesNode extends DataNode {
-  data: ICategories
+  data: ICategory
   children: CategoriesNode[]
 }
 
@@ -35,6 +36,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   loading = false,
   onUpdate,
   onCreate,
+  onDelete,
   onSelect: propOnSelect,
 }) => {
   const modalRef = useRef<ZModalRef>(null)
@@ -52,7 +54,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   const [contextMenuNode, setContextMenuNode] = useState<CategoriesNode | null>(null)
 
   const treeDataRecord = useMemo<Record<number, CategoriesNode>>(() => {
-    const all: ICategories = {
+    const all: ICategory = {
       value: 0,
       label: "全部",
       parentValue: null,
@@ -85,7 +87,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   const treeData = useMemo<CategoriesNode[]>(() => {
     categories.forEach((item) => {
       const parent = treeDataRecord[item.parentValue ?? 0]
-      parent.children?.push(treeDataRecord[item.value])
+      parent?.children?.push(treeDataRecord[item.value])
     })
     values(treeDataRecord).forEach((item) => (item.children = sortChildren(item.children)))
     return treeDataRecord[0].children
@@ -135,37 +137,47 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     onUpdate([...parent.children, ...oldParent.children].map((item) => item.data))
   }
 
-  const createCategories = (parentNode?: ICategories) => {
-    if (!parentNode) {
-      if (!selectedKey) {
-        parentNode = treeDataRecord[0].data
-      } else {
-        parentNode = treeDataRecord[selectedKey as number].data
+  const getCategoryPath = (node: ICategory) => {
+    const path = [node.value]
+    if (node.parentValue) {
+      const parent = categories.find((item) => item.value === node.parentValue)
+      if (parent) {
+        path.unshift(...getCategoryPath(parent))
       }
     }
+    return path
+  }
 
-    const newCategories = {
-      label: `新分类`,
-      parentValue: parentNode.value || null,
+  const createCategories = () => {
+    let node
+    if (!selectedKey) {
+      node = treeDataRecord[0].data
+    } else {
+      node = treeDataRecord[selectedKey as number].data
     }
 
-    onCreate([newCategories], (created) => {
-      if (created) {
-        const newNode = first(created)
-        if (newNode) {
-          setExpandKeys([newNode.parentValue ?? 0])
-          propOnSelect?.(newNode.value, newNode)
-        }
+    const category = {
+      label: `新分类`,
+      parentValue: node.value || null,
+    }
+
+    onCreate([category], (created) => {
+      const remoteValue = first(created)
+      if (created && remoteValue) {
+        setExpandKeys((prev) => [...prev, ...getCategoryPath(remoteValue)])
+        propOnSelect?.(remoteValue.value, remoteValue)
       }
     })
   }
 
-  const deleteCategories = (parentNode?: ICategories) => {
-    if (!parentNode) {
-      if (!selectedKey) return
-      parentNode = treeDataRecord[selectedKey as number].data
+  const deleteCategories = () => {
+    let node
+    if (!selectedKey) {
+      return
+    } else {
+      node = treeDataRecord[selectedKey as number].data
     }
-    console.log("delete: ", parentNode)
+    onDelete?.([node.value])
   }
 
   const onFolatingMenuItemClick =
@@ -176,10 +188,10 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
 
       switch (actions) {
         case "create":
-          createCategories(node.data)
+          createCategories()
           break
         case "delete":
-          deleteCategories(node.data)
+          deleteCategories()
           break
       }
     }
@@ -258,12 +270,8 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
 
             <ZFloatingMenu contextMenuTrigger={treeContainerRef}>
               <ZFloatingMenuItem label="新建分类" onClick={onFolatingMenuItemClick("create")} />
-              <ZFloatingMenuItem
-                label="重命名"
-                disabled={!contextMenuNode}
-                onClick={onFolatingMenuItemClick("rename")}
-              />
-              <ZFloatingMenuItem label="删除" disabled={!contextMenuNode} onClick={onFolatingMenuItemClick("delete")} />
+              <ZFloatingMenuItem label="重命名" disabled={!selectedKey} onClick={onFolatingMenuItemClick("rename")} />
+              <ZFloatingMenuItem label="删除" disabled={!selectedKey} onClick={onFolatingMenuItemClick("delete")} />
             </ZFloatingMenu>
           </ZLoadingContent>
           <div className="flex justify-between">
