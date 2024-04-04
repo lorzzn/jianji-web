@@ -2,21 +2,23 @@ import { ICategories } from "@/api/types/response/categories"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import { RiFolder2Line, RiFolderLine, RiFolderOpenLine } from "@remixicon/react"
-import { clone, fromPairs, partition, values } from "lodash"
+import { first, fromPairs, partition, values } from "lodash"
 import Tree, { TreeProps } from "rc-tree"
 import DropIndicator from "rc-tree/lib/DropIndicator"
 import { DataNode, Key, TreeNodeProps } from "rc-tree/lib/interface"
 import { FC, useMemo, useRef, useState } from "react"
 import tw from "twin.macro"
 import ZButton from "../ZButton/ZButton"
-import { ZFloatingMenu, ZFloatingMenuItem } from "../ZFloatingMenu/ZFloatingMenu"
+import { ZFloatingMenu, ZFloatingMenuItem, ZFloatingMenuItemProps } from "../ZFloatingMenu/ZFloatingMenu"
 import ZLoadingContent from "../ZLoadingContent/ZLoadingContent"
 import ZModal, { ZModalRef } from "../ZModal/ZModal"
 
 export interface CategoriesSelectorProps {
   loading?: boolean
   categories: ICategories[]
+  selectedCategory: ICategories | null
   onUpdate: (data: ICategories[]) => void
+  onCreate: (data: Partial<ICategories>[], callback?: (created: ICategories[] | null) => void) => void
   onSelect: (key: Key, value: ICategories) => void
 }
 
@@ -25,25 +27,29 @@ export interface CategoriesNode extends DataNode {
   children: CategoriesNode[]
 }
 
+type FMenuActions = "create" | "delete" | "rename" | "moveup" | "movedown"
+
 const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   categories,
+  selectedCategory,
   loading = false,
   onUpdate,
+  onCreate,
   onSelect: propOnSelect,
 }) => {
   const modalRef = useRef<ZModalRef>(null)
-  const [selectedKey, setSelectedKey] = useState<Key>(0)
   const [expandKeys, setExpandKeys] = useState<Key[]>([])
   const treeContainerRef = useRef<HTMLDivElement>(null)
+  const selectedKey = useMemo<number>(() => selectedCategory?.value || 0, [selectedCategory])
 
   const showModal = () => modalRef.current?.show()
   const onSelect: TreeProps<CategoriesNode>["onSelect"] = (selectedKeys, info) => {
     if (selectedKeys[0] !== undefined) {
-      setSelectedKey(selectedKeys[0])
       propOnSelect?.(info.node.key, info.node.data)
     }
   }
   const onExpand: TreeProps<CategoriesNode>["onExpand"] = (expandedKeys) => setExpandKeys(expandedKeys)
+  const [contextMenuNode, setContextMenuNode] = useState<CategoriesNode | null>(null)
 
   const treeDataRecord = useMemo<Record<number, CategoriesNode>>(() => {
     const all: ICategories = {
@@ -67,9 +73,10 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
 
   // 根据ordinalNumber进行排序
   const sortChildren = (children: CategoriesNode[]): CategoriesNode[] => {
-    const [orderedItems, unorderedItems] = partition(children, Boolean)
+    const [orderedItems, unorderedItems] = partition(children, (child) => Boolean(child.data.ordinalNumber))
+
     orderedItems.sort((a, b) => {
-      return a.data.ordinalNumber - b.data.ordinalNumber
+      return Number(a.data.ordinalNumber) - Number(b.data.ordinalNumber) || 0
     })
     return [...orderedItems, ...unorderedItems]
   }
@@ -83,6 +90,10 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     values(treeDataRecord).forEach((item) => (item.children = sortChildren(item.children)))
     return treeDataRecord[0].children
   }, [treeDataRecord])
+
+  const treeTitleRender: TreeProps<CategoriesNode>["titleRender"] = (node) => (
+    <div data-value={node.data.value}>{node.data.label}</div>
+  )
 
   const switcherIconRender = (props: TreeNodeProps) => {
     if (props.isLeaf) {
@@ -124,22 +135,61 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     onUpdate([...parent.children, ...oldParent.children].map((item) => item.data))
   }
 
-  const createCategories = () => {
-    if (!selectedKey) return
-    const data = treeDataRecord[selectedKey as number].data
+  const createCategories = (parentNode?: ICategories) => {
+    if (!parentNode) {
+      if (!selectedKey) {
+        parentNode = treeDataRecord[0].data
+      } else {
+        parentNode = treeDataRecord[selectedKey as number].data
+      }
+    }
 
     const newCategories = {
-      value: Date.now(),
-      label: `分类${Date.now()}`,
-      parentValue: data.value,
-      ordinalNumber: 0,
+      label: `新分类`,
+      parentValue: parentNode.value || null,
     }
-    onUpdate([newCategories])
-    setExpandKeys((prev) => {
-      prev.push(data.value)
-      return clone(prev)
+
+    onCreate([newCategories], (created) => {
+      if (created) {
+        const newNode = first(created)
+        if (newNode) {
+          setExpandKeys([newNode.parentValue ?? 0])
+          propOnSelect?.(newNode.value, newNode)
+        }
+      }
     })
-    setSelectedKey(newCategories.value)
+  }
+
+  const deleteCategories = (parentNode?: ICategories) => {
+    if (!parentNode) {
+      if (!selectedKey) return
+      parentNode = treeDataRecord[selectedKey as number].data
+    }
+    console.log("delete: ", parentNode)
+  }
+
+  const onFolatingMenuItemClick =
+    (actions: FMenuActions): ZFloatingMenuItemProps["onClick"] =>
+    () => {
+      const node = contextMenuNode
+      if (!node) return
+
+      switch (actions) {
+        case "create":
+          createCategories(node.data)
+          break
+        case "delete":
+          deleteCategories(node.data)
+          break
+      }
+    }
+
+  const onTreeContextMenu = (e: React.MouseEvent) => {
+    const treeTitleElement = (e.target as HTMLElement).closest(".rc-tree-title div") as HTMLElement
+    const value = Number(treeTitleElement?.dataset.value) || 0
+    const node = treeDataRecord[value]
+    propOnSelect?.(node.data.value, node.data)
+    setContextMenuNode(node)
   }
 
   return (
@@ -148,10 +198,10 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
       <ZModal ref={modalRef} title={"选择文章分类"}>
         <div className="flex flex-col">
           <ZLoadingContent loading={loading}>
-            <div ref={treeContainerRef}>
+            <div ref={treeContainerRef} onContextMenu={onTreeContextMenu}>
               <Tree
                 className={twclx(
-                  "categories-selector min-h-48",
+                  "categories-selector min-h-48 ring-1 ring-gray-300 rounded-sm p-2",
                   css`
                     user-select: none;
                     border-width: 0;
@@ -180,8 +230,10 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
                 virtual
                 showLine
                 draggable
+                treeData={treeData}
                 onDrop={onDrop}
                 showIcon={false}
+                titleRender={treeTitleRender}
                 switcherIcon={switcherIconRender}
                 dropIndicatorRender={(props) => {
                   return (
@@ -201,23 +253,21 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
                 onExpand={onExpand}
                 expandAction={"click"}
                 onSelect={onSelect}
-                treeData={treeData}
-                height={360}
               />
             </div>
 
             <ZFloatingMenu contextMenuTrigger={treeContainerRef}>
-              <ZFloatingMenuItem label="新建分类" />
-              <ZFloatingMenuItem label="重命名" />
-              <ZFloatingMenuItem label="删除" />
-              <ZFloatingMenu label="移动">
-                <ZFloatingMenuItem label="上移" />
-                <ZFloatingMenuItem label="下移" />
-              </ZFloatingMenu>
+              <ZFloatingMenuItem label="新建分类" onClick={onFolatingMenuItemClick("create")} />
+              <ZFloatingMenuItem
+                label="重命名"
+                disabled={!contextMenuNode}
+                onClick={onFolatingMenuItemClick("rename")}
+              />
+              <ZFloatingMenuItem label="删除" disabled={!contextMenuNode} onClick={onFolatingMenuItemClick("delete")} />
             </ZFloatingMenu>
           </ZLoadingContent>
-          <div className="flex justify-between pt-6">
-            <ZButton onClick={createCategories}>新建分类</ZButton>
+          <div className="flex justify-between">
+            <div></div>
             <div className="space-x-2">
               <ZButton>确认</ZButton>
               <ZButton>取消</ZButton>

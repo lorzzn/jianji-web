@@ -5,9 +5,9 @@ import { assign, clone } from "lodash"
 import { makeAutoObservable } from "mobx"
 
 class PostStore {
-  categories: ICategories[] = []
-  categoriesLoading: boolean = false
-  selectedCategory: ICategories | null = null
+  categories: ICategories[] = [] // 文章可用的所有分类
+  categoriesLoading: boolean = false // 分类加载状态
+  category: ICategories | null = null // 当前文章的分类
 
   constructor() {
     makeAutoObservable(this)
@@ -21,8 +21,8 @@ class PostStore {
     this.categoriesLoading = loading
   }
 
-  setSelectedCategory = (category: ICategories | null) => {
-    this.selectedCategory = category
+  setCategory = (category: ICategories | null) => {
+    this.category = category
   }
 
   getCategories = async () => {
@@ -50,6 +50,20 @@ class PostStore {
       })
       this.setCategories(clone(this.categories))
     } catch (error) {
+      errorHandler.handle(error)
+    }
+    this.setCategoriesLoading(false)
+  }
+
+  createCategories = async (data: Partial<ICategories>[], callback?: (created: ICategories[] | null) => void) => {
+    this.setCategoriesLoading(true)
+    try {
+      const res = await apiCategories.create({ data })
+      this.categories.push(...res.data.data)
+      callback?.(res.data.data)
+      this.setCategories(clone(this.categories))
+    } catch (error) {
+      callback?.(null)
       errorHandler.handle(error)
     }
     this.setCategoriesLoading(false)

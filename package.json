@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@emotion/css": "^11.11.2",
+    "@emotion/styled": "^11.11.5",
     "@floating-ui/react": "^0.26.10",
     "@hookform/resolvers": "^3.3.4",
     "@mobx-devtools/tools": "^0.0.4",

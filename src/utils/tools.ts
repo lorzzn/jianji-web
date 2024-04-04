@@ -1,5 +1,6 @@
 import { NumericDictionary, PropertyPath, get, set } from "lodash"
 export { css } from "@emotion/css"
+export { default as styled } from "@emotion/styled"
 
 export const preget: typeof get = (
   object: NumericDictionary<any> | undefined | null,

@@ -58,7 +58,7 @@ const MenuCSS = css`
 `
 
 const MenuItemCSS = css`
-  ${tw`flex justify-between items-center w-full rounded min-w-28 p-1`}
+  ${tw`flex justify-between items-center w-full rounded min-w-28 px-2 py-1`}
 
   &[disabled] {
     ${tw`cursor-not-allowed text-gray-400`}
@@ -76,12 +76,14 @@ const ZFloatingMenuContext = createContext<{
   activeIndex: number | null
   setActiveIndex: Dispatch<SetStateAction<number | null>>
   setHasFocusInside: Dispatch<SetStateAction<boolean>>
+  contextMenuClickRef: MutableRefObject<MouseEvent | null>
   isOpen: boolean
 }>({
   getItemProps: () => ({}),
   activeIndex: null,
   setActiveIndex: () => {},
   setHasFocusInside: () => {},
+  contextMenuClickRef: { current: null },
   isOpen: false,
 })
 
@@ -89,6 +91,7 @@ interface ZFloatingMenuProps {
   label?: string
   nested?: boolean
   children?: ReactNode
+  onContextMenuClick?: (event: MouseEvent) => void
   contextMenuTrigger?: MutableRefObject<HTMLElement | null>
 }
 
@@ -99,8 +102,9 @@ interface ZFloatingMenuRef {
 }
 
 export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps & HTMLProps<HTMLButtonElement>>(
-  ({ children, label, contextMenuTrigger, ...props }, forwardedRef) => {
+  ({ children, label, contextMenuTrigger, onContextMenuClick, ...props }, forwardedRef) => {
     const nodeRef = useRef<HTMLButtonElement | null>(null)
+    const contextMenuClickRef = useRef<MouseEvent | null>(null)
     const [isOpen, setIsOpen] = useState(false)
     const [hasFocusInside, setHasFocusInside] = useState(false)
     const [activeIndex, setActiveIndex] = useState<number | null>(null)
@@ -198,6 +202,8 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
 
       const onContextMenu = (e: MouseEvent) => {
         e.preventDefault()
+        onContextMenuClick?.(e)
+        contextMenuClickRef.current = e
 
         refs.setPositionReference({
           getBoundingClientRect() {
@@ -272,6 +278,7 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
             setActiveIndex,
             getItemProps,
             setHasFocusInside,
+            contextMenuClickRef,
             isOpen,
           }}
         >
@@ -297,44 +304,44 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
   },
 )
 
-interface ZFloatingMenuItemProps {
+export interface ZFloatingMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick"> {
   label: string
   disabled?: boolean
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>, mouseEvent?: MouseEvent | null) => void
 }
 
-export const ZFloatingMenuItem = forwardRef<
-  HTMLButtonElement,
-  ZFloatingMenuItemProps & ButtonHTMLAttributes<HTMLButtonElement>
->(({ label, disabled, ...props }, forwardedRef) => {
-  const menu = useContext(ZFloatingMenuContext)
-  const item = useListItem({ label: disabled ? null : label })
-  const tree = useFloatingTree()
-  const isActive = item.index === menu.activeIndex
+export const ZFloatingMenuItem = forwardRef<HTMLButtonElement, ZFloatingMenuItemProps>(
+  ({ label, disabled, ...props }, forwardedRef) => {
+    const menu = useContext(ZFloatingMenuContext)
+    const item = useListItem({ label: disabled ? null : label })
+    const tree = useFloatingTree()
+    const isActive = item.index === menu.activeIndex
 
-  return (
-    <button
-      {...props}
-      ref={useMergeRefs([item.ref, forwardedRef])}
-      type="button"
-      role="menuitem"
-      className={MenuItemCSS}
-      tabIndex={isActive ? 0 : -1}
-      disabled={disabled}
-      {...menu.getItemProps({
-        onClick(event: React.MouseEvent<HTMLButtonElement>) {
-          props.onClick?.(event)
-          tree?.events.emit("click")
-        },
-        onFocus(event: React.FocusEvent<HTMLButtonElement>) {
-          props.onFocus?.(event)
-          menu.setHasFocusInside(true)
-        },
-      })}
-    >
-      {label}
-    </button>
-  )
-})
+    return (
+      <button
+        {...props}
+        ref={useMergeRefs([item.ref, forwardedRef])}
+        type="button"
+        role="menuitem"
+        className={MenuItemCSS}
+        tabIndex={isActive ? 0 : -1}
+        disabled={disabled}
+        {...menu.getItemProps({
+          onClick(event: React.MouseEvent<HTMLButtonElement>) {
+            props.onClick?.(event, menu.contextMenuClickRef.current)
+            tree?.events.emit("click")
+          },
+          onFocus(event: React.FocusEvent<HTMLButtonElement>) {
+            props.onFocus?.(event)
+            menu.setHasFocusInside(true)
+          },
+        })}
+      >
+        {label}
+      </button>
+    )
+  },
+)
 
 export const ZFloatingMenu = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps & HTMLProps<HTMLButtonElement>>(
   (props, ref) => {
