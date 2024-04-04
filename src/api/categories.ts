@@ -1,5 +1,5 @@
 import service from "@/utils/service"
-import { ICategoriesUpdateRequest } from "./types/request/categories"
+import { ICategoriesCreateRequest, ICategoriesUpdateRequest } from "./types/request/categories"
 import { ICategoriesResponse } from "./types/response/categories"
 
 export const apiCategories = {
@@ -12,6 +12,13 @@ export const apiCategories = {
   update(data?: ICategoriesUpdateRequest) {
     return service<ICategoriesResponse>({
       url: "/api/v1/categories/update",
+      method: "POST",
+      data,
+    })
+  },
+  create(data?: ICategoriesCreateRequest) {
+    return service<ICategoriesResponse>({
+      url: "/api/v1/categories/create",
       method: "POST",
       data,
     })

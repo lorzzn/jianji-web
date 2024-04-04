@@ -4,7 +4,7 @@ export interface ICategories {
   label: string
   value: number
   parentValue: number | null
-  ordinalNumber: number
+  ordinalNumber: number | null
 }
 
 export interface ICategoriesResponse extends IApiCommonResponse {
