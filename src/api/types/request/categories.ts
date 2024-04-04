@@ -12,3 +12,7 @@ export interface ICategoriesUpdateRequest {
 export interface ICategoriesCreateRequest {
   data: Partial<ICategories>[]
 }
+
+export interface ICategoriesDeleteRequest {
+  value: number | number[]
+}

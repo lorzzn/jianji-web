@@ -1,6 +1,7 @@
 import { IApiCommonResponse } from "./common"
 
-export interface ICategories {
+/** */
+export interface ICategory {
   label: string
   value: number
   parentValue: number | null
@@ -8,5 +9,5 @@ export interface ICategories {
 }
 
 export interface ICategoriesResponse extends IApiCommonResponse {
-  data: ICategories[]
+  data: ICategory[]
 }

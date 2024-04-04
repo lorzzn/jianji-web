@@ -5,8 +5,16 @@ import CategoriesSelector, { CategoriesSelectorProps } from "./CategoriesSelecto
 
 const ToolBar: FC = observer(() => {
   const { postStore } = useStore()
-  const { categories, categoriesLoading, getCategories, category, setCategory, updateCategories, createCategories } =
-    postStore
+  const {
+    categories,
+    categoriesLoading,
+    getCategories,
+    category,
+    setCategory,
+    updateCategories,
+    createCategories,
+    deleteCategories,
+  } = postStore
 
   useEffect(() => {
     getCategories()
@@ -24,6 +32,7 @@ const ToolBar: FC = observer(() => {
         selectedCategory={category}
         onUpdate={updateCategories}
         onCreate={createCategories}
+        onDelete={deleteCategories}
         onSelect={onCategoriesSelected}
       />
     </div>
