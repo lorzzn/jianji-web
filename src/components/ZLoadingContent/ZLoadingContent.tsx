@@ -19,7 +19,7 @@ const ZLoadingContent: FC<ZLoadingContentProps> = ({
   },
 }) => {
   return (
-    <div className="relative">
+    <div className="relative w-full h-full">
       {children}
       {loading && (
         <>
