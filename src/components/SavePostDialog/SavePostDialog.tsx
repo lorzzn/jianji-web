@@ -3,13 +3,15 @@ import { useStore } from "@/store"
 import { RiInformation2Line } from "@remixicon/react"
 import classNames from "classnames"
 import { observer } from "mobx-react"
-import { FC, useEffect } from "react"
+import { FC, useEffect, useState } from "react"
+import ZInput from "../ZInput/ZInput"
 import ZModal from "../ZModal/ZModal"
 import CategoriesSelector, { CategoriesSelectorProps } from "../ZPost/CategoriesSelector"
 import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
 
 const SavePostDialog: FC = observer(() => {
   const { register } = useDialog(dialogNames.SavePostDialog)
+  const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
 
   const { postStore } = useStore()
   const {
@@ -29,6 +31,10 @@ const SavePostDialog: FC = observer(() => {
 
   const onCategoriesSelected: CategoriesSelectorProps["onSelect"] = (_, category) => {
     setCategory(category)
+  }
+
+  const onCategoryFilterKeywordChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setCategoryFilterKeyword(e.target.value)
   }
 
   return (
@@ -56,6 +62,12 @@ const SavePostDialog: FC = observer(() => {
             </ZTooltip>
           </div>
           <div>
+            <ZInput
+              className="w-full mb-2"
+              placeholder="搜索分类..."
+              value={categoryFilterKeyword}
+              onChange={onCategoryFilterKeywordChange}
+            />
             <CategoriesSelector
               loading={categoriesLoading}
               categories={categories}
@@ -64,6 +76,7 @@ const SavePostDialog: FC = observer(() => {
               onCreate={createCategories}
               onDelete={deleteCategories}
               onSelect={onCategoriesSelected}
+              filterKeyword={categoryFilterKeyword}
             />
           </div>
         </div>

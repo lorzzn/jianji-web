@@ -33,6 +33,7 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "framer-motion": "^11.0.6",
+    "fuzzysort": "^2.0.4",
     "jsencrypt": "^3.3.2",
     "lodash": "^4.17.21",
     "mitt": "^3.0.1",

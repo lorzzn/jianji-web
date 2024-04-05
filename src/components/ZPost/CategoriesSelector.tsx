@@ -2,12 +2,13 @@ import { ICategory } from "@/api/types/response/categories"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import { RiFolder2Line, RiFolderLine, RiFolderOpenLine } from "@remixicon/react"
+import fuzzysort from "fuzzysort"
 import { first, fromPairs, partition, values } from "lodash"
 import Tree, { TreeProps } from "rc-tree"
 import DropIndicator from "rc-tree/lib/DropIndicator"
 import { DraggableFn } from "rc-tree/lib/Tree"
 import { DataNode, Key, TreeNodeProps } from "rc-tree/lib/interface"
-import { FC, FocusEventHandler, useMemo, useRef, useState } from "react"
+import { FC, FocusEventHandler, useEffect, useMemo, useRef, useState } from "react"
 import tw from "twin.macro"
 import { ZFloatingMenu, ZFloatingMenuItem, ZFloatingMenuItemProps } from "../ZFloatingMenu/ZFloatingMenu"
 import ZInput from "../ZInput/ZInput"
@@ -17,6 +18,7 @@ export interface CategoriesSelectorProps {
   loading?: boolean
   categories: ICategory[]
   selectedCategory: ICategory | null
+  filterKeyword?: string
   onUpdate: (data: ICategory[]) => void
   onCreate: (data: Partial<ICategory>[], callback?: (created: ICategory[] | null) => void) => void
   onSelect: (key: Key, value: ICategory) => void
@@ -39,6 +41,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   onCreate,
   onDelete,
   onSelect: propOnSelect,
+  filterKeyword,
 }) => {
   const [expandKeys, setExpandKeys] = useState<Key[]>([])
   const [editingKey, setEditingKey] = useState<Key | null>(null)
@@ -73,6 +76,24 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     )
   }, [categories])
 
+  // 模糊搜索
+  const fzsortResult = useMemo(() => {
+    const result = fuzzysort.go(filterKeyword || "", categories, { key: "label" })
+    return result.map((item) => item.obj)
+  }, [filterKeyword])
+
+  useEffect(() => {
+    if (fzsortResult.length > 0) {
+      fzsortResult.forEach((item) => {
+        setExpandKeys((prev) => [...prev, ...getCategoryPath(treeDataRecord[item.parentValue ?? 0].data)])
+      })
+    }
+  }, [fzsortResult])
+
+  const filterTreeNodeFunc: TreeProps<CategoriesNode>["filterTreeNode"] = (node): boolean => {
+    return fzsortResult.map((item) => item.value).includes(node.data.value)
+  }
+
   // 根据ordinalNumber进行排序
   const sortChildren = (children: CategoriesNode[]): CategoriesNode[] => {
     const [orderedItems, unorderedItems] = partition(children, (child) => Boolean(child.data.ordinalNumber))
@@ -100,6 +121,13 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     onUpdate([node.data])
   }
 
+  const onEditingTitleInputRef = (instance: HTMLInputElement | null) => {
+    setTimeout(() => {
+      instance?.focus()
+      instance?.select()
+    })
+  }
+
   const treeTitleRender: TreeProps<CategoriesNode>["titleRender"] = (node) => {
     const onTitleEditingBlur: FocusEventHandler<HTMLInputElement> = (e) => {
       setEditingKey(null)
@@ -108,6 +136,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
 
     return editingKey === node.data.value ? (
       <ZInput
+        ref={onEditingTitleInputRef}
         scale={"small"}
         className="w-full text-sm !ring-0 bg-transparent border-none"
         onBlur={onTitleEditingBlur}
@@ -269,12 +298,22 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
                 &.drop-container ~ .rc-tree-treenode {
                   ${tw`!border-l-blue-400`}
                 }
+                &.filter-node {
+                  ${tw`bg-gray-100`}
+                  & > .rc-tree-node-content-wrapper {
+                    ${tw`!text-blue-500`}
+                    & input {
+                      ${tw`text-black font-normal`}
+                    }
+                  }
+                }
               }
             `,
           )}
           virtual
           showLine
           draggable={draggableFn}
+          filterTreeNode={filterTreeNodeFunc}
           treeData={treeData}
           onDrop={onDrop}
           showIcon={false}
@@ -296,6 +335,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
           selectedKeys={[selectedKey]}
           expandedKeys={expandKeys}
           onExpand={onExpand}
+          // autoExpandParent
           expandAction={"doubleClick"}
           onSelect={onSelect}
         />
