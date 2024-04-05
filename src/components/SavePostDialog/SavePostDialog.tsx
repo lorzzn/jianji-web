@@ -63,6 +63,8 @@ const SavePostDialog: FC = observer(() => {
           </div>
           <div>
             <ZInput
+              showClearIcon={"not-empty"}
+              onClear={() => setCategoryFilterKeyword("")}
               className="w-full mb-2"
               placeholder="搜索分类..."
               value={categoryFilterKeyword}
