@@ -27,6 +27,7 @@ import {
   useTypeahead,
 } from "@floating-ui/react"
 import { RiArrowRightSLine } from "@remixicon/react"
+import classNames from "classnames"
 import {
   ButtonHTMLAttributes,
   createContext,
@@ -102,7 +103,7 @@ interface ZFloatingMenuRef {
 }
 
 export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps & HTMLProps<HTMLButtonElement>>(
-  ({ children, label, contextMenuTrigger, onContextMenuClick, ...props }, forwardedRef) => {
+  ({ children, label, contextMenuTrigger, onContextMenuClick, className, ...props }, forwardedRef) => {
     const nodeRef = useRef<HTMLButtonElement | null>(null)
     const contextMenuClickRef = useRef<MouseEvent | null>(null)
     const [isOpen, setIsOpen] = useState(false)
@@ -257,7 +258,7 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
           data-open={isOpen ? "" : undefined}
           data-nested={isNested ? "" : undefined}
           data-focus-inside={hasFocusInside ? "" : undefined}
-          className={label && (isNested ? MenuItemCSS : RootMenuCSS)}
+          className={classNames([label && (isNested ? MenuItemCSS : RootMenuCSS), className])}
           {...getReferenceProps(
             parent.getItemProps({
               ...props,

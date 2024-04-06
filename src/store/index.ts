@@ -1,9 +1,11 @@
 import { makeAutoObservable } from "mobx"
 import { createContext, useContext } from "react"
 import AppStore from "./appStore"
+import CategoriesStore from "./categoriesStore"
 import DialogStore from "./dialogStore"
 import LayoutStore from "./layoutStore"
 import PostStore from "./postStore"
+import TagsStore from "./tagsStore"
 import UserStore from "./userStore"
 
 class RootStore {
@@ -12,6 +14,8 @@ class RootStore {
   userStore
   dialogStore
   postStore
+  categoriesStore
+  tagsStore
 
   constructor() {
     this.appStore = new AppStore()
@@ -19,6 +23,8 @@ class RootStore {
     this.userStore = new UserStore()
     this.dialogStore = new DialogStore()
     this.postStore = new PostStore()
+    this.categoriesStore = new CategoriesStore()
+    this.tagsStore = new TagsStore()
 
     makeAutoObservable(this)
   }

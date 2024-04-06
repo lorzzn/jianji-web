@@ -3,12 +3,12 @@ import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import { RiFolder2Line, RiFolderLine, RiFolderOpenLine } from "@remixicon/react"
 import fuzzysort from "fuzzysort"
-import { first, fromPairs, partition, values } from "lodash"
+import { first, fromPairs, partition, uniq, values } from "lodash"
 import Tree, { TreeProps } from "rc-tree"
 import DropIndicator from "rc-tree/lib/DropIndicator"
 import { DraggableFn } from "rc-tree/lib/Tree"
 import { DataNode, Key, TreeNodeProps } from "rc-tree/lib/interface"
-import { FC, FocusEventHandler, useEffect, useMemo, useRef, useState } from "react"
+import { FC, useEffect, useMemo, useRef, useState } from "react"
 import tw from "twin.macro"
 import { ZFloatingMenu, ZFloatingMenuItem, ZFloatingMenuItemProps } from "../ZFloatingMenu/ZFloatingMenu"
 import ZInput from "../ZInput/ZInput"
@@ -85,7 +85,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   useEffect(() => {
     if (fzsortResult.length > 0) {
       fzsortResult.forEach((item) => {
-        setExpandKeys((prev) => [...prev, ...getCategoryPath(treeDataRecord[item.parentValue ?? 0].data)])
+        setExpandKeys((prev) => uniq([...prev, ...getCategoryPath(treeDataRecord[item.parentValue ?? 0].data)]))
       })
     }
   }, [fzsortResult])
@@ -129,17 +129,21 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   }
 
   const treeTitleRender: TreeProps<CategoriesNode>["titleRender"] = (node) => {
-    const onTitleEditingBlur: FocusEventHandler<HTMLInputElement> = (e) => {
+    const onTitleEditingConfirm = (e: any) => {
       setEditingKey(null)
-      renameCategory(node.data.value, e.target.value)
+      renameCategory(node.data.value, e?.target?.value)
     }
 
     return editingKey === node.data.value ? (
       <ZInput
         ref={onEditingTitleInputRef}
-        scale={"small"}
-        className="w-full text-sm !ring-0 bg-transparent border-none"
-        onBlur={onTitleEditingBlur}
+        className=" h-6 !ring-0 bg-transparent border-none w-full"
+        onBlur={onTitleEditingConfirm}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onTitleEditingConfirm(e)
+          }
+        }}
         onClick={(e) => {
           e.stopPropagation()
           e.preventDefault()
@@ -221,7 +225,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     onCreate([category], (created) => {
       const remoteValue = first(created)
       if (created && remoteValue) {
-        setExpandKeys((prev) => [...prev, ...getCategoryPath(remoteValue)])
+        setExpandKeys((prev) => uniq([...prev, ...getCategoryPath(remoteValue)]))
         propOnSelect?.(remoteValue.value, remoteValue)
       }
     })
@@ -341,7 +345,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
         />
       </div>
 
-      <ZFloatingMenu contextMenuTrigger={treeContainerRef}>
+      <ZFloatingMenu className="hidden" contextMenuTrigger={treeContainerRef}>
         <ZFloatingMenuItem label="新建分类" onClick={onFolatingMenuItemClick("create")} />
         <ZFloatingMenuItem label="重命名" disabled={!selectedKey} onClick={onFolatingMenuItemClick("rename")} />
         <ZFloatingMenuItem label="删除" disabled={!selectedKey} onClick={onFolatingMenuItemClick("delete")} />
