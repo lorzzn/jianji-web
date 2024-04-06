@@ -1,33 +1,35 @@
+import { ITag } from "@/api/types/request/tags"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
 import { useStore } from "@/store"
 import { RiInformation2Line } from "@remixicon/react"
 import classNames from "classnames"
 import { observer } from "mobx-react"
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
+import ZButton from "../ZButton/ZButton"
+import ZCheckBox from "../ZCheckBox/ZCheckBox"
 import ZInput from "../ZInput/ZInput"
 import ZModal from "../ZModal/ZModal"
 import CategoriesSelector, { CategoriesSelectorProps } from "../ZPost/CategoriesSelector"
+import ZSelect from "../ZSelect/ZSelect"
 import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
 
 const SavePostDialog: FC = observer(() => {
   const { register } = useDialog(dialogNames.SavePostDialog)
   const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
 
-  const { postStore } = useStore()
-  const {
-    categories,
-    categoriesLoading,
-    getCategories,
-    category,
-    setCategory,
-    updateCategories,
-    createCategories,
-    deleteCategories,
-  } = postStore
+  const { postStore, categoriesStore, tagsStore } = useStore()
+  const { category, setCategory } = postStore
+  const { categories, categoriesLoading, getCategories, updateCategories, createCategories, deleteCategories } =
+    categoriesStore
+  const { tags, getTags, createTags } = tagsStore
 
   useEffect(() => {
     getCategories()
+    getTags()
   }, [])
+
+  const selectInputValue = useRef("")
+  const selectedTags = useRef<ITag[]>([])
 
   const onCategoriesSelected: CategoriesSelectorProps["onSelect"] = (_, category) => {
     setCategory(category)
@@ -83,8 +85,37 @@ const SavePostDialog: FC = observer(() => {
           </div>
         </div>
 
-        <div className="flex-1 ml-3">
-          <div>选择标签</div>
+        <div className="flex-1 ml-3 flex flex-col justify-between">
+          <div className="flex-1">
+            <div className="mb-2">选择标签</div>
+            <ZSelect
+              isMulti
+              placeholder="选择标签..."
+              options={tags}
+              onInputChange={(value) => (selectInputValue.current = value)}
+              onChange={(value) => (selectedTags.current = value as ITag[])}
+              noOptionsMessage={() => {
+                return (
+                  <div>
+                    标签不存在，
+                    <button
+                      className="text-blue-500 hover:underline active:text-blue-600"
+                      onClick={() => {
+                        createTags([{ label: selectInputValue.current }])
+                      }}
+                    >
+                      点击创建
+                    </button>
+                  </div>
+                )
+              }}
+            ></ZSelect>
+            <div className="my-2">其他选项</div>
+            <div className="text-sm">
+              <ZCheckBox className="w-3 h-3" label="放至收藏"></ZCheckBox>
+            </div>
+          </div>
+          <ZButton>确认保存</ZButton>
         </div>
       </div>
     </ZModal>
