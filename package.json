@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "postinstall": "husky init",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "echo \"Error: run tests from root\" && exit 0"
   },
   "lint-staged": {
     "**/*": [
@@ -28,6 +29,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.7",
+    "beautiful-react-hooks": "^5.0.1",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
     "crypto-js": "^4.2.0",
