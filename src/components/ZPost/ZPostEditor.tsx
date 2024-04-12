@@ -12,6 +12,7 @@ import Preview from "./Preview"
 import Textarea, { TextareaRef } from "./Textarea"
 import Toolbar, { ToolbarButton } from "./Toolbar"
 import ZPostEditorHelpDialog from "./ZPostEditorHelpDialog"
+import useResizeObserver from 'beautiful-react-hooks/useResizeObserver'
 
 export type hotkeysRecord = Record<
   string,
@@ -27,6 +28,7 @@ const ZPostEditor: FC = () => {
   const [fullscreen, setFullscreen] = useState(false)
   const helpDialogRef = useRef<ZModalRef>(null)
   const textareaRef = useRef<TextareaRef>(null)
+  const textareaDOMRect = useResizeObserver(textareaRef, 10)
 
   const hotkeysCommonOptions = useMemo<OptionsOrDependencyArray>(() => {
     return {
@@ -230,14 +232,14 @@ const ZPostEditor: FC = () => {
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 onChange={handleValueChange}
-                className="w-full h-full p-3"
+                className="w-full h-full p-3 break-all"
               />
             </Panel>
           )}
           {!["editor", "preview"].includes(layout) && <PanelResizeHandle className="w-0 border" />}
           {layout !== "editor" && (
-            <Panel minSize={25} id="preview-panel" order={2}>
-              <Preview className="w-full h-full bg-white p-3 break-words">{value}</Preview>
+            <Panel minSize={25} id="preview-panel" order={2} style={{ height: textareaDOMRect?.height + "px" }} className="!overflow-visible">
+              <Preview style={{ height: `calc(100% + 1.5rem)` }} className={`w-full p-3 break-all bg-white`}>{value}</Preview>
             </Panel>
           )}
         </PanelGroup>
