@@ -44,6 +44,10 @@ class UserStore {
 
   setLoading = (loading: boolean) => (this.loading = loading)
 
+  get authed() {
+    return this.token && this.refreshToken && this.userInfo.id !== 0
+  }
+
   setUserInfo = (data: IUserInfo) => {
     this.userInfo = data
   }

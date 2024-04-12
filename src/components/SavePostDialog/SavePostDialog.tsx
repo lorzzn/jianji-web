@@ -17,15 +17,18 @@ const SavePostDialog: FC = observer(() => {
   const { register } = useDialog(dialogNames.SavePostDialog)
   const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
 
-  const { postStore, categoriesStore, tagsStore } = useStore()
+  const { postStore, categoriesStore, tagsStore, userStore } = useStore()
   const { category, setCategory } = postStore
   const { categories, categoriesLoading, getCategories, updateCategories, createCategories, deleteCategories } =
     categoriesStore
   const { tags, getTags, createTags } = tagsStore
+  const { authed } = userStore
 
   useEffect(() => {
-    getCategories()
-    getTags()
+    if (authed) {
+      getCategories()
+      getTags()
+    }
   }, [])
 
   const selectInputValue = useRef("")
