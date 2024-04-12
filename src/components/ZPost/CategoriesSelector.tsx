@@ -278,12 +278,12 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
       <div ref={treeContainerRef} className="w-full h-full " onContextMenu={onTreeContextMenu}>
         <Tree
           className={twclx(
-            "categories-selector h-full ring-1 ring-gray-300 rounded-sm p-2",
+            "categories-selector h-full ring-1 ring-gray-300 rounded-sm py-2",
             css`
               user-select: none;
               border-width: 0;
               .rc-tree-treenode {
-                ${tw`whitespace-normal flex items-center`}
+                ${tw`whitespace-normal flex items-center px-2`}
                 & span.rc-tree-switcher {
                   background-image: none;
                   margin-right: 0;

@@ -12,9 +12,15 @@ const ZPostEditor: FC = () => {
 
   return (
     <div className="flex-1 flex flex-col">
+      <div>sasasas</div>
       <PanelGroup direction="horizontal" className="flex-1">
         <Panel minSize={25} order={1} className="shadow-sm rounded-md">
-          <Textarea value={value} onChange={handleValueChange} className="w-full h-full p-3" />
+          <Textarea
+            placeholder="请输入markdown内容..."
+            value={value}
+            onChange={handleValueChange}
+            className="w-full h-full p-3"
+          />
         </Panel>
         <PanelResizeHandle className="w-2 flex justify-center items-center active:bg-black hover:bg-black transition rounded-sm">
           <div className="flex flex-col space-y-1">

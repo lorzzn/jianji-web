@@ -8,7 +8,7 @@ interface ZCheckBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const ZCheckBox: FC<ZCheckBoxProps> = ({ className, label, ...restProps }) => {
   return (
-    <label className={classNames(["flex items-center cursor-pointer"])}>
+    <label className={classNames(["flex items-center cursor-pointer select-none"])}>
       <input
         type="checkbox"
         className={twclx(
