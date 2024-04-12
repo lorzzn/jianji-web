@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "postinstall": "husky init",
     "prepare": "husky",
-    "test": "echo \"Error: run tests from root\" && exit 0"
+    "test": "echo \"skip test\" && exit 0"
   },
   "lint-staged": {
     "**/*": [
