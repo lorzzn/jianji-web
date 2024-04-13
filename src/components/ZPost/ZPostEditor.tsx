@@ -19,10 +19,15 @@ export type hotkeysRecord = Record<
   { keys: Keys; description: string | string[]; callback: HotkeyCallback; options: OptionsOrDependencyArray }
 >
 
+type EditorHistory = {
+  current: number
+  stack: string[]
+}
+
 const headRegex = /^(#{1,6}\s+)(.*)/
 
 const ZPostEditor: FC = () => {
-  const [value, setValue] = useState<string>("")
+  const [value, _setValue] = useState<string>("")
   const [focused, setFocused] = useState<boolean>(false)
   const [layout, setLayout] = useState<ToolbarButton["layout"]>("normal")
   const [layoutReversed, setLayoutReversed] = useState(false)
@@ -32,6 +37,22 @@ const ZPostEditor: FC = () => {
   const textareaRef = useRef<TextareaRef>(null)
   const editorPanelRef = useRef<ImperativePanelHandle>(null)
   const previewPanelRef = useRef<ImperativePanelHandle>(null)
+  const [history, setHistory] = useState<EditorHistory>({ current: 0, stack: [""] })
+  
+  const setValue = (value: string, skipHistory?: boolean) => {
+    _setValue(value)
+    if (skipHistory) return
+    setHistory(prev => {
+      if (prev.current + 1 >= prev.stack.length) {
+        prev.stack.push(value)
+      } else {
+        prev.stack = slice(prev.stack, 0, prev.current + 1)
+        prev.stack.push(value)
+      }
+      prev.current = prev.stack.length - 1
+      return {...prev}
+    })
+  }
 
   const hotkeysCommonOptions = useMemo<OptionsOrDependencyArray>(() => {
     return {
@@ -179,6 +200,42 @@ const ZPostEditor: FC = () => {
       },
       options: hotkeysCommonOptions,
     },
+    markdown_undo: {
+      keys: onCtrl("z"),
+      description: "撤销",
+      callback: () => {
+        const textarea = textareaRef.current
+        if (!textarea) return
+        if (history.current === 0) return
+
+        textarea.value = history.stack[history.current - 1]
+        setHistory(prev => {
+          prev.current -= 1
+          return {...prev}
+        })
+
+        setValue(textarea.value, true)
+      },
+      options: hotkeysCommonOptions,
+    },
+    markdown_redo: {
+      keys: [onCtrl("y"), onCtrl(onShift("z"))],
+      description: "重做",
+      callback: () => {
+        const textarea = textareaRef.current
+        if (!textarea) return
+        if (history.current + 1 >= history.stack.length) return
+
+        textarea.value = history.stack[history.current + 1]
+        setHistory(prev => {
+          prev.current += 1
+          return {...prev}
+        })
+
+        setValue(textarea.value, true)
+      },
+      options: hotkeysCommonOptions,
+    },
   }
 
   // 绑定快捷键
@@ -201,6 +258,8 @@ const ZPostEditor: FC = () => {
     hotkeys.markdown_inlinecode.options,
   )
   useHotkeys(hotkeys.markdown_codeblock.keys, hotkeys.markdown_codeblock.callback, hotkeys.markdown_codeblock.options)
+  useHotkeys(hotkeys.markdown_undo.keys, hotkeys.markdown_undo.callback, hotkeys.markdown_undo.options)
+  useHotkeys(hotkeys.markdown_redo.keys, hotkeys.markdown_redo.callback, hotkeys.markdown_redo.options)
 
   const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value)
