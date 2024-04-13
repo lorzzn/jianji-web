@@ -1,5 +1,6 @@
 // https://codesandbox.io/p/sandbox/admiring-lamport-5wt3yg
 
+import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import {
   autoUpdate,
@@ -10,6 +11,7 @@ import {
   FloatingPortal,
   FloatingTree,
   offset,
+  Placement,
   safePolygon,
   shift,
   useClick,
@@ -45,7 +47,7 @@ import {
 } from "react"
 import tw from "twin.macro"
 
-const RootMenuCSS = css`
+export const RootMenuCSS = css`
   ${tw`p-1 rounded-md border border-blue-100`}
 
   &[data-open],
@@ -54,11 +56,11 @@ const RootMenuCSS = css`
   }
 `
 
-const MenuCSS = css`
+export const MenuCSS = css`
   ${tw`bg-white p-1 border rounded-md shadow-md z-[1000]`}
 `
 
-const MenuItemCSS = css`
+export const MenuItemCSS = css`
   ${tw`flex justify-between items-center w-full rounded min-w-28 px-2 py-1`}
 
   &[disabled] {
@@ -88,25 +90,28 @@ const ZFloatingMenuContext = createContext<{
   isOpen: false,
 })
 
-interface ZFloatingMenuProps {
-  label?: string
+export interface ZFloatingMenuProps extends Omit<HTMLProps<HTMLButtonElement>, "label">{
+  label?: ReactNode
   nested?: boolean
   children?: ReactNode
+  placement?: Placement
+  resetClassName?: boolean
   onContextMenuClick?: (event: MouseEvent) => void
   contextMenuTrigger?: MutableRefObject<HTMLElement | null>
+  onOpenChange?: (open: boolean) => void
 }
 
-interface ZFloatingMenuRef {
+export interface ZFloatingMenuRef {
   show: () => void
   hide: () => void
   current: HTMLButtonElement | null
 }
 
-export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps & HTMLProps<HTMLButtonElement>>(
-  ({ children, label, contextMenuTrigger, onContextMenuClick, className, ...props }, forwardedRef) => {
+export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps>(
+  ({ children, label, contextMenuTrigger, onContextMenuClick, className, resetClassName, placement, open, onOpenChange, ...props }, forwardedRef) => {
     const nodeRef = useRef<HTMLButtonElement | null>(null)
     const contextMenuClickRef = useRef<MouseEvent | null>(null)
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, _setIsOpen] = useState(false)
     const [hasFocusInside, setHasFocusInside] = useState(false)
     const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
@@ -121,11 +126,25 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
 
     const isNested = parentId != null
 
+    const setIsOpen = (isopen: boolean) => {
+      if (open !== undefined) {
+        onOpenChange?.(isopen)
+      } else {
+        _setIsOpen(isopen)
+      }
+    }
+
+    useEffect(() => {
+      if (open !== undefined) {
+        _setIsOpen(open)
+      }
+    }, [open])
+
     const { floatingStyles, refs, context } = useFloating<HTMLButtonElement>({
       nodeId,
       open: isOpen,
       onOpenChange: setIsOpen,
-      placement: isNested ? "right-start" : "bottom-start",
+      placement: placement ?? (isNested ? "right-start" : "bottom-start"),
       middleware: [offset({ mainAxis: isNested ? 0 : 4, alignmentAxis: isNested ? -4 : 0 }), flip(), shift()],
       whileElementsMounted: autoUpdate,
     })
@@ -258,7 +277,10 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
           data-open={isOpen ? "" : undefined}
           data-nested={isNested ? "" : undefined}
           data-focus-inside={hasFocusInside ? "" : undefined}
-          className={classNames([label && (isNested ? MenuItemCSS : RootMenuCSS), className])}
+          className={twclx([
+            { [(isNested ? MenuItemCSS : RootMenuCSS)]: !resetClassName && label }, 
+            className
+          ])}
           {...getReferenceProps(
             parent.getItemProps({
               ...props,
@@ -312,7 +334,7 @@ export interface ZFloatingMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLBu
 }
 
 export const ZFloatingMenuItem = forwardRef<HTMLButtonElement, ZFloatingMenuItemProps>(
-  ({ label, disabled, ...props }, forwardedRef) => {
+  ({ label, disabled, className, ...props }, forwardedRef) => {
     const menu = useContext(ZFloatingMenuContext)
     const item = useListItem({ label: disabled ? null : label })
     const tree = useFloatingTree()
@@ -324,7 +346,10 @@ export const ZFloatingMenuItem = forwardRef<HTMLButtonElement, ZFloatingMenuItem
         ref={useMergeRefs([item.ref, forwardedRef])}
         type="button"
         role="menuitem"
-        className={MenuItemCSS}
+        className={twclx([
+          MenuItemCSS,
+          className,
+        ])}
         tabIndex={isActive ? 0 : -1}
         disabled={disabled}
         {...menu.getItemProps({
