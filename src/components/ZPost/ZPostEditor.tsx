@@ -1,10 +1,10 @@
 import { onCtrl, onShift } from "@/utils/key"
 import classNames from "classnames"
-import { repeat } from "lodash"
-import { FC, useMemo, useRef, useState } from "react"
+import { repeat, reverse, slice } from "lodash"
+import { FC, useEffect, useMemo, useRef, useState } from "react"
 import { HotkeyCallback, Keys, useHotkeys } from "react-hotkeys-hook"
 import { OptionsOrDependencyArray } from "react-hotkeys-hook/dist/types"
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
+import { ImperativePanelHandle, Panel, PanelGroup, PanelGroupProps , PanelResizeHandle } from "react-resizable-panels"
 import { toast } from "react-toastify"
 import { Key } from "ts-key-enum"
 import { ZModalRef } from "../ZModal/ZModal"
@@ -12,7 +12,7 @@ import Preview from "./Preview"
 import Textarea, { TextareaRef } from "./Textarea"
 import Toolbar, { ToolbarButton } from "./Toolbar"
 import ZPostEditorHelpDialog from "./ZPostEditorHelpDialog"
-import useResizeObserver from 'beautiful-react-hooks/useResizeObserver'
+import { twclx } from "@/utils/twclx"
 
 export type hotkeysRecord = Record<
   string,
@@ -24,11 +24,14 @@ const headRegex = /^(#{1,6}\s+)(.*)/
 const ZPostEditor: FC = () => {
   const [value, setValue] = useState<string>("")
   const [focused, setFocused] = useState<boolean>(false)
-  const [layout, setLayout] = useState<string>("normal")
+  const [layout, setLayout] = useState<ToolbarButton["layout"]>("normal")
+  const [layoutReversed, setLayoutReversed] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
+
   const helpDialogRef = useRef<ZModalRef>(null)
   const textareaRef = useRef<TextareaRef>(null)
-  const textareaDOMRect = useResizeObserver(textareaRef, 10)
+  const editorPanelRef = useRef<ImperativePanelHandle>(null)
+  const previewPanelRef = useRef<ImperativePanelHandle>(null)
 
   const hotkeysCommonOptions = useMemo<OptionsOrDependencyArray>(() => {
     return {
@@ -213,35 +216,60 @@ const ZPostEditor: FC = () => {
     if (info.action === "help") {
       helpDialogRef.current?.show()
     }
+
+    if (info.action === "reverse" && layout === "normal") {
+      setLayoutReversed(!layoutReversed)
+    }
+  }
+
+  useEffect(() => {
+    previewPanelRef.current?.expand()
+    editorPanelRef.current?.expand()
+    if (layout === "editor") {
+      previewPanelRef.current?.collapse()
+    }
+
+    if (layout === "preview") {
+      editorPanelRef.current?.collapse()
+    }
+
+  }, [ layout ])
+
+  const onPanelLayoutChange: PanelGroupProps["onLayout"] = (layout) => {
+    const [ ew, pw ] = layoutReversed ? reverse(slice(layout)):layout
+    if (ew === 0) {
+      setLayout("preview")
+    } else if (pw === 0) {
+      setLayout("editor")
+    } else {
+      setLayout("normal")
+    }
   }
 
   return (
     <div className={classNames(["flex-1 flex flex-col border bg-gray-100", { "fixed inset-0 z-[500]": fullscreen }])}>
-      <Toolbar layout={layout} fullscreen={fullscreen} onClick={onToolbarClick} />
+      <Toolbar layout={layout} fullscreen={fullscreen} reverse={layoutReversed} onClick={onToolbarClick} />
       <div className={"flex-1 flex flex-col"}>
         <PanelGroup
           direction="horizontal"
-          className={classNames(["flex-1", { "!flex-row-reverse": layout === "reverse" }])}
+          onLayout={onPanelLayoutChange}
+          className={classNames(["flex-1", { "!flex-row-reverse": layoutReversed }])}
         >
-          {layout !== "preview" && (
-            <Panel minSize={25} id="editor-panel" order={1}>
-              <Textarea
-                ref={textareaRef}
-                placeholder="请输入markdown内容..."
-                value={value}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
-                onChange={handleValueChange}
-                className="w-full h-full p-3 break-all"
-              />
-            </Panel>
-          )}
-          {!["editor", "preview"].includes(layout) && <PanelResizeHandle className="w-0 border" />}
-          {layout !== "editor" && (
-            <Panel minSize={25} id="preview-panel" order={2} style={{ height: textareaDOMRect?.height + "px" }} className="!overflow-visible">
-              <Preview style={{ height: `calc(100% + 1.5rem)` }} className={`w-full p-3 break-all bg-white`}>{value}</Preview>
-            </Panel>
-          )}
+          <Panel collapsible minSize={25} ref={editorPanelRef} id="editor-panel" order={layoutReversed ? 2 : 1}>
+            <Textarea
+              ref={textareaRef}
+              placeholder="请输入markdown内容..."
+              value={value}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              onChange={handleValueChange}
+              className="w-full h-full p-3 break-all"
+            />
+          </Panel>
+          <PanelResizeHandle className="w-0 border" />
+          <Panel collapsible minSize={25} ref={previewPanelRef} id="preview-panel" order={layoutReversed ? 1 : 2} className={twclx([ "relative" ])}>
+            <Preview className={twclx([ "absolute inset-0 p-3 break-all bg-white" ])}>{value}</Preview>
+          </Panel>
         </PanelGroup>
       </div>
       <ZPostEditorHelpDialog ref={helpDialogRef} hotkeys={hotkeys} />

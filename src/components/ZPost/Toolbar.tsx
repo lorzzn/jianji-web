@@ -7,25 +7,27 @@ export interface ToolbarButton {
   title: string
   icon?: JSX.Element
   active?: boolean
-  layout?: string
+  layout?: "normal" | "editor" | "preview" 
   className?: string
-  action?: string
+  action?: "reverse" | "fullscreen" | "help"
 }
 
 interface ToolbarProps {
-  layout: string
+  layout: ToolbarButton["layout"]
+  reverse: boolean 
   fullscreen: boolean
   onClick: (info: ToolbarButton, event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, onClick }) => {
+const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => {
   const buttons = useMemo<ToolbarButton[]>(() => {
     return [
       {
-        icon: <RiLayoutColumnFill size={"1.1rem"} className={classNames([{ "rotate-z-180": layout === "reverse" }])} />,
+        icon: <RiLayoutColumnFill size={"1.1rem"} className={classNames([{ "rotate-z-180": reverse }])} />,
         title: "布局",
-        active: layout === "normal" || layout === "reverse",
-        layout: layout === "normal" ? "reverse" : "normal",
+        active: layout === "normal",
+        layout: "normal",
+        action: "reverse"
       },
       {
         icon: <RiBallPenLine size={"1.1rem"} />,
@@ -50,7 +52,11 @@ const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, onClick }) => {
         action: "fullscreen",
       },
     ]
-  }, [layout, fullscreen])
+  }, [
+    layout, 
+    fullscreen, 
+    reverse
+  ])
 
   const onButtonClick = (info: ToolbarButton, event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(info, event)
