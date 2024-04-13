@@ -120,7 +120,7 @@ const SavePostDialog: FC = observer(() => {
               <ZCheckBox className="w-3 h-3" label="放至收藏"></ZCheckBox>
             </div>
           </div>
-          <ZButton>确认保存</ZButton>
+          <ZButton scale={"large"}>确认保存</ZButton>
         </div>
       </div>
     </ZModal>
