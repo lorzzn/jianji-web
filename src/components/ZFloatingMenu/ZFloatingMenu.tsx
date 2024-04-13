@@ -29,7 +29,6 @@ import {
   useTypeahead,
 } from "@floating-ui/react"
 import { RiArrowRightSLine } from "@remixicon/react"
-import classNames from "classnames"
 import {
   ButtonHTMLAttributes,
   createContext,
@@ -369,7 +368,7 @@ export const ZFloatingMenuItem = forwardRef<HTMLButtonElement, ZFloatingMenuItem
   },
 )
 
-export const ZFloatingMenu = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps & HTMLProps<HTMLButtonElement>>(
+export const ZFloatingMenu = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps>(
   (props, ref) => {
     const parentId = useFloatingParentNodeId()
 

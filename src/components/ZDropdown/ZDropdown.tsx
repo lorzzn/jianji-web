@@ -1,7 +1,6 @@
 import { CSSProperties, forwardRef, useImperativeHandle, useState } from "react"
 import { ClassNamesConfig } from "react-select"
 import { ZFloatingMenu, ZFloatingMenuItem, ZFloatingMenuProps } from "../ZFloatingMenu/ZFloatingMenu"
-import { twclx } from "@/utils/twclx"
 
 export interface DropdownOption {
   readonly value: string
@@ -29,10 +28,6 @@ const ZDropdown = forwardRef<ZDropdownRef, ZDropdownProps>(
     const [value, setValue] = useState<DropdownOption | null>(null)
     const onOpen = () => setOpen(true)
     const onClose = () => setOpen(false)
-    const onButtonClick = () => {
-      ;(open ? onClose : onOpen)()
-      onClick?.("target")
-    }
 
     const onOptionChange = (item: DropdownOption) => {
       if (item?.selectable) {
@@ -51,13 +46,19 @@ const ZDropdown = forwardRef<ZDropdownRef, ZDropdownProps>(
     }))
 
     return (
-      <ZFloatingMenu label={target as string} placement="bottom" resetClassName onClick={onButtonClick}>
+      <ZFloatingMenu 
+        label={target}
+        placement="bottom" 
+        resetClassName 
+        onOpenChange={(open) => setOpen(open)}
+        open={open}
+      >
         {
-          options.map((option) => {
-            return <ZFloatingMenuItem className={twclx([
-              { "bg-blue-600 text-white": value?.value === option.value}
-            ])} label={option.label} onClick={() => onOptionChange(option)} />
-          })
+          options.map((option) => <ZFloatingMenuItem 
+            label={option.label} 
+            onClick={() => onOptionChange(option)} 
+            key={option.value}
+          />)
         }
       </ZFloatingMenu>
     )
