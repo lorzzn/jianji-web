@@ -29,7 +29,7 @@ const SavePostDialog: FC = observer(() => {
       getCategories()
       getTags()
     }
-  }, [])
+  }, [ authed ])
 
   const selectInputValue = useRef("")
   const selectedTags = useRef<ITag[]>([])
@@ -100,15 +100,17 @@ const SavePostDialog: FC = observer(() => {
               noOptionsMessage={() => {
                 return (
                   <div>
-                    标签不存在，
-                    <button
-                      className="text-blue-500 hover:underline active:text-blue-600"
-                      onClick={() => {
-                        createTags([{ label: selectInputValue.current }])
-                      }}
-                    >
-                      点击创建
-                    </button>
+                    无标签
+                    {
+                      selectInputValue.current && <button
+                        className="text-blue-500 hover:underline active:text-blue-600 ml-1"
+                        onClick={() => {
+                          createTags([{ label: selectInputValue.current }])
+                        }}
+                      >
+                        点击创建
+                      </button>
+                    }
                   </div>
                 )
               }}
