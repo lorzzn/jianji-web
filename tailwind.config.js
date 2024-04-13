@@ -6,5 +6,5 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [require("tailwindcss-3d")({ legacy: true }), require("@tailwindcss/typography")],
+  plugins: [require("tailwindcss-3d")({ legacy: true }), require("@tailwindcss/typography"), require('tailwind-scrollbar')({ nocompatible: true, preferredStrategy: "pseudoelements" })],
 }

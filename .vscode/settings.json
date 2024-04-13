@@ -6,5 +6,9 @@
     "tw`([^`]*)", // tw`...`
     "'([^']*)'",
     "classNames\\(([^)]+)\\)"
-  ]
+  ],
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.scss": "tailwindcss"
+  }
 }
