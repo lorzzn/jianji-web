@@ -1,5 +1,5 @@
 import App from "@/App.tsx"
-import "@/index.css"
+import "@/index.scss"
 import "rc-tree/assets/index.css"
 import ReactDOM from "react-dom/client"
 import "react-responsive-modal/styles.css"
