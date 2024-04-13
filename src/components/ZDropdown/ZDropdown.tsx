@@ -25,13 +25,13 @@ export interface ZDropdownRef {
 const ZDropdown = forwardRef<ZDropdownRef, ZDropdownProps>(
   ({ target, options, onChange, onClick }, ref) => {
     const [open, setOpen] = useState(false)
-    const [value, setValue] = useState<DropdownOption | null>(null)
+    // const [value, setValue] = useState<DropdownOption | null>(null)
     const onOpen = () => setOpen(true)
     const onClose = () => setOpen(false)
 
     const onOptionChange = (item: DropdownOption) => {
       if (item?.selectable) {
-        setValue(item)
+        // setValue(item)
         onChange?.(item)
       }
       if (item) {
