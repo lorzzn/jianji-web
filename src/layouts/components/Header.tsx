@@ -11,9 +11,9 @@ import { useNavigate } from "react-router-dom"
 import UserInfo from "./UserInfo"
 
 const dropdownOptions: DropdownOption[] = [
-  { label: "文章", value: "0" },
-  { label: "分类", value: "1" },
-  { label: "标签", value: "2" },
+  { label: "文章", value: "0", selectable: true },
+  { label: "分类", value: "1", selectable: true },
+  { label: "标签", value: "2", selectable: true },
 ]
 
 const Header: FC = observer(() => {
