@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import ZModal, { ZModalRef } from "../ZModal/ZModal";
 import { observer } from "mobx-react";
 import ZList from "../ZList/ZList";
@@ -8,7 +8,7 @@ import { useStore } from "@/store";
 import ZInput from "../ZInput/ZInput";
 import ConfirmAbleButton from "../ConfirmAbleButton/ConfirmAbleButton";
 import { ITag } from "@/api/types/request/tags";
-
+import fuzzysort from "fuzzysort";
 
 const TagManagerDialog = observer(forwardRef<ZModalRef>(() => {
   const { register } = useDialog(dialogNames.TagManagerDialog)
@@ -17,7 +17,13 @@ const TagManagerDialog = observer(forwardRef<ZModalRef>(() => {
 
   const { tagsStore } = useStore()
   const { tags, deleteTags, tagsLoading } = tagsStore
-
+  
+  // 模糊搜索
+  const fzsortResult = useMemo(() => {
+    const result = fuzzysort.go(tagFilterKeyword || "", tags, { key: "label" })
+    return result.map((item) => item.obj)
+  }, [tagFilterKeyword])
+  
   const onTagFilterKeywordChange:React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setTagFilterKeyword(e.target.value)
   }
@@ -40,7 +46,7 @@ const TagManagerDialog = observer(forwardRef<ZModalRef>(() => {
       />
       <ZList className="max-h-96 overflow-y-auto">
         {
-          tags.map(tag => {
+          (tagFilterKeyword ? fzsortResult:tags).map(tag => {
             return <ZListItem 
               key={tag.value} 
               className="p-2"
