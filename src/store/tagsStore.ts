@@ -34,15 +34,16 @@ class TagsStore {
     this.setTagsLoading(true)
     try {
       const res = await apiTags.update({ data })
+      const tags = clone(this.tags)
       res.data.data.forEach((item) => {
-        const target = this.tags.find((c) => c.value === item.value)
+        const target = tags.find((c) => c.value === item.value)
         if (!target) {
-          this.tags.push(item)
+          tags.push(item)
         } else {
           assign(target, item)
         }
       })
-      this.setTags(clone(this.tags))
+      this.setTags(tags)
     } catch (error) {
       errorHandler.handle(error)
     }
@@ -53,9 +54,10 @@ class TagsStore {
     this.setTagsLoading(true)
     try {
       const res = await apiTags.create({ data })
-      this.tags.push(...res.data.data)
+      const tags = clone(this.tags)
+      tags.push(...res.data.data)
       callback?.(res.data.data)
-      this.setTags(clone(this.tags))
+      this.setTags(tags)
     } catch (error) {
       callback?.(null)
       errorHandler.handle(error)
@@ -67,15 +69,16 @@ class TagsStore {
     this.setTagsLoading(true)
     try {
       await apiTags.delete({ value })
+      let tags = clone(this.tags)
       if (Array.isArray(value)) {
-        this.tags = this.tags.filter((c) => !value.includes(c.value))
+        tags = tags.filter((c) => !value.includes(c.value))
       } else {
-        const index = this.tags.findIndex((c) => c.value === value)
+        const index = tags.findIndex((c) => c.value === value)
         if (index > -1) {
-          this.tags.splice(index, 1)
+          tags.splice(index, 1)
         }
       }
-      this.setTags(clone(this.tags))
+      this.setTags(tags)
     } catch (error) {
       errorHandler.handle(error)
     }

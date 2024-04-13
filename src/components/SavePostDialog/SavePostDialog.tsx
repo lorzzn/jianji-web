@@ -15,6 +15,7 @@ import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip
 
 const SavePostDialog: FC = observer(() => {
   const { register } = useDialog(dialogNames.SavePostDialog)
+  const { dialog: tagManagerDialog } = useDialog(dialogNames.TagManagerDialog)
   const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
 
   const { postStore, categoriesStore, tagsStore, userStore } = useStore()
@@ -90,7 +91,10 @@ const SavePostDialog: FC = observer(() => {
 
         <div className="flex-1 ml-3 flex flex-col justify-between">
           <div className="flex-1">
-            <div className="mb-2">选择标签</div>
+            <div className="mb-2">
+              <span>选择标签</span>
+              <ZButton variant={"primary_plain"} onClick={() => tagManagerDialog()?.show()}>管理</ZButton>
+            </div>
             <ZSelect
               isMulti
               placeholder="选择标签..."

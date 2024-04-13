@@ -8,6 +8,7 @@ export const dialogNames = {
   UserDialog: "UserDialog",
   ActiveDialog: "ActiveDialog",
   SavePostDialog: "SavePostDialog",
+  TagManagerDialog: "TagManagerDialog",
 }
 
 const useDialog = (dialogName: string) => {

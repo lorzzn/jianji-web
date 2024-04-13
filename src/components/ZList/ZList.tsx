@@ -12,7 +12,7 @@ const ZList :FC<ZListProps> = (props) => {
   return <div className={twclx([
     "z-list flex flex-col",
     css`
-      .z-list-item:nth-child(even){
+      .z-list-item:nth-child(odd){
         ${tw`bg-gray-100`}
       }
     `,
