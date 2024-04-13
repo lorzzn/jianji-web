@@ -104,11 +104,13 @@ const ZPostEditor: FC = () => {
         const hl = repeat("#", Number(he.keys?.[1]) || 1) + " "
 
         let line = lines[cursorPos.line]
-        let match
-        if ((match = headRegex.exec(line)) !== null && match[1].trim() === hl.trim()) {
-          line = match[2]
-        } else {
+        const match = headRegex.exec(line)
+        if (match === null) { // 原来不是标题
           line = hl + line
+        } else if (match[1].trim() === hl.trim()) { // 原来的标题级别和当前一致
+          line = match[2]
+        } else { // 原来的标题级别和当前不一致
+          line = hl + match[2]
         }
         lines.splice(cursorPos.line, 1, line)
         textarea.value = lines.join("\n")
