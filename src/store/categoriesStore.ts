@@ -34,15 +34,16 @@ class CategoriesStore {
     this.setCategoriesLoading(true)
     try {
       const res = await apiCategories.update({ data })
+      const categories = clone(this.categories)
       res.data.data.forEach((item) => {
-        const target = this.categories.find((c) => c.value === item.value)
+        const target = categories.find((c) => c.value === item.value)
         if (!target) {
-          this.categories.push(item)
+          categories.push(item)
         } else {
           assign(target, item)
         }
       })
-      this.setCategories(clone(this.categories))
+      this.setCategories(categories)
     } catch (error) {
       errorHandler.handle(error)
     }
@@ -53,9 +54,10 @@ class CategoriesStore {
     this.setCategoriesLoading(true)
     try {
       const res = await apiCategories.create({ data })
-      this.categories.push(...res.data.data)
+      const categories = clone(this.categories)
+      categories.push(...res.data.data)
       callback?.(res.data.data)
-      this.setCategories(clone(this.categories))
+      this.setCategories(categories)
     } catch (error) {
       callback?.(null)
       errorHandler.handle(error)
@@ -67,15 +69,16 @@ class CategoriesStore {
     this.setCategoriesLoading(true)
     try {
       await apiCategories.delete({ value })
+      let categories = clone(this.categories)
       if (Array.isArray(value)) {
-        this.categories = this.categories.filter((c) => !value.includes(c.value))
+        categories = categories.filter((c) => !value.includes(c.value))
       } else {
-        const index = this.categories.findIndex((c) => c.value === value)
+        const index = categories.findIndex((c) => c.value === value)
         if (index > -1) {
-          this.categories.splice(index, 1)
+          categories.splice(index, 1)
         }
       }
-      this.setCategories(clone(this.categories))
+      this.setCategories(categories)
     } catch (error) {
       errorHandler.handle(error)
     }

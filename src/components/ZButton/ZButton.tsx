@@ -4,8 +4,9 @@ import classNames from "classnames"
 import { FC } from "react"
 import ZLoading from "../ZLoading/ZLoading"
 
-interface ZButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof ZButtonVariants> {
+export interface ZButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof ZButtonVariants> {
   loading?: boolean
+  loadingSize?: number | string
 }
 
 export const ZButtonVariants = cva(classNames("inline-flex items-center justify-center disabled:opacity-50"), {
@@ -35,7 +36,7 @@ export const ZButtonVariants = cva(classNames("inline-flex items-center justify-
   },
 })
 
-const ZButton: FC<ZButtonProps> = ({ className, variant, scale, shape, children, loading, disabled, ...restProps }) => {
+const ZButton: FC<ZButtonProps> = ({ className, variant, scale, shape, children, loading, disabled, loadingSize, ...restProps }) => {
   return (
     <button
       className={twclx([
@@ -47,7 +48,7 @@ const ZButton: FC<ZButtonProps> = ({ className, variant, scale, shape, children,
     >
       {loading && (
         <div className="mr-1">
-          <ZLoading />
+          <ZLoading size={loadingSize} />
         </div>
       )}
       {children}

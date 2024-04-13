@@ -3,7 +3,6 @@ import ZButton, { ZButtonVariants } from "../ZButton/ZButton";
 import { VariantProps } from "class-variance-authority";
 import ZModal, { ZModalRef } from "../ZModal/ZModal";
 import { twclx } from "@/utils/twclx";
-import classNames from "classnames";
 
 export interface ZModalBoxButton extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof ZButtonVariants> {
 }
