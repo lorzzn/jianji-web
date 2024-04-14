@@ -1,4 +1,5 @@
 import { IPost, IUpdatePostRequest } from "@/api/types/request/posts"
+import { IPost as IResponePost } from "@/api/types/response/posts"
 import { ITag } from "@/api/types/request/tags"
 import { ICategory } from "@/api/types/request/categories"
 import { makeAutoObservable } from "mobx"
@@ -15,6 +16,7 @@ class PostStore {
   favoured: boolean = false
   public: boolean = false
   status: number = 1
+  remoteLoading: boolean = false
 
   constructor() {
     makeAutoObservable(this)
@@ -28,7 +30,7 @@ class PostStore {
     return this.tags?.map(t => t.value)
   }
 
-  get postInfo () {
+  get postInfo() {
     return {
       uuid: this.uuid,
       category: this.category,
@@ -81,14 +83,44 @@ class PostStore {
     this.status = value
   }
 
+  setRemoteLoading = (value: boolean) => {
+    this.remoteLoading = value
+  }
+
+  setPostInfo = (value: IResponePost) => {
+    this.uuid = value.uuid
+    this.category = value.category
+    this.tags = value.tags
+    this.title = value.title
+    this.content = value.content
+    this.favoured = value.favoured
+    this.public = value.public
+    this.status = value.status
+  }
+
+  getFromRemote = async (uuid: string) => {
+    this.setRemoteLoading(true)
+    try {
+      const res = await apiPosts.get({ uuid })
+      this.setPostInfo(res.data.data)
+    } catch (error) {
+      errorHandler.handle(error)
+    }
+    this.setRemoteLoading(false)
+  }
+
   createOrSavePost = async () => {
+    this.setRemoteLoading(true)
     try {
       const api = this.uuid ? apiPosts.update:apiPosts.create
       const res = await api(this.postInfoRequestParams as IUpdatePostRequest)
-      console.log(res);
-      
+      this.setPostInfo(res.data.data)
+      return Promise.resolve(res)
     } catch (error) {
       errorHandler.handle(error)
+      return Promise.reject(error)
+    } finally {
+      this.setRemoteLoading(false)
     }
   }
 

@@ -4,7 +4,7 @@ import { VariantProps } from "class-variance-authority"
 import { FocusEventHandler, forwardRef, useState } from "react"
 import { inputVariant } from "./variant"
 
-interface ZInputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariant> {
+export interface ZInputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariant> {
   showClearIcon?: "always" | "focus" | "never" | "hover" | "not-empty"
   clearIconRender?: (show?: boolean) => React.ReactNode
   onClear?: () => void

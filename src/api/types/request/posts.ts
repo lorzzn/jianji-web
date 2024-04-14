@@ -19,6 +19,10 @@ export interface IUpdatePostRequest extends Partial<IPost> {
 export interface ICreatePostRequest extends Partial<Omit<IPost, "uuid">> {
 }
 
+export interface IGetPostRequest {
+  uuid: string 
+}
+
 export interface IDeletePostRequest {
   uuid: string 
 }

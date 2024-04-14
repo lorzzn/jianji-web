@@ -2,7 +2,7 @@ import { twclx } from "@/utils/twclx"
 import classNames from "classnames"
 import { FC, ReactNode } from "react"
 
-interface ZCheckBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface ZCheckBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: ReactNode
 }
 

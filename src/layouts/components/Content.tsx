@@ -24,7 +24,7 @@ const Content: FC = () => {
           <Route path="/tags" Component={Tags} />
           <Route path="/search" Component={Search} />
           <Route
-            path="/edit"
+            path="/edit/:uuid?"
             element={
               <RequireAuth>
                 <Edit />

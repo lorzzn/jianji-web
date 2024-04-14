@@ -6,12 +6,13 @@ import classNames from "classnames"
 import { observer } from "mobx-react"
 import { FC, useEffect, useRef, useState } from "react"
 import ZButton from "../ZButton/ZButton"
-import ZCheckBox from "../ZCheckBox/ZCheckBox"
+import ZCheckBox, { ZCheckBoxProps } from "../ZCheckBox/ZCheckBox"
 import ZInput from "../ZInput/ZInput"
 import ZModal from "../ZModal/ZModal"
 import CategoriesSelector, { CategoriesSelectorProps } from "../ZPost/CategoriesSelector"
 import ZSelect from "../ZSelect/ZSelect"
 import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
+import { toast } from "react-toastify"
 
 const SavePostDialog: FC = observer(() => {
   const { register } = useDialog(dialogNames.SavePostDialog)
@@ -19,7 +20,7 @@ const SavePostDialog: FC = observer(() => {
   const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
 
   const { postStore, categoriesStore, tagsStore, userStore } = useStore()
-  const { category, setCategory, setTags: setPostTags, createOrSavePost } = postStore
+  const { category, setCategory, tags: postTags, setTags: setPostTags, createOrSavePost, favoured, setFavoured, remoteLoading } = postStore
   const { categories, categoriesLoading, getCategories, updateCategories, createCategories, deleteCategories } =
     categoriesStore
   const { tags, getTags, createTags } = tagsStore
@@ -40,6 +41,16 @@ const SavePostDialog: FC = observer(() => {
 
   const onCategoryFilterKeywordChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setCategoryFilterKeyword(e.target.value)
+  }
+
+  const onFavouredCheckBoxChange: ZCheckBoxProps["onChange"] = e => {
+    setFavoured(e.target.checked)
+  }
+
+  const onSaveClick = () => {
+    createOrSavePost().then(() => {
+      toast.success("保存成功")
+    })
   }
 
   return (
@@ -98,6 +109,7 @@ const SavePostDialog: FC = observer(() => {
               isMulti
               placeholder="选择标签..."
               options={tags}
+              defaultValue={postTags}
               onInputChange={(value) => (selectInputValue.current = value)}
               onChange={(value) => (setPostTags(value as ITag[]))}
               noOptionsMessage={() => {
@@ -120,10 +132,10 @@ const SavePostDialog: FC = observer(() => {
             ></ZSelect>
             <div className="my-2">其他选项</div>
             <div className="text-sm">
-              <ZCheckBox className="w-3 h-3" label="放至收藏"></ZCheckBox>
+              <ZCheckBox className="w-3 h-3" label="放至收藏" checked={favoured} onChange={onFavouredCheckBoxChange}></ZCheckBox>
             </div>
           </div>
-          <ZButton scale={"large"} onClick={createOrSavePost}>确认保存</ZButton>
+          <ZButton scale={"large"} onClick={onSaveClick} loading={remoteLoading}>确认保存</ZButton>
         </div>
       </div>
     </ZModal>

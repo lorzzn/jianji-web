@@ -1,12 +1,19 @@
 import service from "@/utils/service"
 import { IPostResponse, IPostsResponse } from "./types/response/posts"
-import { ICreatePostRequest, IDeletePostRequest, IUpdatePostRequest } from "./types/request/posts"
+import { ICreatePostRequest, IDeletePostRequest, IGetPostRequest, IUpdatePostRequest } from "./types/request/posts"
 
 export const apiPosts = {
   list() {
     return service<IPostsResponse>({
       url: "/api/v1/posts/list",
       method: "POST",
+    })
+  },
+  get(data?: IGetPostRequest) {
+    return service<IPostResponse>({
+      url: "/api/v1/posts/get",
+      method: "POST",
+      data
     })
   },
   update(data?: IUpdatePostRequest) {
