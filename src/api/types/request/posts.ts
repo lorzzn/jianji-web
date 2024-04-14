@@ -4,6 +4,7 @@ import { ITag } from "./tags"
 export interface IPost {
   uuid: string | null
   category: ICategory | null
+  categoryValue: ICategory["value"] | null
   tags: ITag[] | null
   title: string
   content: string
