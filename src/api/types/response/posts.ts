@@ -3,7 +3,7 @@ import { ICategory } from "./categories"
 import { IApiCommonResponse } from "./common"
 
 export interface IPost {
-  uuid: string | null
+  uuid: string
   category: ICategory | null
   tags: ITag[] | null
   title: string
