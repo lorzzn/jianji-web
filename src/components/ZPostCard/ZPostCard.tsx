@@ -8,6 +8,7 @@ import HoverFloating from "../ZAnimateDiv/HoverFloating";
 import { dateFormat } from "@/utils/dateFormat";
 import { isEmpty } from "lodash";
 import Preview from "../ZPost/Preview";
+import { useNavigate } from "react-router-dom";
 
 export interface ZPostCardProps {
   post: IPost
@@ -15,20 +16,29 @@ export interface ZPostCardProps {
 
 const ZPostCard:FC<ZPostCardProps> = ({ post }) => {
 
+  const navigate = useNavigate()
+
+  const goPost = (uuid: string) => {
+    navigate(`/post/${uuid}`)
+  }
+
   return <div className={twclx([
     "w-9/12 max-w-7xl py-12 border-b border-b-gray-200"
   ])}>
-    <div className={twclx([
-      "rounded cursor-pointer p-6 transition-all",
-      css`
-        &:hover .title-mark {
-          ${tw`text-gray-900`}
-          &::before {
-            ${tw`bg-blue-400`}
+    <div 
+      className={twclx([
+        "rounded cursor-pointer p-6 transition-all",
+        css`
+          &:hover .title-mark {
+            ${tw`text-gray-900`}
+            &::before {
+              ${tw`bg-blue-400`}
+            }
           }
-        }
-      `
-    ])}>
+        `
+      ])}
+      onClick={() => goPost(post.uuid)}
+    >
       <div className="w-full h-auto rounded">
         {/* 标题 */}
         <div className={twclx([
@@ -62,8 +72,8 @@ const ZPostCard:FC<ZPostCardProps> = ({ post }) => {
       </div>
 
       {/* 文章简要内容 */}
-      <div className="break-words">
-        <Preview>{post.content}</Preview>
+      <div className="break-words max-h-[6em] overflow-hidden">
+        <Preview prose={false}>{post.content}</Preview>
       </div>
 
       {/* 标签 */}

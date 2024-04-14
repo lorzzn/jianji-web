@@ -1,5 +1,5 @@
 import { apiCategories } from "@/api/categories"
-import { ICategory } from "@/api/types/request/categories"
+import { ICategory } from "@/api/types/response/categories"
 import errorHandler from "@/utils/errorHandler"
 import { assign, clone } from "lodash"
 import { makeAutoObservable } from "mobx"

@@ -7,6 +7,7 @@ interface PreviewProps {
   className?: string
   style?: CSSProperties
   children?: string
+  prose?: boolean
 }
 
 const md = new MarkdownIt({
@@ -15,11 +16,14 @@ const md = new MarkdownIt({
   typographer: true,
 }).use(injectLineNumbers)
 
-const Preview: FC<PreviewProps> = ({ className, style, children = "" }) => {
+const Preview: FC<PreviewProps> = ({ className, style, prose = true, children = "" }) => {
   return (
     <div
       style={style}
-      className={twclx("prose max-w-full overflow-y-auto", className)}
+      className={twclx([
+        "max-w-full overflow-y-auto",
+        { "prose": prose },
+      ], className)}
       dangerouslySetInnerHTML={{ __html: md.render(children) }}
     ></div>
   )

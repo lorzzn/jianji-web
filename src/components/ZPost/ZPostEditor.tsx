@@ -33,6 +33,7 @@ const ZPostEditor: FC = observer(() => {
   const {
     content: value,
     setContent: _setValue,
+    createOrSavePost,
   } = postStore
 
   const [focused, setFocused] = useState<boolean>(false)
@@ -115,8 +116,9 @@ const ZPostEditor: FC = observer(() => {
         if (!textarea) return
         setValue(textarea.value)
 
-        // todo
-        toast.info("保存【todo】")
+        createOrSavePost().then(() => {
+          toast.success("保存成功")
+        })
       },
       options: hotkeysCommonOptions,
     },

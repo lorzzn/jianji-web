@@ -1,4 +1,4 @@
-import { ICategory } from "@/api/types/request/categories"
+import { ICategory } from "@/api/types/response/categories"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import { RiFolder2Line, RiFolderLine, RiFolderOpenLine } from "@remixicon/react"
