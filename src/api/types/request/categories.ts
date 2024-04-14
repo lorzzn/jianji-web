@@ -1,18 +1,18 @@
-export interface ICategories {
+export interface ICategory {
   value: number
   parentValue: number | null
   label?: string
   ordinalNumber?: number | null
 }
 
-export interface ICategoriesUpdateRequest {
-  data: ICategories[]
+export interface IUpdateCategoriesRequest {
+  data: ICategory[]
 }
 
-export interface ICategoriesCreateRequest {
-  data: Partial<ICategories>[]
+export interface ICreateCategoriesRequest {
+  data: Partial<ICategory>[]
 }
 
-export interface ICategoriesDeleteRequest {
+export interface IDeleteCategoriesRequest {
   value: number | number[]
 }

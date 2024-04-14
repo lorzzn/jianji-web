@@ -1,8 +1,8 @@
 import service from "@/utils/service"
 import {
-  ICategoriesCreateRequest,
-  ICategoriesDeleteRequest,
-  ICategoriesUpdateRequest,
+  ICreateCategoriesRequest,
+  IDeleteCategoriesRequest,
+  IUpdateCategoriesRequest,
 } from "./types/request/categories"
 import { ICategoriesResponse } from "./types/response/categories"
 
@@ -13,21 +13,21 @@ export const apiCategories = {
       method: "POST",
     })
   },
-  update(data?: ICategoriesUpdateRequest) {
+  update(data?: IUpdateCategoriesRequest) {
     return service<ICategoriesResponse>({
       url: "/api/v1/categories/update",
       method: "POST",
       data,
     })
   },
-  create(data?: ICategoriesCreateRequest) {
+  create(data?: ICreateCategoriesRequest) {
     return service<ICategoriesResponse>({
       url: "/api/v1/categories/create",
       method: "POST",
       data,
     })
   },
-  delete(data?: ICategoriesDeleteRequest) {
+  delete(data?: IDeleteCategoriesRequest) {
     return service({
       url: "/api/v1/categories/delete",
       method: "POST",
