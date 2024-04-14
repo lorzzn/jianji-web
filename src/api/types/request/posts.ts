@@ -1,4 +1,5 @@
 import { ICategory } from "./categories"
+import { IPageInfo } from "./pageInfo"
 import { ITag } from "./tags"
 
 export interface IPost {
@@ -25,4 +26,7 @@ export interface IGetPostRequest {
 
 export interface IDeletePostRequest {
   uuid: string 
+}
+
+export interface IListPostsRequest extends Partial<IPageInfo> {
 }

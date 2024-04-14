@@ -18,6 +18,8 @@ class PostStore {
   public: boolean = false
   status: number = 1
   remoteLoading: boolean = false
+  createdAt: string = ""
+  updatedAt: string = ""
 
   constructor() {
     makeAutoObservable(this)
@@ -41,12 +43,14 @@ class PostStore {
       favoured: this.favoured,
       public: this.public,
       status: this.status,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt
     }
   }
 
   get postInfoRequestParams (): Partial<IPost> {
     return {
-      ...omit(this.postInfo, "category", "tags"),
+      ...omit(this.postInfo, "category", "tags", "createdAt", "updatedAt"),
       categoryValue: this.categoryValue,
       tagValues: this.tagValues,
     }
