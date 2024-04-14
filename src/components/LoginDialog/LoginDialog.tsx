@@ -76,7 +76,7 @@ const LoginDialog: FC = observer(() => {
         modal: classNames(["rounded-lg"]),
       }}
     >
-      <div className="flex flex-col w-full h-full">
+      <div className="flex flex-col w-96 h-full">
         <ZForm onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full justify-between">
           <div>
             <ZInput className="w-full mb-4 mt-4" scale="large" placeholder="请输入邮箱" {...register("email")} />

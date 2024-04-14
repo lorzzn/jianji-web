@@ -5,11 +5,14 @@ import canUseDom from "rc-util/lib/Dom/canUseDom"
 import { forwardRef, useImperativeHandle, useState } from "react"
 import { Modal, ModalProps } from "react-responsive-modal"
 
-export interface ZModalProps extends Omit<ModalProps, "open" | "onClose"> {
+export interface ZModalProps extends Omit<ModalProps, "open" | "onClose" | "classNames"> {
   title?: any
   titleAlignCenter?: boolean
   onClose?: () => void
   footer?: any
+  classNames?: ModalProps["classNames"] & {
+    footer?: string
+  }
 }
 
 export interface ZModalRef {
@@ -64,7 +67,7 @@ const ZModal = observer(
               <div className={classNames(["text-xl font-semibold", { "text-center": titleAlignCenter }])}>{title}</div>
             )}
             <div className="flex-1 w-full py-2">{children}</div>
-            <div>{footer}</div>
+            <div className={propClassNames?.footer}>{footer}</div>
           </div>
         </Modal>
       )
