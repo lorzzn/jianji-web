@@ -11,8 +11,6 @@ interface ScrollToTopProps {
 const ScrollToTop:FC<ScrollToTopProps> = observer(({ scrollRef }) => {
   const { layoutStore } = useStore()
   const { scrollTop } = layoutStore
-  console.log(scrollTop);
-  
 
   const scrollElementToTop = () => {
     if (scrollRef.current) {

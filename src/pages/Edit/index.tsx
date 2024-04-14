@@ -33,7 +33,9 @@ const Edit: FC = observer(() => {
 
   useEffect(() => {
     if (postUuid && postUuid !== uuidjs.NIL) {
-      navigate(`/edit/${postUuid}`)
+      navigate(`/edit/${postUuid}`, {
+        replace: true,
+      })
     }
   }, [ postUuid ])
 

@@ -15,7 +15,7 @@ import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip
 import { toast } from "react-toastify"
 
 const SavePostDialog: FC = observer(() => {
-  const { register } = useDialog(dialogNames.SavePostDialog)
+  const { register, dialog } = useDialog(dialogNames.SavePostDialog)
   const { dialog: tagManagerDialog } = useDialog(dialogNames.TagManagerDialog)
   const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
 
@@ -50,6 +50,7 @@ const SavePostDialog: FC = observer(() => {
   const onSaveClick = () => {
     createOrSavePost().then(() => {
       toast.success("保存成功")
+      dialog()?.hide()
     })
   }
 

@@ -1,7 +1,7 @@
 import { IPost, IUpdatePostRequest } from "@/api/types/request/posts"
 import { IPost as IResponePost } from "@/api/types/response/posts"
 import { ITag } from "@/api/types/request/tags"
-import { ICategory } from "@/api/types/request/categories"
+import { ICategory } from "@/api/types/response/categories"
 import { makeAutoObservable } from "mobx"
 import { omit } from "lodash"
 import { apiPosts } from "@/api/posts"
@@ -33,9 +33,9 @@ class PostStore {
     return this.tags?.map(t => t.value)
   }
 
-  get postInfo() {
+  get postInfo(): IResponePost {
     return {
-      uuid: this.uuid,
+      uuid: this.uuid || uuidjs.NIL,
       category: this.category,
       tags: this.tags,
       title: this.title,
@@ -101,6 +101,8 @@ class PostStore {
     this.favoured = value.favoured
     this.public = value.public
     this.status = value.status
+    this.createdAt = value.createdAt
+    this.updatedAt = value.updatedAt
   }
 
   getFromRemote = async (uuid: string) => {
@@ -120,6 +122,21 @@ class PostStore {
       const api = (this.uuid && this.uuid !== uuidjs.NIL) ? apiPosts.update:apiPosts.create
       const res = await api(this.postInfoRequestParams as IUpdatePostRequest)
       this.setPostInfo(res.data.data)
+      return Promise.resolve(res)
+    } catch (error) {
+      errorHandler.handle(error)
+      return Promise.reject(error)
+    } finally {
+      this.setRemoteLoading(false)
+    }
+  }
+
+  deletePost = async () => {
+    if (!this.uuid) return
+    
+    this.setRemoteLoading(true)
+    try {
+      const res = await apiPosts.delete({ uuid: this.uuid })
       return Promise.resolve(res)
     } catch (error) {
       errorHandler.handle(error)
