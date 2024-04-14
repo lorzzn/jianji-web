@@ -1,5 +1,6 @@
+import { IPost } from "@/api/types/request/posts"
 import { ITag } from "@/api/types/request/tags"
-import { ICategory } from "@/api/types/response/categories"
+import { ICategory } from "@/api/types/request/categories"
 import { makeAutoObservable } from "mobx"
 
 class PostStore {
@@ -14,6 +15,10 @@ class PostStore {
 
   constructor() {
     makeAutoObservable(this)
+  }
+
+  setUuid = (value: string | null) => {
+    this.uuid = value
   }
 
   setCategory = (value: ICategory | null) => {
@@ -44,7 +49,16 @@ class PostStore {
     this.status = value
   }
 
-  
+  setPost = (value: IPost) => {
+    this.setUuid(value.uuid)
+    this.setCategory(value.category)
+    this.setContent(value.content)
+    this.setFavoured(value.favoured)
+    this.setPublic(value.public)
+    this.setTags(value.tags)
+    this.setStatus(value.status)
+    this.setTitle(value.title)
+  }
 
 }
 
