@@ -1,4 +1,4 @@
-import { RiAlignJustify, RiArchiveLine, RiHashtag, RiHomeLine, RiStarLine } from "@remixicon/react"
+import { RiAlignJustify, RiArchiveLine, RiHashtag, RiHomeLine, RiStackLine, RiStarLine } from "@remixicon/react"
 import { concat, takeRight } from "lodash"
 import { makeAutoObservable } from "mobx"
 import { Location } from "react-router-dom"
@@ -27,7 +27,7 @@ class LayoutStore {
     { href: "/", label: "首页", RiIcon: RiHomeLine },
     { href: "/archives", label: "归档", RiIcon: RiArchiveLine },
     { href: "/favlist", label: "收藏", RiIcon: RiStarLine },
-    { href: "/categories", label: "分类", RiIcon: RiAlignJustify },
+    { href: "/categories", label: "分类", RiIcon: RiStackLine },
     { href: "/tags", label: "标签", RiIcon: RiHashtag },
   ]
 

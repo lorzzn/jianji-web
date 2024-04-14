@@ -1,4 +1,4 @@
-import { IApiCommonResp } from "./common"
+import { IApiCommonResponse } from "./common"
 
 export interface IUserInfo {
   id: number
@@ -11,7 +11,7 @@ export interface IUserInfo {
   status: number
 }
 
-export interface ILoginResp extends IApiCommonResp {
+export interface ILoginResponse extends IApiCommonResponse {
   data: {
     userInfo: IUserInfo
     token: string
@@ -19,22 +19,22 @@ export interface ILoginResp extends IApiCommonResp {
   }
 }
 
-export interface IActiveResp extends ILoginResp {}
+export interface IActiveResponse extends ILoginResponse {}
 
-export interface IRefreshTokenResp extends IApiCommonResp {
+export interface IRefreshTokenResponse extends IApiCommonResponse {
   data: {
     token: string
     refreshToken: string
   }
 }
 
-export interface IProfileResp extends IApiCommonResp {
+export interface IProfileResponse extends IApiCommonResponse {
   data: {
     userInfo: IUserInfo
   }
 }
 
-export interface IEditProfileResp extends IApiCommonResp {
+export interface IEditProfileResponse extends IApiCommonResponse {
   data: {
     userInfo: IUserInfo
   }
