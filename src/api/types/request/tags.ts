@@ -3,14 +3,14 @@ export interface ITag {
   label?: string
 }
 
-export interface ITagUpdateRequest {
+export interface IUpdateTagsRequest {
   data: ITag[]
 }
 
-export interface ITagCreateRequest {
-  data: Partial<ITag>[]
+export interface ICreateTagsRequest {
+  data: ITag[]
 }
 
-export interface ITagDeleteRequest {
+export interface IDeleteTagsRequest {
   value: number | number[]
 }
