@@ -15,13 +15,12 @@ const Home: FC = () => {
   }, [])
 
   const onPageChange = (e: number) => {
-    console.log(e);
     updatePageNo(e)
   }
 
   return (
-    <div>
-      <div className="flex flex-col justify-center items-center mt-12">
+    <>
+      <div className="flex flex-col justify-center items-center mt-12 flex-1">
         {
           list.map(item => <ZPostCard post={item} key={item.uuid} />)
         }
@@ -33,7 +32,7 @@ const Home: FC = () => {
           <ZPagination currentPage={pageInfo.pageNo} totalPage={totalPage} jumpSize={5} onPageChange={onPageChange}/>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
