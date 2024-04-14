@@ -6,6 +6,7 @@ import { makeAutoObservable } from "mobx"
 class PostStore {
   uuid: string | null = null // 文章uuid
   category: ICategory | null = null // 当前文章的分类
+  categoryValue: ICategory["value"] | null = null
   tags: ITag[] | null = null // 当前文章的标签
   title: string = ""
   content: string = ""
@@ -23,6 +24,10 @@ class PostStore {
 
   setCategory = (value: ICategory | null) => {
     this.category = value
+  }
+
+  setCategoryValue = (value: ICategory["value"] | null) => {
+    this.categoryValue = value
   }
 
   setTags = (value: ITag[] | null) => {
@@ -52,6 +57,7 @@ class PostStore {
   setPost = (value: IPost) => {
     this.setUuid(value.uuid)
     this.setCategory(value.category)
+    this.setCategoryValue(value.categoryValue)
     this.setContent(value.content)
     this.setFavoured(value.favoured)
     this.setPublic(value.public)
