@@ -6,10 +6,12 @@ const Active = lazy(() => import("@/pages/Active"))
 const Archives = lazy(() => import("@/pages/Archives"))
 const Categories = lazy(() => import("@/pages/Categories"))
 const Edit = lazy(() => import("@/pages/Edit"))
+const Post = lazy(() => import("@/pages/Post"))
 const Favlist = lazy(() => import("@/pages/Favlist"))
 const Home = lazy(() => import("@/pages/Home"))
 const Search = lazy(() => import("@/pages/Search"))
 const Tags = lazy(() => import("@/pages/Tags"))
+const NotFoundPage = lazy(() => import("@/pages/404"))
 
 const Content: FC = () => {
   return (
@@ -31,6 +33,8 @@ const Content: FC = () => {
               </RequireAuth>
             }
           />
+          <Route path="/post/:uuid?" Component={Post} />
+          <Route path="*" Component={NotFoundPage} />
         </Routes>
       </Suspense>
     </div>
