@@ -14,7 +14,7 @@ const Footer: FC = () => {
   }
 
   return (
-    <div className="w-full h-24 flex flex-col justify-center items-center">
+    <div className="w-full flex flex-col justify-center items-center my-12">
       <div className="text-sm text-gray-800">Copyright © {getAppRunningYears()} 简记</div>
     </div>
   )

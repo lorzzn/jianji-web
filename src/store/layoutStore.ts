@@ -1,4 +1,4 @@
-import { RiAlignJustify, RiArchiveLine, RiHashtag, RiHomeLine, RiStackLine, RiStarLine } from "@remixicon/react"
+import { RiArchiveLine, RiHashtag, RiHomeLine, RiStackLine, RiStarLine } from "@remixicon/react"
 import { concat, takeRight } from "lodash"
 import { makeAutoObservable } from "mobx"
 import { Location } from "react-router-dom"
@@ -17,6 +17,7 @@ class LayoutStore {
   layout: "large" | "medium" | "small"
   location: Location | undefined
   clickTrace: Element[] = []
+  scrollTop: number  = 0
 
   constructor() {
     this.layout = "large"
@@ -55,6 +56,11 @@ class LayoutStore {
   updateClickTrace = (elem: Element) => {
     this.clickTrace = takeRight(concat(this.clickTrace, elem), 50)
   }
+  
+  updateScrollTop = (scrollTop: number) => {
+    this.scrollTop = scrollTop
+  }
+
 }
 
 export default LayoutStore
