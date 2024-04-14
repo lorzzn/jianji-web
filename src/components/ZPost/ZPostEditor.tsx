@@ -13,6 +13,8 @@ import Textarea, { TextareaRef } from "./Textarea"
 import Toolbar, { ToolbarButton } from "./Toolbar"
 import ZPostEditorHelpDialog from "./ZPostEditorHelpDialog"
 import { twclx } from "@/utils/twclx"
+import { useStore } from "@/store"
+import { observer } from "mobx-react"
 
 export type hotkeysRecord = Record<
   string,
@@ -26,8 +28,13 @@ type EditorHistory = {
 
 const headRegex = /^(#{1,6}\s+)(.*)/
 
-const ZPostEditor: FC = () => {
-  const [value, _setValue] = useState<string>("")
+const ZPostEditor: FC = observer(() => {
+  const { postStore } = useStore()
+  const {
+    content: value,
+    setContent: _setValue,
+  } = postStore
+
   const [focused, setFocused] = useState<boolean>(false)
   const [layout, setLayout] = useState<ToolbarButton["layout"]>("normal")
   const [layoutReversed, setLayoutReversed] = useState(false)
@@ -336,6 +343,6 @@ const ZPostEditor: FC = () => {
       <ZPostEditorHelpDialog ref={helpDialogRef} hotkeys={hotkeys} />
     </div>
   )
-}
+})
 
 export default ZPostEditor

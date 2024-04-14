@@ -19,7 +19,7 @@ const SavePostDialog: FC = observer(() => {
   const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
 
   const { postStore, categoriesStore, tagsStore, userStore } = useStore()
-  const { category, setCategory } = postStore
+  const { category, setCategory, setTags: setPostTags, createOrSavePost } = postStore
   const { categories, categoriesLoading, getCategories, updateCategories, createCategories, deleteCategories } =
     categoriesStore
   const { tags, getTags, createTags } = tagsStore
@@ -33,7 +33,6 @@ const SavePostDialog: FC = observer(() => {
   }, [ authed ])
 
   const selectInputValue = useRef("")
-  const selectedTags = useRef<ITag[]>([])
 
   const onCategoriesSelected: CategoriesSelectorProps["onSelect"] = (_, category) => {
     setCategory(category)
@@ -100,7 +99,7 @@ const SavePostDialog: FC = observer(() => {
               placeholder="选择标签..."
               options={tags}
               onInputChange={(value) => (selectInputValue.current = value)}
-              onChange={(value) => (selectedTags.current = value as ITag[])}
+              onChange={(value) => (setPostTags(value as ITag[]))}
               noOptionsMessage={() => {
                 return (
                   <div>
@@ -124,7 +123,7 @@ const SavePostDialog: FC = observer(() => {
               <ZCheckBox className="w-3 h-3" label="放至收藏"></ZCheckBox>
             </div>
           </div>
-          <ZButton scale={"large"}>确认保存</ZButton>
+          <ZButton scale={"large"} onClick={createOrSavePost}>确认保存</ZButton>
         </div>
       </div>
     </ZModal>
