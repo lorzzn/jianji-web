@@ -41,10 +41,14 @@ const Layout: FC = () => {
       { name: "click", handler: onWindowClick },
     ]
     listenEvents.forEach(({ name, handler }) => window.addEventListener(name, handler))
-    updateLocationState(location)
+    onWindowStateChange()
     return () => {
       listenEvents.forEach(({ name, handler }) => window.removeEventListener(name, handler))
     }
+  }, [])
+
+  useEffect(() => {
+    updateLocationState(location)
   }, [location])
 
   return (
