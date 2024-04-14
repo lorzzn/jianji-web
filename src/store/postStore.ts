@@ -6,6 +6,7 @@ import { makeAutoObservable } from "mobx"
 import { omit } from "lodash"
 import { apiPosts } from "@/api/posts"
 import errorHandler from "@/utils/errorHandler"
+import { uuidjs } from "@/utils/uuid"
 
 class PostStore {
   uuid: string | null = null // 文章uuid
@@ -112,7 +113,7 @@ class PostStore {
   createOrSavePost = async () => {
     this.setRemoteLoading(true)
     try {
-      const api = this.uuid ? apiPosts.update:apiPosts.create
+      const api = (this.uuid && this.uuid !== uuidjs.NIL) ? apiPosts.update:apiPosts.create
       const res = await api(this.postInfoRequestParams as IUpdatePostRequest)
       this.setPostInfo(res.data.data)
       return Promise.resolve(res)

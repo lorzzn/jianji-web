@@ -6,16 +6,18 @@ import { useStore } from "@/store"
 import { uuidjs } from "@/utils/uuid"
 import { observer } from "mobx-react"
 import { FC, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 const Edit: FC = observer(() => {
   const { postStore } = useStore()
   const {
+    uuid: postUuid,
     title,
     setTitle,
     getFromRemote
   } = postStore
 
+  const navigate = useNavigate()
   const { dialog } = useDialog(dialogNames.SavePostDialog)
   const showSaveDialog = () => dialog()?.show()
 
@@ -28,6 +30,12 @@ const Edit: FC = observer(() => {
     }
     getFromRemote(uuid)
   }, [ uuidparam ])
+
+  useEffect(() => {
+    if (postUuid && postUuid !== uuidjs.NIL) {
+      navigate(`/edit/${postUuid}`)
+    }
+  }, [ postUuid ])
 
   const onTitleChange:ZInputProps["onChange"] = (e) => {
     setTitle(e.target.value)
