@@ -3,9 +3,8 @@ import { ITag } from "./tags"
 
 export interface IPost {
   uuid: string | null
-  category: ICategory | null
   categoryValue: ICategory["value"] | null
-  tags: ITag[] | null
+  tagValues: ITag["value"][] | null
   title: string
   content: string
   favoured: boolean

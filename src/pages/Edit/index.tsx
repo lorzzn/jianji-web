@@ -8,7 +8,7 @@ const Edit: FC = () => {
   const { dialog } = useDialog(dialogNames.SavePostDialog)
 
   const showSaveDialog = () => dialog()?.show()
-  const hideSaveDialog = () => dialog()?.hide()
+  // const hideSaveDialog = () => dialog()?.hide()
 
   return (
     <div className="flex-1 flex flex-col">

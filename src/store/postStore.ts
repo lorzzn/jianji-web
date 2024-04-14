@@ -1,12 +1,14 @@
-import { IPost } from "@/api/types/request/posts"
+import { IPost, IUpdatePostRequest } from "@/api/types/request/posts"
 import { ITag } from "@/api/types/request/tags"
 import { ICategory } from "@/api/types/request/categories"
 import { makeAutoObservable } from "mobx"
+import { omit } from "lodash"
+import { apiPosts } from "@/api/posts"
+import errorHandler from "@/utils/errorHandler"
 
 class PostStore {
   uuid: string | null = null // 文章uuid
   category: ICategory | null = null // 当前文章的分类
-  categoryValue: ICategory["value"] | null = null
   tags: ITag[] | null = null // 当前文章的标签
   title: string = ""
   content: string = ""
@@ -18,16 +20,41 @@ class PostStore {
     makeAutoObservable(this)
   }
 
+  get categoryValue() {
+    return this.category?.value
+  }
+
+  get tagValues() {
+    return this.tags?.map(t => t.value)
+  }
+
+  get postInfo () {
+    return {
+      uuid: this.uuid,
+      category: this.category,
+      tags: this.tags,
+      title: this.title,
+      content: this.content,
+      favoured: this.favoured,
+      public: this.public,
+      status: this.status,
+    }
+  }
+
+  get postInfoRequestParams (): Partial<IPost> {
+    return {
+      ...omit(this.postInfo, "category", "tags"),
+      categoryValue: this.categoryValue,
+      tagValues: this.tagValues,
+    }
+  }
+
   setUuid = (value: string | null) => {
     this.uuid = value
   }
 
   setCategory = (value: ICategory | null) => {
     this.category = value
-  }
-
-  setCategoryValue = (value: ICategory["value"] | null) => {
-    this.categoryValue = value
   }
 
   setTags = (value: ITag[] | null) => {
@@ -54,16 +81,15 @@ class PostStore {
     this.status = value
   }
 
-  setPost = (value: IPost) => {
-    this.setUuid(value.uuid)
-    this.setCategory(value.category)
-    this.setCategoryValue(value.categoryValue)
-    this.setContent(value.content)
-    this.setFavoured(value.favoured)
-    this.setPublic(value.public)
-    this.setTags(value.tags)
-    this.setStatus(value.status)
-    this.setTitle(value.title)
+  createOrSavePost = async () => {
+    try {
+      const api = this.uuid ? apiPosts.update:apiPosts.create
+      const res = await api(this.postInfoRequestParams as IUpdatePostRequest)
+      console.log(res);
+      
+    } catch (error) {
+      errorHandler.handle(error)
+    }
   }
 
 }
