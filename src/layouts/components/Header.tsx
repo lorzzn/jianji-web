@@ -11,7 +11,7 @@ import UserInfo from "./UserInfo"
 
 const Header: FC = observer(() => {
   const navigate = useNavigate()
-  const { userStore, layoutStore } = useStore()
+  const { userStore, layoutStore, postStore } = useStore()
   const {
     loading: userInfoLoading,
   } = userStore
@@ -20,6 +20,9 @@ const Header: FC = observer(() => {
     location,
     navItems,
   } = layoutStore
+  const {
+    setUuid
+  } = postStore
 
   const searchButtonActive = location?.pathname === "/search"
   const penButtonActive = ["/edit"].includes(location?.pathname ?? "")
@@ -38,6 +41,7 @@ const Header: FC = observer(() => {
 
   const onPenButtonClick = () => {
     if (!penButtonActive) {
+      setUuid(null)
       navigate("/edit")
     }
   }
