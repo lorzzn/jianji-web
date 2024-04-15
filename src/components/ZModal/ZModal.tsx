@@ -18,6 +18,7 @@ export interface ZModalProps extends Omit<ModalProps, "open" | "onClose" | "clas
 export interface ZModalRef {
   show: () => void
   hide: () => void
+  open: boolean
 }
 
 const ZModal = observer(
@@ -48,6 +49,7 @@ const ZModal = observer(
       useImperativeHandle(ref, () => ({
         show,
         hide,
+        open,
       }))
 
       return (

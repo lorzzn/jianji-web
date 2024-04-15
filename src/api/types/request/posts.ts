@@ -35,4 +35,5 @@ export interface IListPostsRequest extends Partial<IPageInfo> {
   favoured?: boolean
   sortBy?: "created_at" | "updated_at"
   sortType?: "desc" | "asc"
+  tagValues?: number[]
 }

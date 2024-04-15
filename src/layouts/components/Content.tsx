@@ -11,6 +11,7 @@ const Favlist = lazy(() => import("@/pages/Favlist"))
 const Home = lazy(() => import("@/pages/Home"))
 const Search = lazy(() => import("@/pages/Search"))
 const Tags = lazy(() => import("@/pages/Tags"))
+const Tag = lazy(() => import("@/pages/Tag"))
 const Login = lazy(() => import("@/pages/Login"))
 
 const NotFoundPage = lazy(() => import("@/pages/BadStatus/404"))
@@ -38,6 +39,7 @@ const Content: FC = () => {
             }
           />
           <Route path="/post/:uuid?" Component={Post} />
+          <Route path="/tag/:tagValue" Component={Tag} />
 
           <Route path="/404" Component={NotFoundPage} />
           <Route path="/500" Component={ServerErrorPage} />

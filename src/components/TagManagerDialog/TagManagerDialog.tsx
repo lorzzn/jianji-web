@@ -16,7 +16,7 @@ const TagManagerDialog = observer(forwardRef<ZModalRef>(() => {
   const [optingTag, setOptingTag] = useState<ITag|null>(null)
 
   const { tagsStore } = useStore()
-  const { tags, deleteTags, tagsLoading } = tagsStore
+  const { tags, deleteTags, loading: tagsLoading } = tagsStore
   
   // 模糊搜索
   const fzsortResult = useMemo(() => {

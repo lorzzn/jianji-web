@@ -7,7 +7,8 @@ import { makeAutoObservable } from "mobx"
 
 class TagsStore {
   tags: ITag[] = []
-  tagsLoading: boolean = false
+  loading: boolean = false
+  loaded: boolean = false
 
   constructor() {
     makeAutoObservable(this)
@@ -16,23 +17,28 @@ class TagsStore {
     this.tags = tags
   }
 
-  setTagsLoading = (loading: boolean) => {
-    this.tagsLoading = loading
+  setLoading = (loading: boolean) => {
+    this.loading = loading
+  }
+
+  setLoaded = (loaded: boolean) => {
+    this.loaded = loaded
   }
 
   getTags = async () => {
-    this.setTagsLoading(true)
+    this.setLoading(true)
     try {
       const res = await apiTags.list()
       this.setTags(res.data.data)
+      this.setLoaded(true)
     } catch (error) {
       errorHandler.handle(error)
     }
-    this.setTagsLoading(false)
+    this.setLoading(false)
   }
 
   updateTags = async (data: ITag[]) => {
-    this.setTagsLoading(true)
+    this.setLoading(true)
     try {
       const res = await apiTags.update({ data })
       const tags = clone(this.tags)
@@ -48,11 +54,11 @@ class TagsStore {
     } catch (error) {
       errorHandler.handle(error)
     }
-    this.setTagsLoading(false)
+    this.setLoading(false)
   }
 
   createTags = async (data: Partial<IRequestTag>[], callback?: (created: ITag[] | null) => void) => {
-    this.setTagsLoading(true)
+    this.setLoading(true)
     try {
       const res = await apiTags.create({ data })
       const tags = clone(this.tags)
@@ -63,11 +69,11 @@ class TagsStore {
       callback?.(null)
       errorHandler.handle(error)
     }
-    this.setTagsLoading(false)
+    this.setLoading(false)
   }
 
   deleteTags = async (value: number[] | number) => {
-    this.setTagsLoading(true)
+    this.setLoading(true)
     try {
       await apiTags.delete({ value })
       let tags = clone(this.tags)
@@ -83,7 +89,7 @@ class TagsStore {
     } catch (error) {
       errorHandler.handle(error)
     }
-    this.setTagsLoading(false)
+    this.setLoading(false)
   }
 }
 

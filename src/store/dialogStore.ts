@@ -10,7 +10,7 @@ interface IDialog {
 }
 
 class DialogStore {
-  private dialogList: IDialog[] = []
+  dialogList: IDialog[] = []
 
   constructor() {
     makeAutoObservable(this)

@@ -40,7 +40,7 @@ const Base: FC<BaseProps> = ({ extraParams }) => {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center mt-12 flex-1">
+      <div className="flex flex-col justify-start items-center mt-12 flex-1">
         {list.map((item) => (
           <ZPostCard post={item} key={item.uuid} />
         ))}
