@@ -15,6 +15,10 @@ import ZPostEditorHelpDialog from "./ZPostEditorHelpDialog"
 import { twclx } from "@/utils/twclx"
 import { useStore } from "@/store"
 import { observer } from "mobx-react"
+import { getStorage, setStorage } from "@/utils/storage"
+import { css } from "@emotion/css"
+
+export const editorFontSizeStorageKey = "editorFontSize"
 
 export type hotkeysRecord = Record<
   string,
@@ -40,6 +44,7 @@ const ZPostEditor: FC = observer(() => {
   const [layout, setLayout] = useState<ToolbarButton["layout"]>("normal")
   const [layoutReversed, setLayoutReversed] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
+  const [editorFontSize, setEditorFontSize] = useState(getStorage(editorFontSizeStorageKey) || "16")
 
   const helpDialogRef = useRef<ZModalRef>(null)
   const textareaRef = useRef<TextareaRef>(null)
@@ -293,6 +298,23 @@ const ZPostEditor: FC = observer(() => {
     if (info.action === "reverse" && layout === "normal") {
       setLayoutReversed(!layoutReversed)
     }
+
+    if (info.action === "zoomOutFont") {
+      setStorage(editorFontSizeStorageKey, +editorFontSize + 1)
+      setEditorFontSize(getStorage(editorFontSizeStorageKey))
+    }
+
+    if (info.action === "zoomInFont") {
+      if (editorFontSize == 12) return
+
+      setStorage(editorFontSizeStorageKey, +editorFontSize - 1)
+      setEditorFontSize(getStorage(editorFontSizeStorageKey))
+    }
+
+    if (info.action === "zoomDefault") {
+      setStorage(editorFontSizeStorageKey, 16)
+      setEditorFontSize(getStorage(editorFontSizeStorageKey))
+    }
   }
 
   useEffect(() => {
@@ -336,7 +358,12 @@ const ZPostEditor: FC = observer(() => {
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               onChange={handleValueChange}
-              className="w-full h-full p-3 break-all"
+              className={twclx([
+                "w-full h-full p-3 break-all bg-neutral-50",
+                css`
+                  font-size: ${editorFontSize}px;
+                `
+              ])}
             />
           </Panel>
           <PanelResizeHandle className="w-0 border" />

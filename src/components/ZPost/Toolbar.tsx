@@ -1,5 +1,5 @@
 import { twclx } from "@/utils/twclx"
-import { RiBallPenLine, RiEyeLine, RiFullscreenExitLine, RiFullscreenLine, RiLayoutColumnFill } from "@remixicon/react"
+import { RiBallPenLine, RiEyeLine, RiFontSize, RiFullscreenExitLine, RiFullscreenLine, RiLayoutColumnFill } from "@remixicon/react"
 import classNames from "classnames"
 import { FC, useMemo } from "react"
 
@@ -9,7 +9,7 @@ export interface ToolbarButton {
   active?: boolean
   layout?: "normal" | "editor" | "preview" 
   className?: string
-  action?: "reverse" | "fullscreen" | "help"
+  action?: "reverse" | "fullscreen" | "help" | "zoomInFont" | "zoomOutFont" | "zoomDefault"
 }
 
 interface ToolbarProps {
@@ -40,6 +40,21 @@ const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => 
         title: "预览",
         active: layout === "preview",
         layout: "preview",
+      },
+      {
+        icon: <RiFontSize size={"1.1rem"} />,
+        title: "默认",
+        action: "zoomDefault",
+      },
+      {
+        icon: <RiFontSize size={"1.1rem"} />,
+        title: "+",
+        action: "zoomOutFont"
+      },
+      {
+        icon: <RiFontSize size={"1.1rem"} />,
+        title: "-",
+        action: "zoomInFont",
       },
       {
         className: "ml-auto",
