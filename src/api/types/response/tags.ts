@@ -1,10 +1,10 @@
 import { IApiCommonResponse } from "./common"
 
-export interface ITags {
+export interface ITag {
   label: string
   value: number
 }
 
 export interface ITagsResponse extends IApiCommonResponse {
-  data: ITags[]
+  data: ITag[]
 }

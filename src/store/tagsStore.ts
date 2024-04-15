@@ -1,17 +1,18 @@
 import { apiTags } from "@/api/tags"
-import { ITags } from "@/api/types/response/tags"
+import { ITag } from "@/api/types/response/tags"
+import { ITag as IRequestTag } from "@/api/types/request/tags"
 import errorHandler from "@/utils/errorHandler"
 import { assign, clone } from "lodash"
 import { makeAutoObservable } from "mobx"
 
 class TagsStore {
-  tags: ITags[] = []
+  tags: ITag[] = []
   tagsLoading: boolean = false
 
   constructor() {
     makeAutoObservable(this)
   }
-  setTags = (tags: ITags[]) => {
+  setTags = (tags: ITag[]) => {
     this.tags = tags
   }
 
@@ -30,7 +31,7 @@ class TagsStore {
     this.setTagsLoading(false)
   }
 
-  updateTags = async (data: ITags[]) => {
+  updateTags = async (data: ITag[]) => {
     this.setTagsLoading(true)
     try {
       const res = await apiTags.update({ data })
@@ -50,7 +51,7 @@ class TagsStore {
     this.setTagsLoading(false)
   }
 
-  createTags = async (data: ITags[], callback?: (created: ITags[] | null) => void) => {
+  createTags = async (data: Partial<IRequestTag>[], callback?: (created: ITag[] | null) => void) => {
     this.setTagsLoading(true)
     try {
       const res = await apiTags.create({ data })
