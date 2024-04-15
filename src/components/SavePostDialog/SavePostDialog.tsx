@@ -48,9 +48,10 @@ const SavePostDialog: FC = observer(() => {
   }
 
   const onSaveClick = () => {
-    createOrSavePost().then(() => {
+    createOrSavePost().then((res) => {
       toast.success("保存成功")
       dialog()?.hide()
+      window.location.href = `/post/${res.data.data.uuid}`
     })
   }
 

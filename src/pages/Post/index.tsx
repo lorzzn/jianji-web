@@ -31,7 +31,7 @@ const Post = observer(() => {
   const onDelete = () => {
     deletePost().then(() => {
       toast.success("删除成功")
-      navigate("/")
+      window.location.href = "/"
     })
   }
 

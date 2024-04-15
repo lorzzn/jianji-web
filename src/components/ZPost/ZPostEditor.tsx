@@ -110,7 +110,7 @@ const ZPostEditor: FC = observer(() => {
     },
     save: {
       keys: onCtrl(onShift("s")),
-      description: "保存",
+      description: "快速保存",
       callback: () => {
         const textarea = textareaRef.current
         if (!textarea) return
@@ -120,7 +120,10 @@ const ZPostEditor: FC = observer(() => {
           toast.success("保存成功")
         })
       },
-      options: hotkeysCommonOptions,
+      options: {
+        ...hotkeysCommonOptions,
+        enabled: true,
+      },
     },
     markdown_headings: {
       keys: [onCtrl(1), onCtrl(2), onCtrl(3), onCtrl(4), onCtrl(5), onCtrl(6)],
