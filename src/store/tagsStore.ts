@@ -50,7 +50,7 @@ class TagsStore {
     this.setTagsLoading(false)
   }
 
-  createTags = async (data: Partial<ITags>[], callback?: (created: ITags[] | null) => void) => {
+  createTags = async (data: ITags[], callback?: (created: ITags[] | null) => void) => {
     this.setTagsLoading(true)
     try {
       const res = await apiTags.create({ data })

@@ -8,7 +8,7 @@ import { uuidjs } from "@/utils/uuid"
 import { RiCalendarLine, RiHashtag, RiStackLine } from "@remixicon/react"
 import { isEmpty } from "lodash"
 import { observer } from "mobx-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 
@@ -19,6 +19,8 @@ const Post = observer(() => {
     deletePost,
     getFromRemote
   } = postStore
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleted, setDeleted] = useState(false)
 
   const { uuid: uuidparam } = useParams()
   
@@ -28,11 +30,16 @@ const Post = observer(() => {
     navigate(`/edit/${uuidparam}`)
   }
 
-  const onDelete = () => {
-    deletePost().then(() => {
+  const onDelete = async () => {
+    setDeleteLoading(true)
+    try {
+      await deletePost()
+      setDeleted(true)
+    } finally {
       toast.success("删除成功")
       window.location.href = "/"
-    })
+    }
+    setDeleteLoading(false)
   }
 
   useEffect(() => {
@@ -68,7 +75,10 @@ const Post = observer(() => {
 
         <div className="flex items-center">
           <ZButton variant={"primary_plain"} onClick={goEdit}>编辑</ZButton>
-          <ConfirmAbleButton text="删除" confirmText="确认删除？" onConfirm={onDelete} />
+          <ConfirmAbleButton text="删除" confirmText="确认删除？" onConfirm={onDelete} buttonProps={{
+            loading: deleteLoading,
+            disabled: deleted,
+          }} />
         </div>
       </div>
 
