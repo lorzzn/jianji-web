@@ -1,8 +1,9 @@
 import { useStore } from "@/store";
+import eventBus from "@/utils/eventBus";
 import { RiArrowUpDoubleLine } from "@remixicon/react";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
-import { FC, RefObject } from "react";
+import { FC, RefObject, useEffect } from "react";
 
 interface ScrollToTopProps {
   scrollRef: RefObject<Element>
@@ -20,6 +21,10 @@ const ScrollToTop:FC<ScrollToTopProps> = observer(({ scrollRef }) => {
       })
     }
   }
+
+  useEffect(() => {
+    eventBus.on('scrolltotop', scrollElementToTop)
+  }, [])
 
   return (
     <motion.div 
