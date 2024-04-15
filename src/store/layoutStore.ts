@@ -6,6 +6,7 @@ import { Location } from "react-router-dom"
 export interface INavItem {
   href: string
   active?: boolean
+  activePath?: string[] | string
   label: string
   RiIcon: typeof RiHomeLine
 }
@@ -29,7 +30,7 @@ class LayoutStore {
     { href: "/archives", label: "归档", RiIcon: RiArchiveLine },
     { href: "/favlist", label: "收藏", RiIcon: RiStarLine },
     { href: "/categories", label: "分类", RiIcon: RiStackLine },
-    { href: "/tags", label: "标签", RiIcon: RiHashtag },
+    { href: "/tags", label: "标签", RiIcon: RiHashtag, activePath: ["tags", "tag"] },
   ]
 
   updateLayoutState = (width: number, height: number, focus: boolean) => {
@@ -48,7 +49,12 @@ class LayoutStore {
   updateLocationState = (location: Location) => {
     this.location = location
     this.navItems = this.navItems.map((item) => {
-      item.active = location.pathname === item.href.split("?")[0]
+      item.active = false
+      if (Array.isArray(item.activePath)) {
+        item.activePath.forEach((path) => item.active ||= location.pathname.split("/")[1] === path)
+      } else {
+        item.active ||= location.pathname === (item.activePath || item.href)
+      }
       return item
     })
   }
