@@ -2,6 +2,7 @@ import ConfirmAbleButton from "@/components/ConfirmAbleButton/ConfirmAbleButton"
 import HoverFloating from "@/components/ZAnimateDiv/HoverFloating"
 import ZButton from "@/components/ZButton/ZButton"
 import Preview from "@/components/ZPost/Preview"
+import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "@/components/ZTooltip/ZTooltip"
 import { useStore } from "@/store"
 import { dateFormat } from "@/utils/dateFormat"
 import { uuidjs } from "@/utils/uuid"
@@ -60,10 +61,20 @@ const Post = observer(() => {
       {/* 创建日期和分类 */}
       <div className="flex items-center space-x-8 pt-6 pb-3">
         {/* 发布日期 */}
-        <div className="flex items-center text-gray-600 space-x-2">
-          <RiCalendarLine size={"1rem"} />
-          <div>{dateFormat(post.createdAt)}</div>
-        </div>
+        <ZTooltip>
+          <ZTooltipTrigger>
+            <div className="flex items-center text-gray-600 space-x-2">
+              <RiCalendarLine size={"1rem"} />
+              <div>{dateFormat(post.createdAt)}</div>
+            </div>
+          </ZTooltipTrigger>
+          <ZTooltipContent>
+            <div>创建时间：{dateFormat(post.createdAt)}</div>
+            {
+              post.updatedAt !== post.createdAt && <div>最近编辑时间：{dateFormat(post.updatedAt)}</div>
+            }
+          </ZTooltipContent>
+        </ZTooltip>
 
         {/* 分类 */}
         {
@@ -74,27 +85,30 @@ const Post = observer(() => {
         }
 
         <div className="flex items-center">
-          <ZButton variant={"primary_plain"} onClick={goEdit}>编辑</ZButton>
+          <ZButton variant={"primary_plain"} className="h-6" onClick={goEdit}>编辑</ZButton>
           <ConfirmAbleButton text="删除" confirmText="确认删除？" onConfirm={onDelete} buttonProps={{
             loading: deleteLoading,
             disabled: deleted,
+            className: "h-6"
           }} />
         </div>
       </div>
 
       {/* 标签 */}
-      {
-        !isEmpty(post.tags) && <div className="space-x-2 pb-6">
-          <RiHashtag className="inline-block my-1 -left-4" size={"1rem"} />
-          {
-            post.tags?.map(tag => {
-              return <HoverFloating key={tag.value} className="rounded-full bg-gray-800 text-white px-2 py-0.5 text-xs inline-block select-none cursor-pointer" >
-                {tag.label}
-              </HoverFloating>
-            })
-          }
-        </div>
-      }
+      <div className="pb-6">
+        {
+          !isEmpty(post.tags) && <div className="space-x-2">
+            <RiHashtag className="inline-block my-1 -left-4" size={"1rem"} />
+            {
+              post.tags?.map(tag => {
+                return <HoverFloating key={tag.value} className="rounded-full bg-gray-800 text-white px-2 py-0.5 text-xs inline-block select-none cursor-pointer" >
+                  {tag.label}
+                </HoverFloating>
+              })
+            }
+          </div>
+        }
+      </div>
 
       {/* 文章内容 */}
       <div className="break-words">
