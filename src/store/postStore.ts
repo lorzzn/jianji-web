@@ -7,6 +7,8 @@ import { omit } from "lodash"
 import { apiPosts } from "@/api/posts"
 import errorHandler from "@/utils/errorHandler"
 import { uuidjs } from "@/utils/uuid"
+import { toast } from "react-toastify"
+import { getPlainTextFromMarkdown } from "@/utils/stringFuncs"
 
 class PostStore {
   uuid: string | null = null // 文章uuid
@@ -14,7 +16,9 @@ class PostStore {
   tags: ITag[] | null = null // 当前文章的标签
   title: string = ""
   content: string = ""
+  description: string = ""
   favoured: boolean = false
+  archived: boolean = false
   public: boolean = false
   status: number = 1
   remoteLoading: boolean = false
@@ -40,7 +44,9 @@ class PostStore {
       tags: this.tags,
       title: this.title,
       content: this.content,
+      description: this.description,
       favoured: this.favoured,
+      archived: this.archived,
       public: this.public,
       status: this.status,
       createdAt: this.createdAt,
@@ -80,6 +86,14 @@ class PostStore {
     this.favoured = value
   }
 
+  setArchived = (value: boolean) => {
+    this.archived = value
+  }
+
+  setDescription = (value: string) => {
+    this.description = value
+  }
+
   setPublic = (value: boolean) => {
     this.public = value
   }
@@ -98,7 +112,9 @@ class PostStore {
     this.tags = value.tags
     this.title = value.title
     this.content = value.content
+    this.description = value.description
     this.favoured = value.favoured
+    this.archived = value.archived
     this.public = value.public
     this.status = value.status
     this.createdAt = value.createdAt
@@ -119,6 +135,17 @@ class PostStore {
   createOrSavePost = async () => {
     this.setRemoteLoading(true)
     try {
+      if (!this.title) {
+        toast.error("标题不能为空")
+        return Promise.reject("标题不能为空")
+      }
+      if (!this.content) {
+        toast.error("内容不能为空")
+        return Promise.reject("内容不能为空")
+      }
+      if (!this.description) {
+        this.setDescription(getPlainTextFromMarkdown(this.content).slice(0, 300))
+      }
       const api = (this.uuid && this.uuid !== uuidjs.NIL) ? apiPosts.update:apiPosts.create
       const res = await api(this.postInfoRequestParams as IUpdatePostRequest)
       this.setPostInfo(res.data.data)

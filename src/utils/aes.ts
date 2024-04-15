@@ -1,5 +1,5 @@
 import CryptoJS from "./cryptoJS"
-import { randomString } from "./stringGenerator"
+import { randomString } from "./stringFuncs"
 
 // 生成 key iv
 export function generateKeyIvPair() {

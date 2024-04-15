@@ -61,15 +61,17 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
           </div>
 
           {/* 分类 */}
-          <HoverFloating className="flex items-center py-6 text-gray-600 space-x-2 cursor-pointer select-none">
-            <RiStackLine size={"1rem"} />
-            <div>{post.category?.label}</div>
-          </HoverFloating>
+          {
+            post.category && <HoverFloating className="flex items-center py-6 text-gray-600 space-x-2 cursor-pointer select-none">
+              <RiStackLine size={"1rem"} />
+              <div>{post.category?.label}</div>
+            </HoverFloating>
+          }
         </div>
 
         {/* 文章简要内容 */}
         <div className="break-words max-h-[6em] overflow-hidden">
-          <Preview prose={false}>{post.content}</Preview>
+          <Preview>{post.description}</Preview>
         </div>
 
         {/* 标签 */}

@@ -3,7 +3,7 @@ import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import { useNavigate } from "react-router-dom"
 import tw from "twin.macro"
-import { randomString } from "@/utils/stringGenerator"
+import { randomString } from "@/utils/stringFuncs"
 import useMouseEvents from 'beautiful-react-hooks/useMouseEvents';
 import { observer } from "mobx-react"
 import { useStore } from "@/store"

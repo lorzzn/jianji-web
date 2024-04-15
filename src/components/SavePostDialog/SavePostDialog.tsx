@@ -5,14 +5,15 @@ import { RiInformation2Line } from "@remixicon/react"
 import classNames from "classnames"
 import { observer } from "mobx-react"
 import { FC, useEffect, useRef, useState } from "react"
+import { toast } from "react-toastify"
 import ZButton from "../ZButton/ZButton"
 import ZCheckBox, { ZCheckBoxProps } from "../ZCheckBox/ZCheckBox"
 import ZInput from "../ZInput/ZInput"
 import ZModal from "../ZModal/ZModal"
 import CategoriesSelector, { CategoriesSelectorProps } from "../ZPost/CategoriesSelector"
+import Textarea from "../ZPost/Textarea"
 import ZSelect from "../ZSelect/ZSelect"
 import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
-import { toast } from "react-toastify"
 
 const SavePostDialog: FC = observer(() => {
   const { register, dialog } = useDialog(dialogNames.SavePostDialog)
@@ -20,7 +21,20 @@ const SavePostDialog: FC = observer(() => {
   const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
 
   const { postStore, categoriesStore, tagsStore, userStore } = useStore()
-  const { category, setCategory, tags: postTags, setTags: setPostTags, createOrSavePost, favoured, setFavoured, remoteLoading } = postStore
+  const {
+    category,
+    setCategory,
+    tags: postTags,
+    setTags: setPostTags,
+    createOrSavePost,
+    favoured,
+    archived,
+    description,
+    setDescription,
+    setFavoured,
+    setArchived,
+    remoteLoading,
+  } = postStore
   const { categories, categoriesLoading, getCategories, updateCategories, createCategories, deleteCategories } =
     categoriesStore
   const { tags, getTags, createTags } = tagsStore
@@ -31,7 +45,7 @@ const SavePostDialog: FC = observer(() => {
       getCategories()
       getTags()
     }
-  }, [ authed ])
+  }, [authed])
 
   const selectInputValue = useRef("")
 
@@ -43,8 +57,16 @@ const SavePostDialog: FC = observer(() => {
     setCategoryFilterKeyword(e.target.value)
   }
 
-  const onFavouredCheckBoxChange: ZCheckBoxProps["onChange"] = e => {
+  const onFavouredCheckBoxChange: ZCheckBoxProps["onChange"] = (e) => {
     setFavoured(e.target.checked)
+  }
+
+  const onArchivedCheckBoxChange: ZCheckBoxProps["onChange"] = (e) => {
+    setArchived(e.target.checked)
+  }
+
+  const onDescriptionChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+    setDescription(e.target.value)
   }
 
   const onSaveClick = () => {
@@ -79,6 +101,7 @@ const SavePostDialog: FC = observer(() => {
               </ZTooltipContent>
             </ZTooltip>
           </div>
+
           <div>
             <ZInput
               showClearIcon={"not-empty"}
@@ -105,7 +128,9 @@ const SavePostDialog: FC = observer(() => {
           <div className="flex-1">
             <div className="mb-2">
               <span>选择标签</span>
-              <ZButton variant={"primary_plain"} onClick={() => tagManagerDialog()?.show()}>管理</ZButton>
+              <ZButton variant={"primary_plain"} onClick={() => tagManagerDialog()?.show()}>
+                管理
+              </ZButton>
             </div>
             <ZSelect
               isMulti
@@ -113,13 +138,13 @@ const SavePostDialog: FC = observer(() => {
               options={tags}
               defaultValue={postTags}
               onInputChange={(value) => (selectInputValue.current = value)}
-              onChange={(value) => (setPostTags(value as ITag[]))}
+              onChange={(value) => setPostTags(value as ITag[])}
               noOptionsMessage={() => {
                 return (
                   <div>
                     无标签
-                    {
-                      selectInputValue.current && <button
+                    {selectInputValue.current && (
+                      <button
                         className="text-blue-500 hover:underline active:text-blue-600 ml-1"
                         onClick={() => {
                           createTags([{ label: selectInputValue.current }])
@@ -127,17 +152,50 @@ const SavePostDialog: FC = observer(() => {
                       >
                         点击创建
                       </button>
-                    }
+                    )}
                   </div>
                 )
               }}
             ></ZSelect>
+
+            <div className="my-2 flex items-center">
+              <span className="mr-2">文章描述</span>
+              <ZTooltip>
+                <ZTooltipTrigger>
+                  <RiInformation2Line size={"1rem"} className="text-gray-950 hover:text-blue-500" />
+                </ZTooltipTrigger>
+                <ZTooltipContent>
+                  <div>为空则默认使用文章前300个字符</div>
+                </ZTooltipContent>
+              </ZTooltip>
+            </div>
+
+            <Textarea
+              className="ring-1 ring-gray-300 rounded-sm w-full p-2 text-sm h-24"
+              placeholder="文章描述..."
+              value={description}
+              onChange={onDescriptionChange}
+            />
+
             <div className="my-2">其他选项</div>
-            <div className="text-sm">
-              <ZCheckBox className="w-3 h-3" label="放至收藏" checked={favoured} onChange={onFavouredCheckBoxChange}></ZCheckBox>
+            <div className="text-sm flex flex-wrap space-x-6">
+              <ZCheckBox
+                className="w-3 h-3"
+                label="放至收藏"
+                checked={favoured}
+                onChange={onFavouredCheckBoxChange}
+              ></ZCheckBox>
+              <ZCheckBox
+                className="w-3 h-3"
+                label="放至归档"
+                checked={archived}
+                onChange={onArchivedCheckBoxChange}
+              ></ZCheckBox>
             </div>
           </div>
-          <ZButton scale={"large"} onClick={onSaveClick} loading={remoteLoading}>确认保存</ZButton>
+          <ZButton scale={"large"} onClick={onSaveClick} loading={remoteLoading}>
+            确认保存
+          </ZButton>
         </div>
       </div>
     </ZModal>

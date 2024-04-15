@@ -59,10 +59,12 @@ const Post = observer(() => {
         </div>
 
         {/* 分类 */}
-        <HoverFloating className="flex items-center text-gray-600 space-x-2 cursor-pointer select-none">
-          <RiStackLine size={"1rem"} />
-          <div>{post.category?.label}</div>
-        </HoverFloating>
+        {
+          post.category && <HoverFloating className="flex items-center text-gray-600 space-x-2 cursor-pointer select-none">
+            <RiStackLine size={"1rem"} />
+            <div>{post.category?.label}</div>
+          </HoverFloating>
+        }
 
         <div className="flex items-center">
           <ZButton variant={"primary_plain"} onClick={goEdit}>编辑</ZButton>
