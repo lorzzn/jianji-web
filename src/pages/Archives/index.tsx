@@ -1,7 +1,10 @@
 import { FC } from "react"
+import Base from "../Home/Base"
 
-const Archives: FC = () => {
-  return <div>Archives</div>
+const Home: FC = () => {
+  return <Base extraParams={{
+    archived: true,
+  }} />
 }
 
-export default Archives
+export default Home

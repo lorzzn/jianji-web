@@ -19,7 +19,8 @@ export interface IUpdatePostRequest extends Partial<IPost> {
   uuid: string
 }
 
-export interface ICreatePostRequest extends Partial<Omit<IPost, "uuid">> {}
+export interface ICreatePostRequest extends Partial<Omit<IPost, "uuid">> {
+}
 
 export interface IGetPostRequest {
   uuid: string
@@ -31,6 +32,7 @@ export interface IDeletePostRequest {
 
 export interface IListPostsRequest extends Partial<IPageInfo> {
   archived?: boolean
+  favoured?: boolean
   sortBy?: "created_at" | "updated_at"
   sortType?: "desc" | "asc"
 }
