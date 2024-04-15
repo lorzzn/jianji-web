@@ -10,12 +10,7 @@ import { useNavigate, useParams } from "react-router-dom"
 
 const Edit: FC = observer(() => {
   const { postStore } = useStore()
-  const {
-    uuid: postUuid,
-    title,
-    setTitle,
-    getFromRemote
-  } = postStore
+  const { uuid: postUuid, title, setTitle, getFromRemote } = postStore
 
   const navigate = useNavigate()
   const { dialog } = useDialog(dialogNames.SavePostDialog)
@@ -29,7 +24,7 @@ const Edit: FC = observer(() => {
       uuid = uuidparam
     }
     getFromRemote(uuid)
-  }, [ uuidparam ])
+  }, [uuidparam])
 
   useEffect(() => {
     if (postUuid && postUuid !== uuidjs.NIL) {
@@ -37,9 +32,9 @@ const Edit: FC = observer(() => {
         replace: true,
       })
     }
-  }, [ postUuid ])
+  }, [postUuid])
 
-  const onTitleChange:ZInputProps["onChange"] = (e) => {
+  const onTitleChange: ZInputProps["onChange"] = (e) => {
     setTitle(e.target.value)
   }
 
@@ -47,7 +42,13 @@ const Edit: FC = observer(() => {
     <div className="flex-1 flex flex-col">
       <div className="flex flex-col flex-1 m-6">
         <div className="flex justify-between items-center mb-2">
-          <ZInput scale={"large"} placeholder="标题..." className="flex-1 mr-3" value={title} onChange={onTitleChange} />
+          <ZInput
+            scale={"large"}
+            placeholder="标题..."
+            className="flex-1 mr-3"
+            value={title}
+            onChange={onTitleChange}
+          />
           <ZButton scale={"large"} className="px-8" onClick={showSaveDialog}>
             保存
           </ZButton>

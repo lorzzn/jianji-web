@@ -8,7 +8,7 @@ export interface IUpdateTagsRequest {
 }
 
 export interface ICreateTagsRequest {
-  data: ITag[]
+  data: Partial<ITag>[]
 }
 
 export interface IDeleteTagsRequest {
