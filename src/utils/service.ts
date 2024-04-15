@@ -12,7 +12,9 @@ const service = axios.create({
   baseURL,
 })
 
+// 检查是否需要重试
 const retryCheck = async (response: AxiosResponse<IApiCommonResponse>): Promise<boolean> => {
+  // 用户token失效，请求后端刷新token，然后进行重试
   if (response.data.code === code.TOKEN_AUTHORIZATION_INVALID) {
     await rootStore.userStore.requestRefreshToken()
     return true

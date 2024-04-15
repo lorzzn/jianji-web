@@ -1,7 +1,9 @@
+import { AxiosError, HttpStatusCode } from "axios"
 import { toast } from "react-toastify"
 import eventBus, { events } from "./eventBus"
 import { code } from "./r/code"
 import ServiceError from "./serviceError"
+import { eq } from "lodash"
 
 interface IErrorItem {
   date: number
@@ -21,6 +23,7 @@ export class ErrorHandler {
 
     console.warn({ errorList: this.errorList })
 
+    // 弹出后端报错消息
     if (error instanceof ServiceError && error.message) {
       toast.error(error.message)
 
@@ -30,6 +33,16 @@ export class ErrorHandler {
     } else {
       console.error(error)
     }
+
+    // 后端服务器错误
+    if (
+      error instanceof AxiosError &&
+      error.response?.status === HttpStatusCode.InternalServerError &&
+      !eq(window.location.pathname, "/500")
+    ) {
+      window.location.href = "/500"
+    }
+
   }
 }
 

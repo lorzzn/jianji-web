@@ -1,5 +1,5 @@
 import { FC, Suspense, lazy } from "react"
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import RequireAuth from "./RequireAuth"
 
 const Active = lazy(() => import("@/pages/Active"))
@@ -11,7 +11,10 @@ const Favlist = lazy(() => import("@/pages/Favlist"))
 const Home = lazy(() => import("@/pages/Home"))
 const Search = lazy(() => import("@/pages/Search"))
 const Tags = lazy(() => import("@/pages/Tags"))
-const NotFoundPage = lazy(() => import("@/pages/404"))
+const Login = lazy(() => import("@/pages/Login"))
+
+const NotFoundPage = lazy(() => import("@/pages/BadStatus/404"))
+const ServerErrorPage = lazy(() => import("@/pages/BadStatus/500"))
 
 const Content: FC = () => {
   return (
@@ -24,6 +27,7 @@ const Content: FC = () => {
           <Route path="/favlist" Component={Favlist} />
           <Route path="/categories" Component={Categories} />
           <Route path="/tags" Component={Tags} />
+          <Route path="/login" Component={Login} />
           <Route path="/search" Component={Search} />
           <Route
             path="/edit/:uuid?"
@@ -34,7 +38,10 @@ const Content: FC = () => {
             }
           />
           <Route path="/post/:uuid?" Component={Post} />
-          <Route path="*" Component={NotFoundPage} />
+
+          <Route path="/404" Component={NotFoundPage} />
+          <Route path="/500" Component={ServerErrorPage} />
+          <Route path="*" element={<Navigate replace to={"/404"} />} />
         </Routes>
       </Suspense>
     </div>

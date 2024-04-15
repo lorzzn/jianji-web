@@ -7,12 +7,17 @@ import { randomString } from "@/utils/stringGenerator"
 import useMouseEvents from 'beautiful-react-hooks/useMouseEvents';
 import { observer } from "mobx-react"
 import { useStore } from "@/store"
-import { useState } from "react"
+import { FC, useState } from "react"
 
 const errorStyleTextLen = 60
 const errorStyleText = randomString(errorStyleTextLen, "~!@#$%^&*")
 
-const NotFoundPage = observer(() => {
+interface BaseProps {
+  title: string
+  description: string
+}
+
+const Base:FC<BaseProps> = observer(({ title, description}) => {
   const { layoutStore } = useStore()
   const { width } = layoutStore
   const [dynamicText, setDynamicText] = useState(errorStyleText.slice(0, 10))
@@ -40,12 +45,12 @@ const NotFoundPage = observer(() => {
         ${tw`text-4xl font-bold relative break-words w-fit`}
       `
     ])}>
-      <div>404 PAGE NOT FOUND </div>
+      <div>{title} </div>
       <div className="absolute -right-20 -top-2 text-6xl">
         {":-("}
       </div>
       <div className="ml-20 text-2xl">
-        <div>页面不存在</div>
+        <div>{description}</div>
         <div className="opacity-10 py-3">
           <span>{dynamicText}</span>
         </div>
@@ -55,4 +60,4 @@ const NotFoundPage = observer(() => {
   </div>
 })
 
-export default NotFoundPage
+export default Base
