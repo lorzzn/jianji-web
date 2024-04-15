@@ -71,7 +71,7 @@ const ZInput = forwardRef<HTMLInputElement, ZInputProps>(
     return (
       <div
         className={twclx([
-          "flex items-center bg-white",
+          "flex items-center bg-white overflow-hidden",
           { "is-focus": focus },
           { "is-hover": hover },
           { "is-disabled": disabled },

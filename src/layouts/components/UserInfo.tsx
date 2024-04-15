@@ -5,13 +5,12 @@ import { observer } from "mobx-react"
 import { FC } from "react"
 
 const UserInfo: FC = observer(() => {
-  const { dialog } = useDialog(dialogNames.LoginDialog)
   const { dialog: userDialog } = useDialog(dialogNames.UserDialog)
   const { userStore } = useStore()
   const { userInfo } = userStore
 
   const onLoginClick = () => {
-    dialog()?.show()
+    window.location.href = "/login"
   }
 
   const onUserClick = () => {
