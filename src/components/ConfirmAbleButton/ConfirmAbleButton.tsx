@@ -6,7 +6,7 @@ import useUpdateEffect from 'beautiful-react-hooks/useUpdateEffect'
 interface ConfirmAbleButtonProps {
   text?: string;
   confirmText?: string;
-  onConfirm?: () => void;
+  onConfirm?: (() => Promise<void>) | (() => void);
   onClick?: () => void;
   buttonProps?: ZButtonProps
 }
@@ -17,8 +17,14 @@ const ConfirmAbleButton:FC<ConfirmAbleButtonProps> = (props) => {
 
   const onButtonClick = () => {
     if (confirmed) {
-      props.onConfirm?.()
-      setConfirmed(false)
+      const callFn = props.onConfirm?.()
+      if (callFn?.finally) {
+        callFn.finally(() => {
+          setConfirmed(false)
+        })
+      } else {
+        setConfirmed(false)
+      }
     } else {
       props.onClick?.()
       setConfirmed(true)
@@ -31,7 +37,7 @@ const ConfirmAbleButton:FC<ConfirmAbleButtonProps> = (props) => {
     }
   }, [ confirmed ])
 
-  return <ZButton variant={"primary_plain"} className="transition-all w-auto" onClick={onButtonClick} {...props.buttonProps}>
+  return <ZButton variant={"primary_plain"} className="transition-all w-auto" onClick={onButtonClick} loadingSize={"1rem"} {...props.buttonProps}>
     <span ref={textSpanRef} >
       {confirmed ? props.confirmText : props.text}
     </span>

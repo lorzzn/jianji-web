@@ -52,13 +52,16 @@ const ZButton: FC<ZButtonProps> = ({
   componentTag: ComponentTag = "button",
   ...restProps
 }) => {
+  
+  const isDisabled = loading || disabled
+
   return (
     <ComponentTag
       className={twclx([
         ZButtonVariants({ variant, scale, shape, className }),
-        { "cursor-not-allowed": loading ?? disabled },
+        { "cursor-not-allowed": isDisabled },
       ])}
-      disabled={loading ?? disabled}
+      disabled={isDisabled}
       {...restProps}
     >
       {loading && (
