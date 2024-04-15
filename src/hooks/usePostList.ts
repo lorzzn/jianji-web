@@ -3,6 +3,7 @@ import { IListPostsRequest } from "@/api/types/request/posts"
 import { IPageInfo } from "@/api/types/response/pageInfo"
 import { IPost } from "@/api/types/response/posts"
 import errorHandler from "@/utils/errorHandler"
+import { assign } from "lodash"
 import { useMemo, useState } from "react"
 
 const usePostList = (initPageInfo: Partial<IPageInfo>, extraParams: Partial<IListPostsRequest> = {}) => {
@@ -23,11 +24,12 @@ const usePostList = (initPageInfo: Partial<IPageInfo>, extraParams: Partial<ILis
   const getList = async (data?: IListPostsRequest) => {
     setLoading(true)
     try {
-      const res = await apiPosts.list(data || {
+      const payload = data || {
         pageNo: pageInfo.pageNo,
         pageSize: pageInfo.pageSize,
-        ...extraParams,
-      })
+      }
+      assign(payload, extraParams)
+      const res = await apiPosts.list(payload)
       setList(res.data.data.data)
       setPageInfo(res.data.data.pageInfo)
       return Promise.resolve(res)

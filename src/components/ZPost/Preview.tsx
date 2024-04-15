@@ -21,7 +21,7 @@ const Preview: FC<PreviewProps> = ({ className, style, prose = true, children = 
     <div
       style={style}
       className={twclx([
-        "max-w-full overflow-y-auto",
+        "max-w-full",
         { "prose": prose },
       ], className)}
       dangerouslySetInnerHTML={{ __html: md.render(children) }}

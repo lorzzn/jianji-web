@@ -168,6 +168,7 @@ const SavePostDialog: FC = observer(() => {
                   <div>为空则默认使用文章前300个字符</div>
                 </ZTooltipContent>
               </ZTooltip>
+              <ZButton variant={"primary_plain"} onClick={() => setDescription("")}>清空</ZButton>
             </div>
 
             <Textarea
