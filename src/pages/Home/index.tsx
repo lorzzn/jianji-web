@@ -8,6 +8,8 @@ const Home: FC = () => {
   const { list, getList, pageInfo, totalPage, updatePageNo } = usePostList({
     pageNo: 1,
     pageSize: 10,
+  }, {
+    archived: false
   })
 
   useEffect(() => {

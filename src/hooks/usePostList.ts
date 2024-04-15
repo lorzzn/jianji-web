@@ -5,7 +5,7 @@ import { IPost } from "@/api/types/response/posts"
 import errorHandler from "@/utils/errorHandler"
 import { useMemo, useState } from "react"
 
-const usePostList = (initPageInfo: Partial<IPageInfo>) => {
+const usePostList = (initPageInfo: Partial<IPageInfo>, extraParams: Partial<IListPostsRequest> = {}) => {
   const [list, setList] = useState<IPost[]>([])
   const [loading, setLoading] = useState(false)
   const [pageInfo, setPageInfo] = useState<IPageInfo>({
@@ -26,6 +26,7 @@ const usePostList = (initPageInfo: Partial<IPageInfo>) => {
       const res = await apiPosts.list(data || {
         pageNo: pageInfo.pageNo,
         pageSize: pageInfo.pageSize,
+        ...extraParams,
       })
       setList(res.data.data.data)
       setPageInfo(res.data.data.pageInfo)

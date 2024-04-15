@@ -9,7 +9,9 @@ export interface IPost {
   tags: ITag[] | null
   title: string
   content: string
+  description: string
   favoured: boolean
+  archived: boolean
   public: boolean
   status: number
   createdAt: string
