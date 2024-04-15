@@ -7,14 +7,12 @@ import { isEmpty } from "lodash"
 import { FC } from "react"
 import tw from "twin.macro"
 import HoverFloating from "../ZAnimateDiv/HoverFloating"
-import Preview from "../ZPost/Preview"
 
 export interface ZPostCardProps {
   post: IPost
 }
 
 const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
-
   return (
     <div className={twclx(["w-9/12 max-w-7xl py-12 border-b border-b-gray-200"])}>
       <a
@@ -61,17 +59,17 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
           </div>
 
           {/* 分类 */}
-          {
-            post.category && <HoverFloating className="flex items-center py-6 text-gray-600 space-x-2 cursor-pointer select-none">
+          {post.category && (
+            <HoverFloating className="flex items-center py-6 text-gray-600 space-x-2 cursor-pointer select-none">
               <RiStackLine size={"1rem"} />
               <div>{post.category?.label}</div>
             </HoverFloating>
-          }
+          )}
         </div>
 
         {/* 文章简要内容 */}
         <div className="break-words max-h-[6em] overflow-hidden">
-          <Preview>{post.description}</Preview>
+          <div className="text-gray-900">{post.description}</div>
         </div>
 
         {/* 标签 */}
