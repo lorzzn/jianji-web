@@ -4,10 +4,14 @@ import classNames from "classnames"
 import { FC } from "react"
 import ZLoading from "../ZLoading/ZLoading"
 
-export interface ZButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof ZButtonVariants> {
-  loading?: boolean
-  loadingSize?: number | string
-}
+export type ZButtonProps = React.HTMLAttributes<HTMLOrSVGElement> &
+  VariantProps<typeof ZButtonVariants> & {
+    loading?: boolean
+    loadingSize?: number | string
+    componentTag?: keyof JSX.IntrinsicElements 
+    disabled?: boolean
+    href?: string
+  }
 
 export const ZButtonVariants = cva(classNames("inline-flex items-center justify-center disabled:opacity-50"), {
   variants: {
@@ -36,9 +40,20 @@ export const ZButtonVariants = cva(classNames("inline-flex items-center justify-
   },
 })
 
-const ZButton: FC<ZButtonProps> = ({ className, variant, scale, shape, children, loading, disabled, loadingSize, ...restProps }) => {
+const ZButton: FC<ZButtonProps> = ({
+  className,
+  variant,
+  scale,
+  shape,
+  children,
+  loading,
+  disabled,
+  loadingSize,
+  componentTag: ComponentTag = "button",
+  ...restProps
+}) => {
   return (
-    <button
+    <ComponentTag
       className={twclx([
         ZButtonVariants({ variant, scale, shape, className }),
         { "cursor-not-allowed": loading ?? disabled },
@@ -52,7 +67,7 @@ const ZButton: FC<ZButtonProps> = ({ className, variant, scale, shape, children,
         </div>
       )}
       {children}
-    </button>
+    </ComponentTag>
   )
 }
 
