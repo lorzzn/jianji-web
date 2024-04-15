@@ -1,50 +1,20 @@
 import ZButton from "@/components/ZButton/ZButton"
 import ZImage from "@/components/ZImage/ZImage"
 import { useStore } from "@/store"
+import { twclx } from "@/utils/twclx"
 import { RiPenNibLine, RiSearchLine } from "@remixicon/react"
 import classNames from "classnames"
 import { observer } from "mobx-react"
 import { FC } from "react"
-import { useNavigate } from "react-router-dom"
 import UserInfo from "./UserInfo"
 
-
 const Header: FC = observer(() => {
-  const navigate = useNavigate()
-  const { userStore, layoutStore, postStore } = useStore()
-  const {
-    loading: userInfoLoading,
-  } = userStore
-  const {
-    layout,
-    location,
-    navItems,
-  } = layoutStore
-  const {
-    setUuid
-  } = postStore
+  const { userStore, layoutStore } = useStore()
+  const { loading: userInfoLoading } = userStore
+  const { layout, location, navItems } = layoutStore
 
   const searchButtonActive = location?.pathname === "/search"
   const penButtonActive = ["/edit"].includes(location?.pathname ?? "")
-
-  const onMenuItemClick = (item: (typeof navItems)[0]) => {
-    if (item.href) {
-      navigate(item.href)
-    }
-  }
-
-  const onSearchClick = () => {
-    if (!searchButtonActive) {
-      navigate("/search")
-    }
-  }
-
-  const onPenButtonClick = () => {
-    if (!penButtonActive) {
-      setUuid(null)
-      navigate("/edit")
-    }
-  }
 
   return (
     <header className="h-14 flex items-center justify-between border-b shadow-sm px-8 sticky top-0 bg-white z-[500]">
@@ -58,9 +28,10 @@ const Header: FC = observer(() => {
             {navItems.map((item) => (
               <ZButton
                 variant={"primary_plain"}
-                className={classNames(["text-base", { "text-black": !item.active }])}
+                className={twclx(["text-base text-black hover:text-blue-600", { "text-blue-700": item.active }])}
                 key={item.href}
-                onClick={() => onMenuItemClick(item)}
+                componentTag="a"
+                href={item.href}
               >
                 {layout !== "small" && <item.RiIcon className="w-4 mr-2" />}
                 {item.label}
@@ -75,16 +46,18 @@ const Header: FC = observer(() => {
           <div className="mx-6 flex items-center flex-nowrap whitespace-nowrap">
             <ZButton
               variant={"primary_plain"}
-              className={classNames(["text-black hover:bg-blue-50 space-x-1", { "text-blue-500": searchButtonActive }])}
-              onClick={onSearchClick}
+              className={classNames(["text-black hover:bg-blue-50 space-x-1", { "text-blue-700": searchButtonActive }])}
+              componentTag="a"
+              href={"/search"}
             >
               <RiSearchLine size={"1.1rem"} />
               {layout !== "small" && <span>搜索</span>}
             </ZButton>
             <ZButton
               variant={"primary_plain"}
-              className={classNames(["text-black hover:bg-blue-50 space-x-1", { "text-blue-500": penButtonActive }])}
-              onClick={onPenButtonClick}
+              className={classNames(["text-black hover:bg-blue-50 space-x-1", { "text-blue-700": penButtonActive }])}
+              componentTag="a"
+              href={"/edit"}
             >
               <RiPenNibLine size={"1.1rem"} />
               {layout !== "small" && <span>写笔记</span>}
