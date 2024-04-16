@@ -1,11 +1,11 @@
 import { useStore } from "@/store"
+import { throttle } from "lodash"
 import { FC, useEffect, useRef } from "react"
 import { useLocation } from "react-router-dom"
 import Content from "./components/Content"
 import Footer from "./components/Footer"
 import Header from "./components/Header"
 import ScrollToTop from "./components/ScrollToTop"
-import { throttle } from "lodash"
 
 const Layout: FC = () => {
   const location = useLocation()

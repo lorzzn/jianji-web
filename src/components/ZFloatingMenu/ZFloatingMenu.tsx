@@ -89,7 +89,7 @@ const ZFloatingMenuContext = createContext<{
   isOpen: false,
 })
 
-export interface ZFloatingMenuProps extends Omit<HTMLProps<HTMLButtonElement>, "label">{
+export interface ZFloatingMenuProps extends Omit<HTMLProps<HTMLButtonElement>, "label"> {
   label?: ReactNode
   nested?: boolean
   children?: ReactNode
@@ -107,7 +107,21 @@ export interface ZFloatingMenuRef {
 }
 
 export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps>(
-  ({ children, label, contextMenuTrigger, onContextMenuClick, className, resetClassName, placement, open, onOpenChange, ...props }, forwardedRef) => {
+  (
+    {
+      children,
+      label,
+      contextMenuTrigger,
+      onContextMenuClick,
+      className,
+      resetClassName,
+      placement,
+      open,
+      onOpenChange,
+      ...props
+    },
+    forwardedRef,
+  ) => {
     const nodeRef = useRef<HTMLButtonElement | null>(null)
     const contextMenuClickRef = useRef<MouseEvent | null>(null)
     const [isOpen, _setIsOpen] = useState(false)
@@ -276,10 +290,7 @@ export const ZFloatingMenuComponent = forwardRef<ZFloatingMenuRef, ZFloatingMenu
           data-open={isOpen ? "" : undefined}
           data-nested={isNested ? "" : undefined}
           data-focus-inside={hasFocusInside ? "" : undefined}
-          className={twclx([
-            { [(isNested ? MenuItemCSS : RootMenuCSS)]: !resetClassName && label }, 
-            className
-          ])}
+          className={twclx([{ [isNested ? MenuItemCSS : RootMenuCSS]: !resetClassName && label }, className])}
           {...getReferenceProps(
             parent.getItemProps({
               ...props,
@@ -345,10 +356,7 @@ export const ZFloatingMenuItem = forwardRef<HTMLButtonElement, ZFloatingMenuItem
         ref={useMergeRefs([item.ref, forwardedRef])}
         type="button"
         role="menuitem"
-        className={twclx([
-          MenuItemCSS,
-          className,
-        ])}
+        className={twclx([MenuItemCSS, className])}
         tabIndex={isActive ? 0 : -1}
         disabled={disabled}
         {...menu.getItemProps({
@@ -368,18 +376,16 @@ export const ZFloatingMenuItem = forwardRef<HTMLButtonElement, ZFloatingMenuItem
   },
 )
 
-export const ZFloatingMenu = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps>(
-  (props, ref) => {
-    const parentId = useFloatingParentNodeId()
+export const ZFloatingMenu = forwardRef<ZFloatingMenuRef, ZFloatingMenuProps>((props, ref) => {
+  const parentId = useFloatingParentNodeId()
 
-    if (parentId === null) {
-      return (
-        <FloatingTree>
-          <ZFloatingMenuComponent {...props} ref={ref} />
-        </FloatingTree>
-      )
-    }
+  if (parentId === null) {
+    return (
+      <FloatingTree>
+        <ZFloatingMenuComponent {...props} ref={ref} />
+      </FloatingTree>
+    )
+  }
 
-    return <ZFloatingMenuComponent {...props} ref={ref} />
-  },
-)
+  return <ZFloatingMenuComponent {...props} ref={ref} />
+})

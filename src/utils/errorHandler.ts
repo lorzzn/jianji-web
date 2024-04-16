@@ -1,9 +1,9 @@
 import { AxiosError, HttpStatusCode } from "axios"
+import { eq } from "lodash"
 import { toast } from "react-toastify"
 import eventBus, { events } from "./eventBus"
 import { code } from "./r/code"
 import ServiceError from "./serviceError"
-import { eq } from "lodash"
 
 interface IErrorItem {
   date: number
@@ -42,7 +42,6 @@ export class ErrorHandler {
     ) {
       window.location.href = "/500"
     }
-
   }
 }
 

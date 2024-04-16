@@ -1,10 +1,15 @@
+import { useStore } from "@/store"
 import { onCtrl, onShift } from "@/utils/key"
+import { getStorage, setStorage } from "@/utils/storage"
+import { twclx } from "@/utils/twclx"
+import { css } from "@emotion/css"
 import classNames from "classnames"
 import { repeat, reverse, slice } from "lodash"
+import { observer } from "mobx-react"
 import { FC, useEffect, useMemo, useRef, useState } from "react"
 import { HotkeyCallback, Keys, useHotkeys } from "react-hotkeys-hook"
 import { OptionsOrDependencyArray } from "react-hotkeys-hook/dist/types"
-import { ImperativePanelHandle, Panel, PanelGroup, PanelGroupProps , PanelResizeHandle } from "react-resizable-panels"
+import { ImperativePanelHandle, Panel, PanelGroup, PanelGroupProps, PanelResizeHandle } from "react-resizable-panels"
 import { toast } from "react-toastify"
 import { Key } from "ts-key-enum"
 import { ZModalRef } from "../ZModal/ZModal"
@@ -12,11 +17,6 @@ import Preview from "./Preview"
 import Textarea, { TextareaRef } from "./Textarea"
 import Toolbar, { ToolbarButton } from "./Toolbar"
 import ZPostEditorHelpDialog from "./ZPostEditorHelpDialog"
-import { twclx } from "@/utils/twclx"
-import { useStore } from "@/store"
-import { observer } from "mobx-react"
-import { getStorage, setStorage } from "@/utils/storage"
-import { css } from "@emotion/css"
 
 export const editorFontSizeStorageKey = "editorFontSize"
 
@@ -34,11 +34,7 @@ const headRegex = /^(#{1,6}\s+)(.*)/
 
 const ZPostEditor: FC = observer(() => {
   const { postStore } = useStore()
-  const {
-    content: value,
-    setContent: _setValue,
-    createOrSavePost,
-  } = postStore
+  const { content: value, setContent: _setValue, createOrSavePost } = postStore
 
   const [focused, setFocused] = useState<boolean>(false)
   const [layout, setLayout] = useState<ToolbarButton["layout"]>("normal")
@@ -51,11 +47,11 @@ const ZPostEditor: FC = observer(() => {
   const editorPanelRef = useRef<ImperativePanelHandle>(null)
   const previewPanelRef = useRef<ImperativePanelHandle>(null)
   const [history, setHistory] = useState<EditorHistory>({ current: 0, stack: [""] })
-  
+
   const setValue = (value: string, skipHistory?: boolean) => {
     _setValue(value)
     if (skipHistory) return
-    setHistory(prev => {
+    setHistory((prev) => {
       if (prev.current + 1 >= prev.stack.length) {
         prev.stack.push(value)
       } else {
@@ -63,7 +59,7 @@ const ZPostEditor: FC = observer(() => {
         prev.stack.push(value)
       }
       prev.current = prev.stack.length - 1
-      return {...prev}
+      return { ...prev }
     })
   }
 
@@ -143,11 +139,14 @@ const ZPostEditor: FC = observer(() => {
 
         let line = lines[cursorPos.line]
         const match = headRegex.exec(line)
-        if (match === null) { // 原来不是标题
+        if (match === null) {
+          // 原来不是标题
           line = hl + line
-        } else if (match[1].trim() === hl.trim()) { // 原来的标题级别和当前一致
+        } else if (match[1].trim() === hl.trim()) {
+          // 原来的标题级别和当前一致
           line = match[2]
-        } else { // 原来的标题级别和当前不一致
+        } else {
+          // 原来的标题级别和当前不一致
           line = hl + match[2]
         }
         lines.splice(cursorPos.line, 1, line)
@@ -226,9 +225,9 @@ const ZPostEditor: FC = observer(() => {
         if (history.current === 0) return
 
         textarea.value = history.stack[history.current - 1]
-        setHistory(prev => {
+        setHistory((prev) => {
           prev.current -= 1
-          return {...prev}
+          return { ...prev }
         })
 
         setValue(textarea.value, true)
@@ -244,9 +243,9 @@ const ZPostEditor: FC = observer(() => {
         if (history.current + 1 >= history.stack.length) return
 
         textarea.value = history.stack[history.current + 1]
-        setHistory(prev => {
+        setHistory((prev) => {
           prev.current += 1
-          return {...prev}
+          return { ...prev }
         })
 
         setValue(textarea.value, true)
@@ -327,11 +326,10 @@ const ZPostEditor: FC = observer(() => {
     if (layout === "preview") {
       editorPanelRef.current?.collapse()
     }
-
-  }, [ layout ])
+  }, [layout])
 
   const onPanelLayoutChange: PanelGroupProps["onLayout"] = (layout) => {
-    const [ ew, pw ] = layoutReversed ? reverse(slice(layout)):layout
+    const [ew, pw] = layoutReversed ? reverse(slice(layout)) : layout
     if (ew === 0) {
       setLayout("preview")
     } else if (pw === 0) {
@@ -362,13 +360,20 @@ const ZPostEditor: FC = observer(() => {
                 "w-full h-full p-3 break-all bg-neutral-50",
                 css`
                   font-size: ${editorFontSize}px;
-                `
+                `,
               ])}
             />
           </Panel>
           <PanelResizeHandle className="w-0 border" />
-          <Panel collapsible minSize={25} ref={previewPanelRef} id="preview-panel" order={layoutReversed ? 1 : 2} className={twclx([ "relative" ])}>
-            <Preview className={twclx([ "absolute inset-0 p-3 break-all bg-white" ])}>{value}</Preview>
+          <Panel
+            collapsible
+            minSize={25}
+            ref={previewPanelRef}
+            id="preview-panel"
+            order={layoutReversed ? 1 : 2}
+            className={twclx(["relative"])}
+          >
+            <Preview className={twclx(["absolute inset-0 p-3 break-all bg-white"])}>{value}</Preview>
           </Panel>
         </PanelGroup>
       </div>

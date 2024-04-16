@@ -18,7 +18,7 @@ class LayoutStore {
   layout: "large" | "medium" | "small"
   location: Location | undefined
   clickTrace: Element[] = []
-  scrollTop: number  = 0
+  scrollTop: number = 0
 
   constructor() {
     this.layout = "large"
@@ -51,7 +51,7 @@ class LayoutStore {
     this.navItems = this.navItems.map((item) => {
       item.active = false
       if (Array.isArray(item.activePath)) {
-        item.activePath.forEach((path) => item.active ||= location.pathname.split("/")[1] === path)
+        item.activePath.forEach((path) => (item.active ||= location.pathname.split("/")[1] === path))
       } else {
         item.active ||= location.pathname === (item.activePath || item.href)
       }
@@ -62,11 +62,10 @@ class LayoutStore {
   updateClickTrace = (elem: Element) => {
     this.clickTrace = takeRight(concat(this.clickTrace, elem), 50)
   }
-  
+
   updateScrollTop = (scrollTop: number) => {
     this.scrollTop = scrollTop
   }
-
 }
 
 export default LayoutStore

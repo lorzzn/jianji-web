@@ -1,5 +1,7 @@
+import { ITag } from "@/api/types/response/tags"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
 import { useStore } from "@/store"
+import { getPlainTextFromMarkdown } from "@/utils/stringFuncs"
 import { RiInformation2Line } from "@remixicon/react"
 import classNames from "classnames"
 import { observer } from "mobx-react"
@@ -13,8 +15,6 @@ import CategoriesSelector, { CategoriesSelectorProps } from "../ZPost/Categories
 import Textarea from "../ZPost/Textarea"
 import ZSelect from "../ZSelect/ZSelect"
 import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
-import { ITag } from "@/api/types/response/tags"
-import { getPlainTextFromMarkdown } from "@/utils/stringFuncs"
 
 const SavePostDialog: FC = observer(() => {
   const { register, dialog } = useDialog(dialogNames.SavePostDialog)
@@ -170,7 +170,12 @@ const SavePostDialog: FC = observer(() => {
                   <div>自动生成使用文章前300个字符</div>
                 </ZTooltipContent>
               </ZTooltip>
-              <ZButton variant={"primary_plain"} onClick={() => setDescription(getPlainTextFromMarkdown(content).slice(0, 300))}>自动生成</ZButton>
+              <ZButton
+                variant={"primary_plain"}
+                onClick={() => setDescription(getPlainTextFromMarkdown(content).slice(0, 300))}
+              >
+                自动生成
+              </ZButton>
             </div>
 
             <Textarea

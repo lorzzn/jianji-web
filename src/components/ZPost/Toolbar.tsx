@@ -1,5 +1,12 @@
 import { twclx } from "@/utils/twclx"
-import { RiBallPenLine, RiEyeLine, RiFontSize, RiFullscreenExitLine, RiFullscreenLine, RiLayoutColumnFill } from "@remixicon/react"
+import {
+  RiBallPenLine,
+  RiEyeLine,
+  RiFontSize,
+  RiFullscreenExitLine,
+  RiFullscreenLine,
+  RiLayoutColumnFill,
+} from "@remixicon/react"
 import classNames from "classnames"
 import { FC, useMemo } from "react"
 
@@ -7,14 +14,14 @@ export interface ToolbarButton {
   title: string
   icon?: JSX.Element
   active?: boolean
-  layout?: "normal" | "editor" | "preview" 
+  layout?: "normal" | "editor" | "preview"
   className?: string
   action?: "reverse" | "fullscreen" | "help" | "zoomInFont" | "zoomOutFont" | "zoomDefault"
 }
 
 interface ToolbarProps {
   layout: ToolbarButton["layout"]
-  reverse: boolean 
+  reverse: boolean
   fullscreen: boolean
   onClick: (info: ToolbarButton, event: React.MouseEvent<HTMLButtonElement>) => void
 }
@@ -27,7 +34,7 @@ const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => 
         title: "布局",
         active: layout === "normal",
         layout: "normal",
-        action: "reverse"
+        action: "reverse",
       },
       {
         icon: <RiBallPenLine size={"1.1rem"} />,
@@ -49,7 +56,7 @@ const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => 
       {
         icon: <RiFontSize size={"1.1rem"} />,
         title: "+",
-        action: "zoomOutFont"
+        action: "zoomOutFont",
       },
       {
         icon: <RiFontSize size={"1.1rem"} />,
@@ -67,11 +74,7 @@ const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => 
         action: "fullscreen",
       },
     ]
-  }, [
-    layout, 
-    fullscreen, 
-    reverse
-  ])
+  }, [layout, fullscreen, reverse])
 
   const onButtonClick = (info: ToolbarButton, event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(info, event)

@@ -275,8 +275,16 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
 
   return (
     <ZLoadingContent loading={loading}>
-      <div ref={treeContainerRef} className="relative w-full h-full min-h-80 ring-1 ring-gray-300 rounded-sm py-2" onContextMenu={onTreeContextMenu}>
-        {categories.length === 0 && <div className="absolute inset-0 flex justify-center pt-20 text-gray-400 text-sm pointer-events-none select-none">无分类，右键可以选择新建分类</div>}
+      <div
+        ref={treeContainerRef}
+        className="relative w-full h-full min-h-80 ring-1 ring-gray-300 rounded-sm py-2"
+        onContextMenu={onTreeContextMenu}
+      >
+        {categories.length === 0 && (
+          <div className="absolute inset-0 flex justify-center pt-20 text-gray-400 text-sm pointer-events-none select-none">
+            无分类，右键可以选择新建分类
+          </div>
+        )}
         <Tree
           className={twclx(
             "categories-selector h-full",

@@ -22,7 +22,7 @@ const JumperButton: FC<JumperButtonProps> = ({ pageNumber, current, handlePageCh
       variant={"primary_plain"}
       className={twclx([
         "p-1 mx-1 rounded-none min-w-8 ",
-        { "cursor-not-allowed font-semibold underline": pageNumber === current},
+        { "cursor-not-allowed font-semibold underline": pageNumber === current },
       ])}
     >
       {current}
@@ -68,7 +68,9 @@ const ZPagination: FC<ZPaginationProps> = ({ currentPage, totalPage, onPageChang
         }
 
         if (start > 1) {
-          buttons.push(<JumperButton key={"first"} current={1} pageNumber={pageNumber} handlePageChange={handlePageChange} />)
+          buttons.push(
+            <JumperButton key={"first"} current={1} pageNumber={pageNumber} handlePageChange={handlePageChange} />,
+          )
 
           if (start > 2) {
             buttons.push(
@@ -93,7 +95,14 @@ const ZPagination: FC<ZPaginationProps> = ({ currentPage, totalPage, onPageChang
           )
         }
 
-        buttons.push(<JumperButton key={totalPage} current={totalPage} pageNumber={pageNumber} handlePageChange={handlePageChange} />)
+        buttons.push(
+          <JumperButton
+            key={totalPage}
+            current={totalPage}
+            pageNumber={pageNumber}
+            handlePageChange={handlePageChange}
+          />,
+        )
       }
     }
 
@@ -110,9 +119,7 @@ const ZPagination: FC<ZPaginationProps> = ({ currentPage, totalPage, onPageChang
       >
         上一页
       </ZButton>
-      <div className="flex flex-wrap">
-        {renderJumpButtons()}
-      </div>
+      <div className="flex flex-wrap">{renderJumpButtons()}</div>
       <ZButton
         onClick={() => handlePageChange(pageNumber + 1)}
         variant={"primary_plain"}
