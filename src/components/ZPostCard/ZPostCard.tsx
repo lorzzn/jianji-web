@@ -1,14 +1,13 @@
 import { IPost } from "@/api/types/response/posts"
-import { dateFormat } from "@/utils/dateFormat"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
-import { RiCalendarLine, RiHashtag, RiStackLine } from "@remixicon/react"
+import { RiHashtag } from "@remixicon/react"
 import { isEmpty } from "lodash"
 import { FC } from "react"
 import tw from "twin.macro"
-import HoverFloating from "../ZAnimateDiv/HoverFloating"
+import Category from "../ZPost/Category"
+import Datetime from "../ZPost/Datetime"
 import Tag from "../ZPost/Tag"
-import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
 
 export interface ZPostCardProps {
   post: IPost
@@ -17,10 +16,9 @@ export interface ZPostCardProps {
 const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
   return (
     <div className={twclx(["w-9/12 max-w-7xl py-12 border-b border-b-gray-200"])}>
-      <a
-        href={`/post/${post.uuid}`}
+      <div
         className={twclx([
-          "rounded cursor-pointer transition-all",
+          "transition-all",
           css`
             &:hover .title-mark {
               ${tw`text-gray-900`}
@@ -33,7 +31,8 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
       >
         <div className="w-full h-auto">
           {/* 标题 */}
-          <div
+          <a
+            href={`/post/${post.uuid}`}
             className={twclx([
               "title-mark text-xl font-semibold text-gray-700 relative",
               css`
@@ -50,40 +49,24 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
             ])}
           >
             {post.title}
-          </div>
+          </a>
         </div>
         {/* 创建日期和分类 */}
         <div className="flex items-center space-x-8 pt-6">
           {/* 发布日期 */}
-          <ZTooltip>
-            <ZTooltipTrigger>
-              <div className="flex items-center text-gray-600 space-x-2">
-                <RiCalendarLine size={"1rem"} />
-                <div>{dateFormat(post.createdAt)}</div>
-              </div>
-            </ZTooltipTrigger>
-            <ZTooltipContent>
-              <div>创建时间：{dateFormat(post.createdAt)}</div>
-              {post.updatedAt !== post.createdAt && <div>最近编辑时间：{dateFormat(post.updatedAt)}</div>}
-            </ZTooltipContent>
-          </ZTooltip>
+          <Datetime post={post} />
 
           {/* 分类 */}
-          {post.category && (
-            <HoverFloating className="flex items-center text-gray-600 space-x-2 cursor-pointer select-none">
-              <RiStackLine size={"1rem"} />
-              <div>{post.category?.label}</div>
-            </HoverFloating>
-          )}
+          {post.category && <Category category={post.category} />}
         </div>
 
         {/* 文章简要内容 */}
         {post.description && (
-          <div className="break-words max-h-[6em] overflow-hidden pt-6">
+          <a href={`/post/${post.uuid}`} className="inline-block break-words max-h-[6em] overflow-hidden pt-6">
             <div className="text-gray-900">{post.description}</div>
-          </div>
+          </a>
         )}
-      </a>
+      </div>
       {/* 标签 */}
       {!isEmpty(post.tags) && (
         <div className="pt-6 relative space-x-2">
