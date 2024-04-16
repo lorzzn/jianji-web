@@ -16,10 +16,10 @@ const Search = () => {
 
   useEffect(() => {
     const queryParams = queryString.parse(location.search)
-    if (queryParams.keyword) {
-      setkeyword(String(queryParams.keyword))
-      setQueryKeyword(String(queryParams.keyword))
-    }
+    const kw = String(queryParams.keyword || "")
+
+    setkeyword(kw)
+    setQueryKeyword(kw)
   }, [location])
 
   const onKeywordInputChange: ZInputProps["onChange"] = (e) => {
