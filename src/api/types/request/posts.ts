@@ -36,4 +36,5 @@ export interface IListPostsRequest extends Partial<IPageInfo> {
   sortType?: "desc" | "asc"
   tagValues?: number[]
   categoryValue?: number
+  keyword?: string
 }
