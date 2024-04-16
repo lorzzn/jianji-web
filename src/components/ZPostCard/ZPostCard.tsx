@@ -18,7 +18,7 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
     <div className={twclx(["w-9/12 max-w-7xl py-12 border-b border-b-gray-200"])}>
       <div
         className={twclx([
-          "transition-all",
+          "transition-all cursor-pointer",
           css`
             &:hover .title-mark {
               ${tw`text-gray-900`}
@@ -28,6 +28,9 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
             }
           `,
         ])}
+        onClick={() => {
+          window.location.href = `/post/${post.uuid}`
+        }}
       >
         <div className="w-full h-auto">
           {/* 标题 */}
