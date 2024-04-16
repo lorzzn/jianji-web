@@ -6,7 +6,6 @@ const Home: FC = () => {
     <Base
       extraParams={{
         favoured: true,
-        archived: undefined,
       }}
     />
   )

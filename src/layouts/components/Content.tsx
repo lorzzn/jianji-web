@@ -5,6 +5,7 @@ import RequireAuth from "./RequireAuth"
 const Active = lazy(() => import("@/pages/Active"))
 const Archives = lazy(() => import("@/pages/Archives"))
 const Categories = lazy(() => import("@/pages/Categories"))
+const Category = lazy(() => import("@/pages/Category"))
 const Edit = lazy(() => import("@/pages/Edit"))
 const Post = lazy(() => import("@/pages/Post"))
 const Favlist = lazy(() => import("@/pages/Favlist"))
@@ -40,6 +41,7 @@ const Content: FC = () => {
           />
           <Route path="/post/:uuid?" Component={Post} />
           <Route path="/tag/:tagValue" Component={Tag} />
+          <Route path="/category/:categoryValue" Component={Category} />
 
           <Route path="/404" Component={NotFoundPage} />
           <Route path="/500" Component={ServerErrorPage} />

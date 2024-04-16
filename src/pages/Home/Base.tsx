@@ -1,9 +1,11 @@
 import { IListPostsRequest } from "@/api/types/request/posts"
+import ZEmpty from "@/components/ZEmpty/ZEmpty"
 import ZPagination from "@/components/ZPagination/ZPagination"
 import ZPostCard from "@/components/ZPostCard/ZPostCard"
 import usePostList from "@/hooks/usePostList"
 import eventBus from "@/utils/eventBus"
 import { updateQueryString } from "@/utils/queryString"
+import { isEmpty } from "lodash"
 import queryString from "query-string"
 import { FC, useEffect } from "react"
 import { useLocation } from "react-router-dom"
@@ -22,10 +24,7 @@ const Base: FC<BaseProps> = ({ extraParams }) => {
       pageNo,
       pageSize: 10,
     },
-    {
-      archived: false,
-      ...extraParams,
-    },
+    extraParams,
   )
 
   useEffect(() => {
@@ -38,7 +37,11 @@ const Base: FC<BaseProps> = ({ extraParams }) => {
     eventBus.emit("scrolltotop")
   }
 
-  return (
+  return isEmpty(list) ? (
+    <div className="flex-1 flex place-content-center">
+      <ZEmpty />
+    </div>
+  ) : (
     <>
       <div className="flex flex-col justify-start items-center mt-12 flex-1">
         {list.map((item) => (
