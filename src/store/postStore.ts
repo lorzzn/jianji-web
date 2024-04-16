@@ -1,14 +1,13 @@
-import { IPost, IUpdatePostRequest } from "@/api/types/request/posts"
-import { IPost as IResponePost } from "@/api/types/response/posts"
-import { ICategory } from "@/api/types/response/categories"
-import { makeAutoObservable } from "mobx"
-import { omit } from "lodash"
 import { apiPosts } from "@/api/posts"
+import { IPost, IUpdatePostRequest } from "@/api/types/request/posts"
+import { ICategory } from "@/api/types/response/categories"
+import { IPost as IResponePost } from "@/api/types/response/posts"
+import { ITag } from "@/api/types/response/tags"
 import errorHandler from "@/utils/errorHandler"
 import { uuidjs } from "@/utils/uuid"
+import { omit } from "lodash"
+import { makeAutoObservable } from "mobx"
 import { toast } from "react-toastify"
-import { getPlainTextFromMarkdown } from "@/utils/stringFuncs"
-import { ITag } from "@/api/types/response/tags"
 
 class PostStore {
   uuid: string | null = null // 文章uuid
@@ -34,7 +33,7 @@ class PostStore {
   }
 
   get tagValues() {
-    return this.tags?.map(t => t.value)
+    return this.tags?.map((t) => t.value)
   }
 
   get postInfo(): IResponePost {
@@ -50,11 +49,11 @@ class PostStore {
       public: this.public,
       status: this.status,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
     }
   }
 
-  get postInfoRequestParams (): Partial<IPost> {
+  get postInfoRequestParams(): Partial<IPost> {
     return {
       ...omit(this.postInfo, "category", "tags", "createdAt", "updatedAt"),
       categoryValue: this.categoryValue,
@@ -143,7 +142,7 @@ class PostStore {
         toast.error("内容不能为空")
         return Promise.reject("内容不能为空")
       }
-      const api = (this.uuid && this.uuid !== uuidjs.NIL) ? apiPosts.update:apiPosts.create
+      const api = this.uuid && this.uuid !== uuidjs.NIL ? apiPosts.update : apiPosts.create
       const res = await api(this.postInfoRequestParams as IUpdatePostRequest)
       this.setPostInfo(res.data.data)
       return Promise.resolve(res)
@@ -157,7 +156,7 @@ class PostStore {
 
   deletePost = async () => {
     if (!this.uuid) return
-    
+
     this.setRemoteLoading(true)
     try {
       const res = await apiPosts.delete({ uuid: this.uuid })
@@ -169,7 +168,6 @@ class PostStore {
       this.setRemoteLoading(false)
     }
   }
-
 }
 
 export default PostStore
