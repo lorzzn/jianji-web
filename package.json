@@ -35,6 +35,7 @@
     "dayjs": "^1.11.10",
     "framer-motion": "^11.0.6",
     "fuzzysort": "^2.0.4",
+    "highlight.js": "^11.9.0",
     "jsencrypt": "^3.3.2",
     "lodash": "^4.17.21",
     "markdown-it": "^14.1.0",
