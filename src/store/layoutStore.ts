@@ -29,7 +29,7 @@ class LayoutStore {
     { href: "/", label: "首页", RiIcon: RiHomeLine },
     { href: "/archives", label: "归档", RiIcon: RiArchiveLine },
     { href: "/favlist", label: "收藏", RiIcon: RiStarLine },
-    { href: "/categories", label: "分类", RiIcon: RiStackLine },
+    { href: "/categories", label: "分类", RiIcon: RiStackLine, activePath: ["categories", "category"] },
     { href: "/tags", label: "标签", RiIcon: RiHashtag, activePath: ["tags", "tag"] },
   ]
 
