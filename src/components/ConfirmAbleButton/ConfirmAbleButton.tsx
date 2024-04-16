@@ -12,22 +12,22 @@ interface ConfirmAbleButtonProps {
 }
 
 const ConfirmAbleButton: FC<ConfirmAbleButtonProps> = (props) => {
-  const [confirmed, setConfirmed] = useState(false)
+  const [firstClicked, setFirstClicked] = useState(false)
   const textSpanRef = useRef<HTMLSpanElement>(null)
 
   const onButtonClick = () => {
-    if (confirmed) {
+    if (firstClicked) {
       const callFn = props.onConfirm?.()
       if (callFn?.finally) {
         callFn.finally(() => {
-          setConfirmed(false)
+          setFirstClicked(false)
         })
       } else {
-        setConfirmed(false)
+        setFirstClicked(false)
       }
     } else {
       props.onClick?.()
-      setConfirmed(true)
+      setFirstClicked(true)
     }
   }
 
@@ -35,7 +35,23 @@ const ConfirmAbleButton: FC<ConfirmAbleButtonProps> = (props) => {
     if (textSpanRef.current) {
       animate(textSpanRef.current, { opacity: [0, 1] }, { duration: 0.3 })
     }
-  }, [confirmed])
+  }, [firstClicked])
+
+  const resetFirstClickedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const onMouseEnter: ZButtonProps["onMouseEnter"] = (e) => {
+    if (resetFirstClickedTimer.current) {
+      clearTimeout(resetFirstClickedTimer.current)
+    }
+    props.buttonProps?.onMouseEnter?.(e)
+  }
+
+  const onMouseLeave: ZButtonProps["onMouseLeave"] = (e) => {
+    resetFirstClickedTimer.current = setTimeout(() => {
+      setFirstClicked(false)
+    }, 1500)
+    props.buttonProps?.onMouseLeave?.(e)
+  }
 
   return (
     <ZButton
@@ -43,9 +59,11 @@ const ConfirmAbleButton: FC<ConfirmAbleButtonProps> = (props) => {
       className="transition-all w-auto"
       onClick={onButtonClick}
       loadingSize={"1rem"}
+      onMouseLeave={onMouseLeave}
+      onMouseEnter={onMouseEnter}
       {...props.buttonProps}
     >
-      <span ref={textSpanRef}>{confirmed ? props.confirmText : props.text}</span>
+      <span ref={textSpanRef}>{firstClicked ? props.confirmText : props.text}</span>
     </ZButton>
   )
 }
