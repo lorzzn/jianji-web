@@ -1,13 +1,12 @@
 import ConfirmAbleButton from "@/components/ConfirmAbleButton/ConfirmAbleButton"
-import HoverFloating from "@/components/ZAnimateDiv/HoverFloating"
 import ZButton from "@/components/ZButton/ZButton"
+import Category from "@/components/ZPost/Category"
+import Datetime from "@/components/ZPost/Datetime"
 import Preview from "@/components/ZPost/Preview"
 import Tag from "@/components/ZPost/Tag"
-import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "@/components/ZTooltip/ZTooltip"
 import { useStore } from "@/store"
-import { dateFormat } from "@/utils/dateFormat"
 import { uuidjs } from "@/utils/uuid"
-import { RiCalendarLine, RiHashtag, RiStackLine } from "@remixicon/react"
+import { RiHashtag } from "@remixicon/react"
 import { isEmpty } from "lodash"
 import { observer } from "mobx-react"
 import { useEffect, useState } from "react"
@@ -55,28 +54,12 @@ const Post = observer(() => {
         {/* 创建日期和分类 */}
         <div className="flex items-center space-x-8 pt-6 pb-3">
           {/* 发布日期 */}
-          <ZTooltip>
-            <ZTooltipTrigger>
-              <div className="flex items-center text-gray-600 space-x-2">
-                <RiCalendarLine size={"1rem"} />
-                <div>{dateFormat(post.createdAt)}</div>
-              </div>
-            </ZTooltipTrigger>
-            <ZTooltipContent>
-              <div>创建时间：{dateFormat(post.createdAt)}</div>
-              {post.updatedAt !== post.createdAt && <div>最近编辑时间：{dateFormat(post.updatedAt)}</div>}
-            </ZTooltipContent>
-          </ZTooltip>
+          <Datetime post={post} />
 
           {/* 分类 */}
-          {post.category && (
-            <HoverFloating className="flex items-center text-gray-600 space-x-2 cursor-pointer select-none">
-              <RiStackLine size={"1rem"} />
-              <div>{post.category?.label}</div>
-            </HoverFloating>
-          )}
+          {post.category && <Category category={post.category} />}
 
-          <div className="flex items-center">
+          <div className="flex items-center whitespace-nowrap">
             <ZButton variant={"primary_plain"} className="h-6" componentTag="a" href={`/edit/${uuidparam}`}>
               编辑
             </ZButton>
