@@ -47,6 +47,11 @@ const Search = () => {
               value={keyword}
               onChange={onKeywordInputChange}
               onClear={() => setkeyword("")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  goSearchResult()
+                }
+              }}
             />
             <ZButton scale={"large"} className="px-8 ring-1 ring-blue-500" onClick={goSearchResult}>
               搜索
