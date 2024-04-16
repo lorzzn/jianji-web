@@ -24,10 +24,6 @@ const Post = observer(() => {
 
   const navigate = useNavigate()
 
-  const goEdit = () => {
-    navigate(`/edit/${uuidparam}`)
-  }
-
   const onDelete = async () => {
     setDeleteLoading(true)
     try {
@@ -81,7 +77,7 @@ const Post = observer(() => {
           )}
 
           <div className="flex items-center">
-            <ZButton variant={"primary_plain"} className="h-6" onClick={goEdit}>
+            <ZButton variant={"primary_plain"} className="h-6" componentTag="a" href={`/edit/${uuidparam}`}>
               编辑
             </ZButton>
             <ConfirmAbleButton
