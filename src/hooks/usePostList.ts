@@ -24,6 +24,7 @@ const usePostList = (initPageInfo: Partial<IPageInfo>, extraParams: Partial<ILis
   const getList = async (data?: IListPostsRequest) => {
     setLoading(true)
     try {
+      setList([])
       const payload = data || {
         pageNo: pageInfo.pageNo,
         pageSize: pageInfo.pageSize,

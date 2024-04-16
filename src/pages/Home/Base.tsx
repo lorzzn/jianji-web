@@ -19,7 +19,7 @@ const Base: FC<BaseProps> = ({ extraParams }) => {
   const queryParams = queryString.parse(location.search)
   const pageNo = Number(queryParams.page || 1)
 
-  const { list, getList, pageInfo, totalPage, updatePageNo } = usePostList(
+  const { list, getList, pageInfo, totalPage, updatePageNo, loading } = usePostList(
     {
       pageNo,
       pageSize: 10,
@@ -37,7 +37,7 @@ const Base: FC<BaseProps> = ({ extraParams }) => {
     eventBus.emit("scrolltotop")
   }
 
-  return isEmpty(list) ? (
+  return isEmpty(list) && !loading ? (
     <div className="flex-1 flex place-content-center">
       <ZEmpty />
     </div>
