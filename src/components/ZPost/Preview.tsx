@@ -20,10 +20,7 @@ const Preview: FC<PreviewProps> = ({ className, style, prose = true, children = 
   return (
     <div
       style={style}
-      className={twclx([
-        "max-w-full",
-        { "prose": prose },
-      ], className)}
+      className={twclx(["max-w-full", { prose: prose }], className)}
       dangerouslySetInnerHTML={{ __html: md.render(children) }}
     ></div>
   )

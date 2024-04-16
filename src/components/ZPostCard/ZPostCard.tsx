@@ -7,8 +7,8 @@ import { isEmpty } from "lodash"
 import { FC } from "react"
 import tw from "twin.macro"
 import HoverFloating from "../ZAnimateDiv/HoverFloating"
-import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
 import Tag from "../ZPost/Tag"
+import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
 
 export interface ZPostCardProps {
   post: IPost
@@ -64,9 +64,7 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
             </ZTooltipTrigger>
             <ZTooltipContent>
               <div>创建时间：{dateFormat(post.createdAt)}</div>
-              {
-                post.updatedAt !== post.createdAt && <div>最近编辑时间：{dateFormat(post.updatedAt)}</div>
-              }
+              {post.updatedAt !== post.createdAt && <div>最近编辑时间：{dateFormat(post.updatedAt)}</div>}
             </ZTooltipContent>
           </ZTooltip>
 
@@ -80,11 +78,11 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
         </div>
 
         {/* 文章简要内容 */}
-        {
-          post.description && <div className="break-words max-h-[6em] overflow-hidden pt-6">
+        {post.description && (
+          <div className="break-words max-h-[6em] overflow-hidden pt-6">
             <div className="text-gray-900">{post.description}</div>
           </div>
-        }
+        )}
       </a>
       {/* 标签 */}
       {!isEmpty(post.tags) && (

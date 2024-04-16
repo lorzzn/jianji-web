@@ -8,7 +8,7 @@ export type ZButtonProps = React.HTMLAttributes<HTMLOrSVGElement> &
   VariantProps<typeof ZButtonVariants> & {
     loading?: boolean
     loadingSize?: number | string
-    componentTag?: keyof JSX.IntrinsicElements 
+    componentTag?: keyof JSX.IntrinsicElements
     disabled?: boolean
     href?: string
   }
@@ -52,15 +52,11 @@ const ZButton: FC<ZButtonProps> = ({
   componentTag: ComponentTag = "button",
   ...restProps
 }) => {
-  
   const isDisabled = loading || disabled
 
   return (
     <ComponentTag
-      className={twclx([
-        ZButtonVariants({ variant, scale, shape, className }),
-        { "cursor-not-allowed": isDisabled },
-      ])}
+      className={twclx([ZButtonVariants({ variant, scale, shape, className }), { "cursor-not-allowed": isDisabled }])}
       disabled={isDisabled}
       {...restProps}
     >

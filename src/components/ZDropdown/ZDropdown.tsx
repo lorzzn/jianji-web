@@ -22,47 +22,35 @@ export interface ZDropdownRef {
   close: () => void
 }
 
-const ZDropdown = forwardRef<ZDropdownRef, ZDropdownProps>(
-  ({ target, options, onChange, onClick }, ref) => {
-    const [open, setOpen] = useState(false)
-    // const [value, setValue] = useState<DropdownOption | null>(null)
-    const onOpen = () => setOpen(true)
-    const onClose = () => setOpen(false)
+const ZDropdown = forwardRef<ZDropdownRef, ZDropdownProps>(({ target, options, onChange, onClick }, ref) => {
+  const [open, setOpen] = useState(false)
+  // const [value, setValue] = useState<DropdownOption | null>(null)
+  const onOpen = () => setOpen(true)
+  const onClose = () => setOpen(false)
 
-    const onOptionChange = (item: DropdownOption) => {
-      if (item?.selectable) {
-        // setValue(item)
-        onChange?.(item)
-      }
-      if (item) {
-        onClick?.("option", item)
-      }
-      onClose()
+  const onOptionChange = (item: DropdownOption) => {
+    if (item?.selectable) {
+      // setValue(item)
+      onChange?.(item)
     }
+    if (item) {
+      onClick?.("option", item)
+    }
+    onClose()
+  }
 
-    useImperativeHandle(ref, () => ({
-      close: onClose,
-      open: onOpen,
-    }))
+  useImperativeHandle(ref, () => ({
+    close: onClose,
+    open: onOpen,
+  }))
 
-    return (
-      <ZFloatingMenu 
-        label={target}
-        placement="bottom" 
-        resetClassName 
-        onOpenChange={(open) => setOpen(open)}
-        open={open}
-      >
-        {
-          options.map((option) => <ZFloatingMenuItem 
-            label={option.label} 
-            onClick={() => onOptionChange(option)} 
-            key={option.value}
-          />)
-        }
-      </ZFloatingMenu>
-    )
-  },
-)
+  return (
+    <ZFloatingMenu label={target} placement="bottom" resetClassName onOpenChange={(open) => setOpen(open)} open={open}>
+      {options.map((option) => (
+        <ZFloatingMenuItem label={option.label} onClick={() => onOptionChange(option)} key={option.value} />
+      ))}
+    </ZFloatingMenu>
+  )
+})
 
 export default ZDropdown

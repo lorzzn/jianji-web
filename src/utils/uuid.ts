@@ -1,1 +1,1 @@
-export  * as uuidjs from "uuid";
+export * as uuidjs from "uuid"

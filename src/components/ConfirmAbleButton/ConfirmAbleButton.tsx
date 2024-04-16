@@ -1,17 +1,17 @@
-import { FC, useRef, useState } from "react";
-import ZButton, { ZButtonProps } from "../ZButton/ZButton";
-import { animate, } from 'framer-motion'
-import useUpdateEffect from 'beautiful-react-hooks/useUpdateEffect'
+import useUpdateEffect from "beautiful-react-hooks/useUpdateEffect"
+import { animate } from "framer-motion"
+import { FC, useRef, useState } from "react"
+import ZButton, { ZButtonProps } from "../ZButton/ZButton"
 
 interface ConfirmAbleButtonProps {
-  text?: string;
-  confirmText?: string;
-  onConfirm?: (() => Promise<void>) | (() => void);
-  onClick?: () => void;
+  text?: string
+  confirmText?: string
+  onConfirm?: (() => Promise<void>) | (() => void)
+  onClick?: () => void
   buttonProps?: ZButtonProps
 }
 
-const ConfirmAbleButton:FC<ConfirmAbleButtonProps> = (props) => {
+const ConfirmAbleButton: FC<ConfirmAbleButtonProps> = (props) => {
   const [confirmed, setConfirmed] = useState(false)
   const textSpanRef = useRef<HTMLSpanElement>(null)
 
@@ -33,15 +33,21 @@ const ConfirmAbleButton:FC<ConfirmAbleButtonProps> = (props) => {
 
   useUpdateEffect(() => {
     if (textSpanRef.current) {
-      animate(textSpanRef.current, { opacity: [ 0, 1 ] }, { duration: 0.3 })
+      animate(textSpanRef.current, { opacity: [0, 1] }, { duration: 0.3 })
     }
-  }, [ confirmed ])
+  }, [confirmed])
 
-  return <ZButton variant={"primary_plain"} className="transition-all w-auto" onClick={onButtonClick} loadingSize={"1rem"} {...props.buttonProps}>
-    <span ref={textSpanRef} >
-      {confirmed ? props.confirmText : props.text}
-    </span>
-  </ZButton>
+  return (
+    <ZButton
+      variant={"primary_plain"}
+      className="transition-all w-auto"
+      onClick={onButtonClick}
+      loadingSize={"1rem"}
+      {...props.buttonProps}
+    >
+      <span ref={textSpanRef}>{confirmed ? props.confirmText : props.text}</span>
+    </ZButton>
+  )
 }
 
-export default ConfirmAbleButton;
+export default ConfirmAbleButton
