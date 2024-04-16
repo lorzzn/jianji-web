@@ -6,7 +6,6 @@ import { css } from "@emotion/css"
 import useMouseEvents from "beautiful-react-hooks/useMouseEvents"
 import { observer } from "mobx-react"
 import { FC, useState } from "react"
-import { useNavigate } from "react-router-dom"
 import tw from "twin.macro"
 
 const errorStyleTextLen = 60
@@ -31,11 +30,6 @@ const Base: FC<BaseProps> = observer(({ title, description }) => {
     }
   })
 
-  const navigate = useNavigate()
-  const goHome = () => {
-    navigate("/")
-  }
-
   return (
     <div className="flex-1 flex justify-center items-center">
       <div
@@ -58,7 +52,7 @@ const Base: FC<BaseProps> = observer(({ title, description }) => {
           <div className="opacity-10 py-3">
             <span>{dynamicText}</span>
           </div>
-          <ZButton variant={"primary_plain"} className="p-0 text-xl" onClick={goHome}>
+          <ZButton variant={"primary_plain"} className="p-0 text-xl" componentTag="a" href="/">
             回到首页
           </ZButton>
         </div>
