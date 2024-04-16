@@ -4,9 +4,10 @@ import { getStorage, setStorage } from "@/utils/storage"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import classNames from "classnames"
-import { repeat, reverse, slice } from "lodash"
+import { animate, useMotionValue } from "framer-motion"
+import { debounce, keys, map, repeat, reverse, slice } from "lodash"
 import { observer } from "mobx-react"
-import { FC, useEffect, useMemo, useRef, useState } from "react"
+import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { HotkeyCallback, Keys, useHotkeys } from "react-hotkeys-hook"
 import { OptionsOrDependencyArray } from "react-hotkeys-hook/dist/types"
 import { ImperativePanelHandle, Panel, PanelGroup, PanelGroupProps, PanelResizeHandle } from "react-resizable-panels"
@@ -40,10 +41,12 @@ const ZPostEditor: FC = observer(() => {
   const [layout, setLayout] = useState<ToolbarButton["layout"]>("normal")
   const [layoutReversed, setLayoutReversed] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
+  const [syncScroll, setSyncScroll] = useState(true)
   const [editorFontSize, setEditorFontSize] = useState(getStorage(editorFontSizeStorageKey) || "16")
 
   const helpDialogRef = useRef<ZModalRef>(null)
   const textareaRef = useRef<TextareaRef>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
   const editorPanelRef = useRef<ImperativePanelHandle>(null)
   const previewPanelRef = useRef<ImperativePanelHandle>(null)
   const [history, setHistory] = useState<EditorHistory>({ current: 0, stack: [""] })
@@ -314,6 +317,10 @@ const ZPostEditor: FC = observer(() => {
       setStorage(editorFontSizeStorageKey, 16)
       setEditorFontSize(getStorage(editorFontSizeStorageKey))
     }
+
+    if (info.action === "syncScroll") {
+      setSyncScroll(!syncScroll)
+    }
   }
 
   useEffect(() => {
@@ -328,6 +335,182 @@ const ZPostEditor: FC = observer(() => {
     }
   }, [layout])
 
+  // 滚动同步
+  const scrollMap = useRef<number[] | null>()
+  const motionTextareaScrollTop = useMotionValue(textareaRef.current?.scrollTop || 0)
+  const motionPreviewScrollTop = useMotionValue(previewRef.current?.scrollTop || 0)
+  const enableOnScrollPart = useRef<"textarea" | "preview">("textarea")
+
+  useEffect(() => {
+    motionTextareaScrollTop.on("change", (v) => {
+      textareaRef.current?.scrollTo({ top: v })
+    })
+
+    motionPreviewScrollTop.on("change", (v) => {
+      previewRef.current?.scrollTo({ top: v })
+    })
+  }, [])
+
+  useLayoutEffect(() => {
+    if (syncScroll) {
+      scrollMap.current = null
+      onTextareaScroll()
+    }
+  }, [syncScroll])
+
+  useLayoutEffect(() => {
+    scrollMap.current = buildScrollMap()
+  }, [value])
+
+  const buildScrollMap = () => {
+    if (!textareaRef.current || !previewRef.current) return []
+
+    const textarea = textareaRef.current
+
+    const sourceLikeDiv = document.createElement("div")
+    sourceLikeDiv.style.position = "absolute"
+    sourceLikeDiv.style.visibility = "hidden"
+    sourceLikeDiv.style.height = "auto"
+    sourceLikeDiv.style.width = textarea.clientWidth + "px"
+    sourceLikeDiv.style.fontSize = window.getComputedStyle(textarea).fontSize
+    sourceLikeDiv.style.fontFamily = window.getComputedStyle(textarea).fontFamily
+    sourceLikeDiv.style.lineHeight = window.getComputedStyle(textarea).lineHeight
+    sourceLikeDiv.style.whiteSpace = window.getComputedStyle(textarea).whiteSpace
+
+    document.body.appendChild(sourceLikeDiv)
+    const offset = previewRef.current.scrollTop - previewRef.current.offsetTop
+
+    const _scrollMap: number[] = []
+    const nonEmptyList: number[] = []
+    const lineHeightMap: number[] = []
+
+    let acc = 0
+
+    textarea.value.split("\n").forEach(function (str) {
+      lineHeightMap.push(acc)
+
+      if (str.length === 0) {
+        acc++
+        return
+      }
+
+      sourceLikeDiv.innerText = str
+      const h = parseFloat(window.getComputedStyle(sourceLikeDiv).height)
+      const lh = parseFloat(window.getComputedStyle(sourceLikeDiv).lineHeight)
+
+      acc += Math.round(h / lh)
+    })
+    sourceLikeDiv.remove()
+    lineHeightMap.push(acc)
+    const linesCount = acc
+
+    for (let i = 0; i < linesCount; i++) {
+      _scrollMap.push(-1)
+    }
+
+    nonEmptyList.push(0)
+    _scrollMap[0] = 0
+
+    const lines = previewRef.current.querySelectorAll(".line") as NodeListOf<HTMLDivElement>
+    lines.forEach((el) => {
+      let t = Number(el.dataset.line)
+      if (isNaN(t)) {
+        return
+      }
+      t = lineHeightMap[+t]
+      if (t !== 0) {
+        nonEmptyList.push(t)
+      }
+      _scrollMap[t] = Math.round(el.offsetTop + offset)
+    })
+
+    nonEmptyList.push(linesCount)
+    _scrollMap[linesCount] = previewRef.current.scrollHeight
+
+    let pos = 0
+    for (let i = 1; i < linesCount; i++) {
+      if (_scrollMap[i] !== -1) {
+        pos++
+        continue
+      }
+
+      const a = nonEmptyList[pos]
+      const b = nonEmptyList[pos + 1]
+      _scrollMap[i] = Math.round((_scrollMap[b] * (i - a) + _scrollMap[a] * (b - i)) / (b - a))
+    }
+
+    return _scrollMap
+  }
+
+  const onTextareaScroll = debounce(
+    () => {
+      if (enableOnScrollPart.current !== "textarea" || !syncScroll) return
+      if (!textareaRef.current) return
+
+      const textarea = textareaRef.current
+      const { scrollTop } = textarea
+      const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight)
+      const lineNo = Math.floor(scrollTop / lineHeight)
+
+      if (!scrollMap.current) {
+        scrollMap.current = buildScrollMap()
+      }
+
+      const posTo = scrollMap.current[lineNo]
+
+      motionPreviewScrollTop.stop()
+      animate(motionPreviewScrollTop, posTo || 0, { type: "keyframes" })
+    },
+    10,
+    { maxWait: 30 },
+  )
+
+  const onPreviewScroll = debounce(
+    () => {
+      if (enableOnScrollPart.current !== "preview" || !syncScroll) return
+      if (!previewRef.current) return
+
+      const preview = previewRef.current
+      const scrollTop = preview.scrollTop
+      const textarea = textareaRef.current
+      if (!textarea) return
+
+      const lineHeight = parseFloat(window.getComputedStyle(textarea).lineHeight)
+
+      if (!scrollMap.current) {
+        scrollMap.current = buildScrollMap()
+      }
+
+      const lines = map(keys(scrollMap.current), Number)
+
+      if (lines.length < 1) {
+        return
+      }
+
+      let line = lines[0]
+
+      for (let i = 1; i < lines.length; i++) {
+        if (scrollMap.current[lines[i]] < scrollTop) {
+          line = lines[i]
+          continue
+        }
+
+        break
+      }
+
+      motionTextareaScrollTop.stop()
+      animate(motionTextareaScrollTop, lineHeight * line || 0, { type: "keyframes" })
+    },
+    10,
+    { maxWait: 30 },
+  )
+
+  const enableOnScroll = (part: "preview" | "textarea") => {
+    enableOnScrollPart.current = part
+    // motionTextareaScrollTop.stop()
+    // motionPreviewScrollTop.stop()
+  }
+
   const onPanelLayoutChange: PanelGroupProps["onLayout"] = (layout) => {
     const [ew, pw] = layoutReversed ? reverse(slice(layout)) : layout
     if (ew === 0) {
@@ -341,7 +524,14 @@ const ZPostEditor: FC = observer(() => {
 
   return (
     <div className={classNames(["flex-1 flex flex-col border bg-gray-100", { "fixed inset-0 z-[500]": fullscreen }])}>
-      <Toolbar layout={layout} fullscreen={fullscreen} reverse={layoutReversed} onClick={onToolbarClick} />
+      <Toolbar
+        layout={layout}
+        fullscreen={fullscreen}
+        reverse={layoutReversed}
+        syncScroll={syncScroll}
+        editorFontSize={editorFontSize}
+        onClick={onToolbarClick}
+      />
       <div className={"flex-1 flex flex-col"}>
         <PanelGroup
           direction="horizontal"
@@ -356,6 +546,9 @@ const ZPostEditor: FC = observer(() => {
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               onChange={handleValueChange}
+              onScroll={onTextareaScroll}
+              onMouseOver={() => enableOnScroll("textarea")}
+              onTouchStart={() => enableOnScroll("textarea")}
               className={twclx([
                 "w-full h-full p-3 break-all bg-neutral-50",
                 css`
@@ -364,7 +557,7 @@ const ZPostEditor: FC = observer(() => {
               ])}
             />
           </Panel>
-          <PanelResizeHandle className="w-0 border" />
+          <PanelResizeHandle className="w-1 border" />
           <Panel
             collapsible
             minSize={25}
@@ -373,7 +566,15 @@ const ZPostEditor: FC = observer(() => {
             order={layoutReversed ? 1 : 2}
             className={twclx(["relative"])}
           >
-            <Preview className={twclx(["absolute inset-0 p-3 break-all bg-white"])}>{value}</Preview>
+            <Preview
+              ref={previewRef}
+              className={twclx(["absolute inset-0 p-3 break-all bg-white overflow-auto"])}
+              onScroll={onPreviewScroll}
+              onMouseOver={() => enableOnScroll("preview")}
+              onTouchStart={() => enableOnScroll("preview")}
+            >
+              {value}
+            </Preview>
           </Panel>
         </PanelGroup>
       </div>
