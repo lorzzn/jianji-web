@@ -17,13 +17,15 @@ import ZLoadingContent from "../ZLoadingContent/ZLoadingContent"
 export interface CategoriesSelectorProps {
   loading?: boolean
   categories: ICategory[]
-  selectedCategory: ICategory | null
+  selectedCategory?: ICategory | null
   filterKeyword?: string
-  onUpdate: (data: ICategory[]) => void
-  onCreate: (data: Partial<ICategory>[], callback?: (created: ICategory[] | null) => void) => void
-  onSelect: (key: Key, value: ICategory) => void
-  onDelete: (value: number | number[]) => void
+  onUpdate?: (data: ICategory[]) => void
+  onCreate?: (data: Partial<ICategory>[], callback?: (created: ICategory[] | null) => void) => void
+  onSelect?: (key: Key, value: ICategory) => void
+  onDelete?: (value: number | number[]) => void
   onConfirm?: (data: ICategory) => void
+  contentRender?: (treeData: CategoriesNode[]) => JSX.Element
+  enableContextMenu?: boolean
 }
 
 export interface CategoriesNode extends DataNode {
@@ -42,6 +44,8 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
   onDelete,
   onSelect: propOnSelect,
   filterKeyword,
+  contentRender,
+  enableContextMenu = true,
 }) => {
   const [expandKeys, setExpandKeys] = useState<Key[]>([])
   const [editingKey, setEditingKey] = useState<Key | null>(null)
@@ -118,7 +122,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     const node = treeDataRecord[value]
     if (!node) return
     node.data.label = label
-    onUpdate([node.data])
+    onUpdate?.([node.data])
   }
 
   const onEditingTitleInputRef = (instance: HTMLInputElement | null) => {
@@ -195,7 +199,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
     parent.children.splice(targetIndex + 1, 0, dragNode)
     parent.children.forEach((item, index) => (item.data.ordinalNumber = index + 1))
 
-    onUpdate([...parent.children, ...oldParent.children].map((item) => item.data))
+    onUpdate?.([...parent.children, ...oldParent.children].map((item) => item.data))
   }
 
   const getCategoryPath = (node: ICategory) => {
@@ -222,7 +226,7 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
       parentValue: node.value || null,
     }
 
-    onCreate([category], (created) => {
+    onCreate?.([category], (created) => {
       const remoteValue = first(created)
       if (created && remoteValue) {
         setExpandKeys((prev) => uniq([...prev, ...getCategoryPath(remoteValue)]))
@@ -275,90 +279,96 @@ const CategoriesSelector: FC<CategoriesSelectorProps> = ({
 
   return (
     <ZLoadingContent loading={loading}>
-      <div
-        ref={treeContainerRef}
-        className="relative w-full h-full min-h-80 ring-1 ring-gray-300 rounded-sm py-2"
-        onContextMenu={onTreeContextMenu}
-      >
-        {categories.length === 0 && (
-          <div className="absolute inset-0 flex justify-center pt-20 text-gray-400 text-sm pointer-events-none select-none">
-            无分类，右键可以选择新建分类
-          </div>
-        )}
-        <Tree
-          className={twclx(
-            "categories-selector h-full",
-            css`
-              user-select: none;
-              border-width: 0;
-              .rc-tree-treenode {
-                ${tw`whitespace-normal flex items-center px-2`}
-                & span.rc-tree-switcher {
-                  background-image: none;
-                  margin-right: 0;
-                  width: auto;
-                }
-                & span.rc-tree-node-selected {
-                  box-shadow: none;
-                  ${tw`bg-blue-200 ring-2 ring-inset ring-blue-300`}
-                }
-                & span.rc-tree-node-content-wrapper {
-                  ${tw`px-1 hover:bg-blue-100 rounded-sm`}
-                }
-                &.drop-target {
-                  ${tw`bg-blue-100`}
-                }
-                &.drop-container ~ .rc-tree-treenode {
-                  ${tw`!border-l-blue-400`}
-                }
-                &.filter-node {
-                  ${tw`bg-gray-100`}
-                  & > .rc-tree-node-content-wrapper {
-                    ${tw`!text-blue-500`}
-                    & input {
-                      ${tw`text-black font-normal`}
+      {contentRender ? (
+        contentRender(treeData)
+      ) : (
+        <div
+          ref={treeContainerRef}
+          className="relative w-full h-full min-h-80 ring-1 ring-gray-300 rounded-sm py-2"
+          onContextMenu={onTreeContextMenu}
+        >
+          {categories.length === 0 && (
+            <div className="absolute inset-0 flex justify-center pt-20 text-gray-400 text-sm pointer-events-none select-none">
+              无分类，右键可以选择新建分类
+            </div>
+          )}
+          <Tree
+            className={twclx(
+              "categories-selector h-full",
+              css`
+                user-select: none;
+                border-width: 0;
+                .rc-tree-treenode {
+                  ${tw`whitespace-normal flex items-center px-2`}
+                  & span.rc-tree-switcher {
+                    background-image: none;
+                    margin-right: 0;
+                    width: auto;
+                  }
+                  & span.rc-tree-node-selected {
+                    box-shadow: none;
+                    ${tw`bg-blue-200 ring-2 ring-inset ring-blue-300`}
+                  }
+                  & span.rc-tree-node-content-wrapper {
+                    ${tw`px-1 hover:bg-blue-100 rounded-sm`}
+                  }
+                  &.drop-target {
+                    ${tw`bg-blue-100`}
+                  }
+                  &.drop-container ~ .rc-tree-treenode {
+                    ${tw`!border-l-blue-400`}
+                  }
+                  &.filter-node {
+                    ${tw`bg-gray-100`}
+                    & > .rc-tree-node-content-wrapper {
+                      ${tw`!text-blue-500`}
+                      & input {
+                        ${tw`text-black font-normal`}
+                      }
                     }
                   }
                 }
-              }
-            `,
-          )}
-          virtual
-          showLine
-          draggable={draggableFn}
-          filterTreeNode={filterTreeNodeFunc}
-          treeData={treeData}
-          onDrop={onDrop}
-          showIcon={false}
-          titleRender={treeTitleRender}
-          switcherIcon={switcherIconRender}
-          dropIndicatorRender={(props) => {
-            return (
-              <div
-                className={css`
-                  div {
-                    ${tw`!bg-blue-400`}
-                  }
-                `}
-              >
-                <DropIndicator {...props} />
-              </div>
-            )
-          }}
-          selectedKeys={[selectedKey]}
-          expandedKeys={expandKeys}
-          onExpand={onExpand}
-          // autoExpandParent
-          expandAction={"doubleClick"}
-          onSelect={onSelect}
-        />
-      </div>
+              `,
+            )}
+            virtual
+            showLine
+            draggable={draggableFn}
+            filterTreeNode={filterTreeNodeFunc}
+            treeData={treeData}
+            onDrop={onDrop}
+            showIcon={false}
+            titleRender={treeTitleRender}
+            switcherIcon={switcherIconRender}
+            dropIndicatorRender={(props) => {
+              return (
+                <div
+                  className={css`
+                    div {
+                      ${tw`!bg-blue-400`}
+                    }
+                  `}
+                >
+                  <DropIndicator {...props} />
+                </div>
+              )
+            }}
+            selectedKeys={[selectedKey]}
+            expandedKeys={expandKeys}
+            onExpand={onExpand}
+            expandAction={"doubleClick"}
+            onSelect={onSelect}
+          />
 
-      <ZFloatingMenu className="hidden" contextMenuTrigger={treeContainerRef}>
-        <ZFloatingMenuItem label="新建分类" onClick={onFolatingMenuItemClick("create")} />
-        <ZFloatingMenuItem label="重命名" disabled={!selectedKey} onClick={onFolatingMenuItemClick("rename")} />
-        <ZFloatingMenuItem label="删除" disabled={!selectedKey} onClick={onFolatingMenuItemClick("delete")} />
-      </ZFloatingMenu>
+          {/* 是否启用右键菜单 */}
+          {enableContextMenu && (
+            <ZFloatingMenu className="hidden" contextMenuTrigger={treeContainerRef}>
+              <ZFloatingMenuItem label="新建分类" onClick={onFolatingMenuItemClick("create")} />
+              <ZFloatingMenuItem label="重命名" disabled={!selectedKey} onClick={onFolatingMenuItemClick("rename")} />
+              <ZFloatingMenuItem label="删除" disabled={!selectedKey} onClick={onFolatingMenuItemClick("delete")} />
+            </ZFloatingMenu>
+          )}
+        </div>
+      )}
     </ZLoadingContent>
   )
 }
