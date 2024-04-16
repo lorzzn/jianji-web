@@ -8,7 +8,7 @@ interface ZFormProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<H
 
 const ZForm: FC<ZFormProps> = ({ children, className, ...restProps }) => {
   return (
-    <form className={classNames(styles.zForm, className)} {...restProps}>
+    <form className={classNames(styles.ZForm, className)} {...restProps}>
       {children}
     </form>
   )
