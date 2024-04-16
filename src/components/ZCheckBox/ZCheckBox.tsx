@@ -6,7 +6,7 @@ export interface ZCheckBoxProps extends React.InputHTMLAttributes<HTMLInputEleme
   label?: ReactNode
 }
 
-const ZCheckBox: FC<ZCheckBoxProps> = ({ className, label, ...restProps }) => {
+const ZCheckBox: FC<ZCheckBoxProps> = ({ className, label, checked, ...restProps }) => {
   return (
     <label className={classNames(["flex items-center cursor-pointer select-none"])}>
       <input
@@ -16,6 +16,7 @@ const ZCheckBox: FC<ZCheckBoxProps> = ({ className, label, ...restProps }) => {
           { "mr-1": label },
           className,
         )}
+        checked={Boolean(checked)}
         {...restProps}
       />
       {label}

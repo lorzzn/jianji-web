@@ -2,6 +2,7 @@ import ConfirmAbleButton from "@/components/ConfirmAbleButton/ConfirmAbleButton"
 import HoverFloating from "@/components/ZAnimateDiv/HoverFloating"
 import ZButton from "@/components/ZButton/ZButton"
 import Preview from "@/components/ZPost/Preview"
+import Tag from "@/components/ZPost/Tag"
 import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "@/components/ZTooltip/ZTooltip"
 import { useStore } from "@/store"
 import { dateFormat } from "@/utils/dateFormat"
@@ -100,11 +101,7 @@ const Post = observer(() => {
           !isEmpty(post.tags) && <div className="space-x-2">
             <RiHashtag className="inline-block my-1 -left-4" size={"1rem"} />
             {
-              post.tags?.map(tag => {
-                return <HoverFloating key={tag.value} className="rounded-full bg-gray-800 text-white px-2 py-0.5 text-xs inline-block select-none cursor-pointer" >
-                  {tag.label}
-                </HoverFloating>
-              })
+              post.tags?.map(tag => <Tag tag={tag} size={"small"} key={tag.value} />)
             }
           </div>
         }

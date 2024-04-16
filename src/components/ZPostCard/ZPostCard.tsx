@@ -8,6 +8,7 @@ import { FC } from "react"
 import tw from "twin.macro"
 import HoverFloating from "../ZAnimateDiv/HoverFloating"
 import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
+import Tag from "../ZPost/Tag"
 
 export interface ZPostCardProps {
   post: IPost
@@ -19,7 +20,7 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
       <a
         href={`/post/${post.uuid}`}
         className={twclx([
-          "rounded cursor-pointer p-6 transition-all",
+          "rounded cursor-pointer transition-all",
           css`
             &:hover .title-mark {
               ${tw`text-gray-900`}
@@ -30,7 +31,7 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
           `,
         ])}
       >
-        <div className="w-full h-auto rounded">
+        <div className="w-full h-auto">
           {/* 标题 */}
           <div
             className={twclx([
@@ -52,7 +53,7 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
           </div>
         </div>
         {/* 创建日期和分类 */}
-        <div className="flex items-center space-x-8 py-6">
+        <div className="flex items-center space-x-8 pt-6">
           {/* 发布日期 */}
           <ZTooltip>
             <ZTooltipTrigger>
@@ -79,27 +80,19 @@ const ZPostCard: FC<ZPostCardProps> = ({ post }) => {
         </div>
 
         {/* 文章简要内容 */}
-        <div className="break-words max-h-[6em] overflow-hidden">
-          <div className="text-gray-900">{post.description}</div>
-        </div>
-
-        {/* 标签 */}
-        {!isEmpty(post.tags) && (
-          <div className="pt-6 relative space-x-2">
-            <RiHashtag className="absolute my-1 -left-4" size={"1rem"} />
-            {post.tags?.map((tag) => {
-              return (
-                <HoverFloating
-                  key={tag.value}
-                  className="rounded-full bg-gray-800 text-white px-2 py-0.5 text-xs inline-block select-none"
-                >
-                  {tag.label}
-                </HoverFloating>
-              )
-            })}
+        {
+          post.description && <div className="break-words max-h-[6em] overflow-hidden pt-6">
+            <div className="text-gray-900">{post.description}</div>
           </div>
-        )}
+        }
       </a>
+      {/* 标签 */}
+      {!isEmpty(post.tags) && (
+        <div className="pt-6 relative space-x-2">
+          <RiHashtag className="absolute my-1 -left-4" size={"1rem"} />
+          {post.tags?.map((tag) => <Tag tag={tag} size={"small"} key={tag.value} />)}
+        </div>
+      )}
     </div>
   )
 }

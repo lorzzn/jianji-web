@@ -5,7 +5,6 @@ import { BrowserRouter } from "react-router-dom"
 import ActiveDialog from "./components/ActiveDialog/ActiveDialog"
 import HolaDialog from "./components/HolaDialog/HolaDialog"
 import LoginDialog from "./components/LoginDialog/LoginDialog"
-import SavePostDialog from "./components/SavePostDialog/SavePostDialog"
 import UserDialog from "./components/UserDialog/UserDialog"
 import ZToastContainer from "./components/ZToastContainer/ZToastContainer"
 import Layout from "./layouts/Layout"
@@ -23,12 +22,13 @@ const App: FC = () => {
       <StoreContext.Provider value={rootStore}>
         <BrowserRouter>
           <Layout />
+
           <LoginDialog />
           <HolaDialog />
           <UserDialog />
           <ActiveDialog />
-          <SavePostDialog />
           <TagManagerDialog />
+          
           <ZToastContainer />
         </BrowserRouter>
       </StoreContext.Provider>
