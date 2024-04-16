@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 /* @tailwind variants; */
 
 :focus {
@@ -8,5 +9,5 @@
 }
 
 * {
-  @apply scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 active:scrollbar-thumb-gray-600
+  @apply scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 active:scrollbar-thumb-gray-600;
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 50",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 50",
     "preview": "vite preview",
     "format": "prettier --write .",
     "prepare": "husky",
@@ -14,8 +14,8 @@
   },
   "lint-staged": {
     "**/*": [
-      "npm run lint",
-      "prettier --write --ignore-unknown"
+      "npm run format",
+      "npm run lint"
     ]
   },
   "dependencies": {
