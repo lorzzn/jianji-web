@@ -1,4 +1,3 @@
-import { ITag } from "@/api/types/request/tags"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
 import { useStore } from "@/store"
 import { RiInformation2Line } from "@remixicon/react"
@@ -14,6 +13,8 @@ import CategoriesSelector, { CategoriesSelectorProps } from "../ZPost/Categories
 import Textarea from "../ZPost/Textarea"
 import ZSelect from "../ZSelect/ZSelect"
 import { ZTooltip, ZTooltipContent, ZTooltipTrigger } from "../ZTooltip/ZTooltip"
+import { ITag } from "@/api/types/response/tags"
+import { getPlainTextFromMarkdown } from "@/utils/stringFuncs"
 
 const SavePostDialog: FC = observer(() => {
   const { register, dialog } = useDialog(dialogNames.SavePostDialog)
@@ -22,6 +23,7 @@ const SavePostDialog: FC = observer(() => {
 
   const { postStore, categoriesStore, tagsStore, userStore } = useStore()
   const {
+    content,
     category,
     setCategory,
     tags: postTags,
@@ -165,10 +167,10 @@ const SavePostDialog: FC = observer(() => {
                   <RiInformation2Line size={"1rem"} className="text-gray-950 hover:text-blue-500" />
                 </ZTooltipTrigger>
                 <ZTooltipContent>
-                  <div>为空则默认使用文章前300个字符</div>
+                  <div>自动生成使用文章前300个字符</div>
                 </ZTooltipContent>
               </ZTooltip>
-              <ZButton variant={"primary_plain"} onClick={() => setDescription("")}>清空</ZButton>
+              <ZButton variant={"primary_plain"} onClick={() => setDescription(getPlainTextFromMarkdown(content).slice(0, 300))}>自动生成</ZButton>
             </div>
 
             <Textarea

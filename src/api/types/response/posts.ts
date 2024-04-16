@@ -1,7 +1,7 @@
-import { ITag } from "../request/tags"
 import { ICategory } from "./categories"
 import { IApiCommonResponse } from "./common"
 import { IPageInfo } from "./pageInfo"
+import { ITag } from "./tags"
 
 export interface IPost {
   uuid: string

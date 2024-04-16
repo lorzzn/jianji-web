@@ -1,3 +1,4 @@
+import SavePostDialog from "@/components/SavePostDialog/SavePostDialog"
 import ZButton from "@/components/ZButton/ZButton"
 import ZInput, { ZInputProps } from "@/components/ZInput/ZInput"
 import ZPostEditor from "@/components/ZPost/ZPostEditor"
@@ -46,6 +47,7 @@ const Edit: FC = observer(() => {
         </div>
         <ZPostEditor />
       </div>
+      <SavePostDialog />
     </div>
   )
 })
