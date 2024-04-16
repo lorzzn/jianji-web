@@ -6,6 +6,8 @@ import {
   RiFullscreenExitLine,
   RiFullscreenLine,
   RiLayoutColumnFill,
+  RiLockLine,
+  RiLockUnlockLine,
 } from "@remixicon/react"
 import classNames from "classnames"
 import { FC, useMemo } from "react"
@@ -16,17 +18,19 @@ export interface ToolbarButton {
   active?: boolean
   layout?: "normal" | "editor" | "preview"
   className?: string
-  action?: "reverse" | "fullscreen" | "help" | "zoomInFont" | "zoomOutFont" | "zoomDefault"
+  action?: "reverse" | "fullscreen" | "help" | "zoomInFont" | "zoomOutFont" | "zoomDefault" | "syncScroll"
 }
 
 interface ToolbarProps {
   layout: ToolbarButton["layout"]
   reverse: boolean
   fullscreen: boolean
+  syncScroll: boolean
+  editorFontSize: string
   onClick: (info: ToolbarButton, event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => {
+const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, syncScroll, editorFontSize, onClick }) => {
   const buttons = useMemo<ToolbarButton[]>(() => {
     return [
       {
@@ -52,6 +56,7 @@ const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => 
         icon: <RiFontSize size={"1.1rem"} />,
         title: "默认",
         action: "zoomDefault",
+        active: editorFontSize == "16",
       },
       {
         icon: <RiFontSize size={"1.1rem"} />,
@@ -64,6 +69,12 @@ const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => 
         action: "zoomInFont",
       },
       {
+        icon: syncScroll ? <RiLockLine size={"1.1rem"} /> : <RiLockUnlockLine size={"1.1rem"} />,
+        title: "同步滚动",
+        action: "syncScroll",
+        active: syncScroll,
+      },
+      {
         className: "ml-auto",
         title: "帮助",
         action: "help",
@@ -74,7 +85,7 @@ const Toolbar: FC<ToolbarProps> = ({ layout, fullscreen, reverse, onClick }) => 
         action: "fullscreen",
       },
     ]
-  }, [layout, fullscreen, reverse])
+  }, [layout, fullscreen, reverse, syncScroll, editorFontSize])
 
   const onButtonClick = (info: ToolbarButton, event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(info, event)
