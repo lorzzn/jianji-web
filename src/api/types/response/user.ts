@@ -11,6 +11,11 @@ export interface IUserInfo {
   status: number
 }
 
+export interface IUserStatistics {
+  totalPosts: number
+  totalWords: number
+}
+
 export interface ILoginResponse extends IApiCommonResponse {
   data: {
     userInfo: IUserInfo
@@ -32,6 +37,10 @@ export interface IProfileResponse extends IApiCommonResponse {
   data: {
     userInfo: IUserInfo
   }
+}
+
+export interface IStatisticsResponse extends IApiCommonResponse {
+  data: IUserStatistics
 }
 
 export interface IEditProfileResponse extends IApiCommonResponse {

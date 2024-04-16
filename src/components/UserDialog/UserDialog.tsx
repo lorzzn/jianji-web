@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { INavItem } from "../SettingsPage/NavItem"
 import SettingsPage from "../SettingsPage/SettingsPage"
+import UserStatistics from "../SettingsPage/UserStatistics"
 import ZButton from "../ZButton/ZButton"
 import ZForm from "../ZForm/ZForm"
 import ZImage from "../ZImage/ZImage"
@@ -194,7 +195,7 @@ const UserDialog: FC = observer(() => {
           </div>
         )}
 
-        {item?.value === 1 && <div>功能开发中...</div>}
+        {item?.value === 1 && <UserStatistics />}
       </div>
     )
   }

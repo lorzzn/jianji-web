@@ -6,6 +6,7 @@ import {
   ILoginResponse,
   IProfileResponse,
   IRefreshTokenResponse,
+  IStatisticsResponse,
 } from "./types/response/user"
 
 export const apiUser = {
@@ -50,6 +51,12 @@ export const apiUser = {
       url: "api/v1/user/edit-profile",
       method: "POST",
       data,
+    })
+  },
+  statistics() {
+    return service<IStatisticsResponse>({
+      url: "api/v1/user/statistics",
+      method: "POST",
     })
   },
 }
