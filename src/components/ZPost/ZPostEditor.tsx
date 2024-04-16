@@ -341,6 +341,11 @@ const ZPostEditor: FC = observer(() => {
   const motionPreviewScrollTop = useMotionValue(previewRef.current?.scrollTop || 0)
   const enableOnScrollPart = useRef<"textarea" | "preview">("textarea")
 
+  const resetScrollMap = () => {
+    scrollMap.current = null
+    previewRef.current?.scrollTo({ top: 0 })
+  }
+
   useEffect(() => {
     motionTextareaScrollTop.on("change", (v) => {
       textareaRef.current?.scrollTo({ top: v })
@@ -353,7 +358,8 @@ const ZPostEditor: FC = observer(() => {
 
   useLayoutEffect(() => {
     if (syncScroll) {
-      scrollMap.current = null
+      resetScrollMap()
+      enableOnScrollPart.current = "textarea"
       onTextareaScroll()
     }
   }, [syncScroll])
@@ -520,6 +526,7 @@ const ZPostEditor: FC = observer(() => {
     } else {
       setLayout("normal")
     }
+    resetScrollMap()
   }
 
   return (
