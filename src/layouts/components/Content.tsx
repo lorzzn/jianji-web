@@ -31,14 +31,7 @@ const Content: FC = () => {
               </RequireAuth>
             }
           />
-          <Route
-            path="/active"
-            element={
-              <RequireAuth>
-                <Active />
-              </RequireAuth>
-            }
-          />
+          <Route path="/active" element={<Active />} />
           <Route
             path="/archives"
             element={

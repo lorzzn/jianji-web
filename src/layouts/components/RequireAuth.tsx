@@ -1,7 +1,7 @@
 import { useStore } from "@/store"
 import { observer } from "mobx-react"
 import { FC, useEffect } from "react"
-import { Navigate, useNavigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
 interface RequireAuthProps {
@@ -11,12 +11,10 @@ interface RequireAuthProps {
 const RequireAuth: FC<RequireAuthProps> = observer(({ children }) => {
   const { userStore } = useStore()
   const { authed, loading } = userStore
-  const navigate = useNavigate()
 
   useEffect(() => {
     if (!authed) {
       toast.info("请登录账号")
-      navigate("/login")
     }
   }, [])
 
@@ -24,7 +22,7 @@ const RequireAuth: FC<RequireAuthProps> = observer(({ children }) => {
     return <></>
   }
 
-  return authed ? children : <Navigate replace to={"/"} />
+  return authed ? children : <Navigate replace to={"/login"} />
 })
 
 export default RequireAuth

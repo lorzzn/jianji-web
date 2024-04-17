@@ -56,15 +56,14 @@ const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
       // 隐藏登录窗口
       loginDialog()?.hide()
 
-      // 如果是新注册的用户，弹出激活邮箱提示
+      // 如果是新注册的用户，弹出激活邮箱提示,否则完成登录
       if (res.data.data.userInfo.status === 0) {
         activeDialog()?.show()
       } else {
         userStore.setUserInfo(res.data.data.userInfo)
         userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
+        onLogin?.()
       }
-
-      onLogin?.()
     } catch (error) {
       errorHandler.handle(error)
     }
