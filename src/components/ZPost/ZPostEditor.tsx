@@ -110,7 +110,10 @@ const ZPostEditor: FC = observer(() => {
       keys: onCtrl(Key.F11),
       description: "全屏",
       callback: () => setFullscreen(!fullscreen),
-      options: hotkeysCommonOptions,
+      options: {
+        ...hotkeysCommonOptions,
+        enabled: true,
+      },
     },
     save: {
       keys: onCtrl(onShift("s")),
@@ -255,6 +258,23 @@ const ZPostEditor: FC = observer(() => {
       },
       options: hotkeysCommonOptions,
     },
+    markdown_tab: {
+      keys: Key.Tab,
+      description: "缩进",
+      callback: (e) => {
+        const textarea = textareaRef.current
+        if (!textarea) return
+        e.preventDefault()
+        e.stopPropagation()
+
+        const start = textarea.selectionStart
+        textarea.value = textarea.value.slice(0, start) + "\t" + textarea.value.slice(textarea.selectionEnd)
+        textarea.selectionEnd = start + 1
+
+        setValue(textarea.value)
+      },
+      options: hotkeysCommonOptions,
+    },
   }
 
   // 绑定快捷键
@@ -279,6 +299,7 @@ const ZPostEditor: FC = observer(() => {
   useHotkeys(hotkeys.markdown_codeblock.keys, hotkeys.markdown_codeblock.callback, hotkeys.markdown_codeblock.options)
   useHotkeys(hotkeys.markdown_undo.keys, hotkeys.markdown_undo.callback, hotkeys.markdown_undo.options)
   useHotkeys(hotkeys.markdown_redo.keys, hotkeys.markdown_redo.callback, hotkeys.markdown_redo.options)
+  useHotkeys(hotkeys.markdown_tab.keys, hotkeys.markdown_tab.callback, hotkeys.markdown_tab.options)
 
   const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value)
