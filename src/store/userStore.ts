@@ -45,7 +45,11 @@ class UserStore {
   setLoading = (loading: boolean) => (this.loading = loading)
 
   get authed() {
-    return this.token && this.refreshToken && this.userInfo.id !== 0
+    const value = this.token && this.refreshToken && this.userInfo.id !== 0
+    if (!value) {
+      this.resetAuthorization()
+    }
+    return value
   }
 
   setUserInfo = (data: IUserInfo) => {
@@ -55,7 +59,6 @@ class UserStore {
   resetAuthorization = () => {
     this.removeToken()
     this.resetUserInfo()
-    window.location.replace("/")
   }
 
   // 保存token
@@ -78,6 +81,8 @@ class UserStore {
 
   // 清除token
   removeToken = () => {
+    this.token = null
+    this.refreshToken = null
     removeStroage("token")
     removeStroage("refreshToken")
   }
@@ -102,7 +107,7 @@ class UserStore {
 
   // 刷新token
   requestRefreshToken = async () => {
-    if (this.refreshToken && this.token) {
+    if (this.refreshToken && this.token && this.authed) {
       try {
         const res = await apiUser.refreshToken({
           token: this.token,

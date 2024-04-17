@@ -23,14 +23,63 @@ const Content: FC = () => {
     <div className="flex flex-col flex-1 w-full">
       <Suspense>
         <Routes>
-          <Route path="/" Component={Home} />
-          <Route path="/active" Component={Active} />
-          <Route path="/archives" Component={Archives} />
-          <Route path="/favlist" Component={Favlist} />
-          <Route path="/categories" Component={Categories} />
-          <Route path="/tags" Component={Tags} />
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/active"
+            element={
+              <RequireAuth>
+                <Active />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/archives"
+            element={
+              <RequireAuth>
+                <Archives />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/favlist"
+            element={
+              <RequireAuth>
+                <Favlist />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/categories"
+            element={
+              <RequireAuth>
+                <Categories />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/tags"
+            element={
+              <RequireAuth>
+                <Tags />
+              </RequireAuth>
+            }
+          />
           <Route path="/login" Component={Login} />
-          <Route path="/search" Component={Search} />
+          <Route
+            path="/search"
+            element={
+              <RequireAuth>
+                <Search />
+              </RequireAuth>
+            }
+          />
           <Route
             path="/edit/:uuid?"
             element={
@@ -39,9 +88,30 @@ const Content: FC = () => {
               </RequireAuth>
             }
           />
-          <Route path="/post/:uuid?" Component={Post} />
-          <Route path="/tag/:tagValue" Component={Tag} />
-          <Route path="/category/:categoryValue" Component={Category} />
+          <Route
+            path="/post/:uuid?"
+            element={
+              <RequireAuth>
+                <Post />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/tag/:tagValue"
+            element={
+              <RequireAuth>
+                <Tag />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/category/:categoryValue"
+            element={
+              <RequireAuth>
+                <Category />
+              </RequireAuth>
+            }
+          />
 
           <Route path="/404" Component={NotFoundPage} />
           <Route path="/500" Component={ServerErrorPage} />
