@@ -3,27 +3,23 @@ import eventBus, { events } from "@/utils/eventBus"
 import { RiArrowUpDoubleLine } from "@remixicon/react"
 import { motion } from "framer-motion"
 import { observer } from "mobx-react"
-import { FC, RefObject, useEffect } from "react"
+import { FC, useEffect } from "react"
 
-interface ScrollToTopProps {
-  scrollRef: RefObject<Element>
-}
+interface ScrollToTopProps {}
 
-const ScrollToTop: FC<ScrollToTopProps> = observer(({ scrollRef }) => {
+const ScrollToTop: FC<ScrollToTopProps> = observer(() => {
   const { layoutStore } = useStore()
   const { scrollTop } = layoutStore
 
-  const scrollElementToTop = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      })
-    }
+  const scrollWindowToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
   }
 
   useEffect(() => {
-    eventBus.on(events.ScrollToTop, scrollElementToTop)
+    eventBus.on(events.ScrollToTop, scrollWindowToTop)
   }, [])
 
   return (
@@ -41,7 +37,7 @@ const ScrollToTop: FC<ScrollToTopProps> = observer(({ scrollRef }) => {
       }}
       initial="hidden"
       animate={scrollTop > 1200 ? "visible" : "hidden"}
-      onClick={scrollElementToTop}
+      onClick={scrollWindowToTop}
     >
       <RiArrowUpDoubleLine />
     </motion.div>

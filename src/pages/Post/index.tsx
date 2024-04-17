@@ -48,7 +48,7 @@ const Post = observer(() => {
 
   return (
     <div className="mt-12 flex justify-center items-center">
-      <div className="w-7/12 max-w-7xl">
+      <div className="w-5/12 min-w-[550px]">
         <div className="text-center font-semibold text-3xl text-gray-700">{post.title}</div>
 
         {/* 创建日期和分类 */}
@@ -88,7 +88,9 @@ const Post = observer(() => {
 
         {/* 文章内容 */}
         <div className="break-words">
-          <Preview>{post.content}</Preview>
+          <Preview anchor toc>
+            {post.content}
+          </Preview>
         </div>
       </div>
     </div>
