@@ -31,6 +31,12 @@ const Base: FC<BaseProps> = ({ extraParams }) => {
     getList()
   }, [])
 
+  useEffect(() => {
+    const queryParams = queryString.parse(location.search)
+    const pageNo = Number(queryParams.page || 1)
+    updatePageNo(pageNo)
+  }, [location])
+
   const onPageChange = (e: number) => {
     updatePageNo(e)
     updateQueryString("page", e)
