@@ -4,11 +4,12 @@ import { PropsWithChildren, createContext, useEffect, useRef, useState } from "r
 import ZMessageBox, { ZMessageBoxProps, ZMessageBoxRef } from "./ZMessageBox"
 
 type AlertProps = Omit<ZMessageBoxProps, "ref" | "onModalAnimationEnd" | "autoShow"> & {
+  okText?: string
   onOk?: () => void
-  onClose?: () => void
 }
 
 type ConfirmProps = AlertProps & {
+  cancelText?: string
   onCancel?: () => void
 }
 
@@ -88,7 +89,7 @@ const ZMessageBoxContainer = (props: PropsWithChildren) => {
         ...props,
         buttons: [
           {
-            children: "确定",
+            children: props.okText || "确定",
             onClick: () => {
               props.onOk?.()
               modalRefs?.[uuid]?.hide()
@@ -108,14 +109,14 @@ const ZMessageBoxContainer = (props: PropsWithChildren) => {
         ...props,
         buttons: [
           {
-            children: "确定",
+            children: props.okText || "确定",
             onClick: () => {
               props.onOk?.()
               hideMessageBoxByUUID(uuid)
             },
           },
           {
-            children: "取消",
+            children: props.cancelText || "取消",
             variant: "normal",
             onClick: () => {
               props.onCancel?.()

@@ -3,7 +3,7 @@ import ZEmpty from "@/components/ZEmpty/ZEmpty"
 import ZPagination from "@/components/ZPagination/ZPagination"
 import ZPostCard from "@/components/ZPostCard/ZPostCard"
 import usePostList from "@/hooks/usePostList"
-import eventBus from "@/utils/eventBus"
+import eventBus, { events } from "@/utils/eventBus"
 import { updateQueryString } from "@/utils/queryString"
 import { isEmpty } from "lodash"
 import queryString from "query-string"
@@ -40,7 +40,7 @@ const Base: FC<BaseProps> = ({ extraParams }) => {
   const onPageChange = (e: number) => {
     updatePageNo(e)
     updateQueryString("page", e)
-    eventBus.emit("scrolltotop")
+    eventBus.emit(events.ScrollToTop)
   }
 
   return isEmpty(list) && !loading ? (

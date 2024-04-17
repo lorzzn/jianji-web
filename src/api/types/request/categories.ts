@@ -14,5 +14,9 @@ export interface ICreateCategoriesRequest {
 }
 
 export interface IDeleteCategoriesRequest {
-  value: number | number[]
+  value: number[]
+}
+
+export interface ICategoryStatisticsRequest {
+  value: number
 }
