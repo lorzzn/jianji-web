@@ -9,7 +9,7 @@ import { uuidjs } from "@/utils/uuid"
 import { RiHashtag } from "@remixicon/react"
 import { isEmpty } from "lodash"
 import { observer } from "mobx-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 
@@ -18,6 +18,7 @@ const Post = observer(() => {
   const { postInfo: post, deletePost, getFromRemote } = postStore
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [deleted, setDeleted] = useState(false)
+  const tocContainerRef = useRef<HTMLDivElement>(null)
 
   const { uuid: uuidparam } = useParams()
 
@@ -47,8 +48,8 @@ const Post = observer(() => {
   }, [uuidparam])
 
   return (
-    <div className="mt-12 flex justify-center items-center">
-      <div className="w-5/12 min-w-[550px]">
+    <div className="flex justify-center flex-1">
+      <div className="w-7/12 min-w-[550px] max-w-4xl pt-12">
         <div className="text-center font-semibold text-3xl text-gray-700">{post.title}</div>
 
         {/* 创建日期和分类 */}
@@ -59,8 +60,8 @@ const Post = observer(() => {
           {/* 分类 */}
           {post.category && <Category category={post.category} />}
 
-          <div className="flex items-center whitespace-nowrap">
-            <ZButton variant={"primary_plain"} className="h-6" componentTag="a" href={`/edit/${uuidparam}`}>
+          <div className="flex items-center whitespace-nowrap !ml-auto">
+            <ZButton variant={"primary_plain"} className="h-6 ml-8" componentTag="a" href={`/edit/${uuidparam}`}>
               编辑
             </ZButton>
             <ConfirmAbleButton
@@ -88,10 +89,13 @@ const Post = observer(() => {
 
         {/* 文章内容 */}
         <div className="break-words">
-          <Preview anchor toc>
+          <Preview anchor toc tocContainerRef={tocContainerRef}>
             {post.content}
           </Preview>
         </div>
+
+        {/* 目录 */}
+        <div ref={tocContainerRef} className="prose sticky top-0"></div>
       </div>
     </div>
   )
