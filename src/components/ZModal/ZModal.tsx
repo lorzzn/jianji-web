@@ -6,10 +6,10 @@ import { forwardRef, useImperativeHandle, useState } from "react"
 import { Modal, ModalProps } from "react-responsive-modal"
 
 export interface ZModalProps extends Omit<ModalProps, "open" | "onClose" | "classNames"> {
-  title?: any
+  title?: React.ReactNode
   titleAlignCenter?: boolean
   onClose?: () => void
-  footer?: any
+  footer?: React.ReactNode
   classNames?: ModalProps["classNames"] & {
     footer?: string
   }
