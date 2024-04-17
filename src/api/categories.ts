@@ -1,10 +1,11 @@
 import service from "@/utils/service"
 import {
+  ICategoryStatisticsRequest,
   ICreateCategoriesRequest,
   IDeleteCategoriesRequest,
   IUpdateCategoriesRequest,
 } from "./types/request/categories"
-import { ICategoriesResponse } from "./types/response/categories"
+import { ICategoriesResponse, ICategoryStatisticsResponse } from "./types/response/categories"
 
 export const apiCategories = {
   list() {
@@ -30,6 +31,13 @@ export const apiCategories = {
   delete(data?: IDeleteCategoriesRequest) {
     return service({
       url: "/api/v1/categories/delete",
+      method: "POST",
+      data,
+    })
+  },
+  statistics(data?: ICategoryStatisticsRequest) {
+    return service<ICategoryStatisticsResponse>({
+      url: "/api/v1/categories/statistics",
       method: "POST",
       data,
     })

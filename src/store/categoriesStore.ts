@@ -65,7 +65,25 @@ class CategoriesStore {
     this.setCategoriesLoading(false)
   }
 
-  deleteCategories = async (value: number[] | number) => {
+  getCategoryStatistics = async (value: number[] | number) => {
+    try {
+      // todo 获取一组分类的数据，暂时没有需求
+      if (Array.isArray(value) && value.length === 1) {
+        value = value[0]
+      }
+      if (Array.isArray(value)) {
+        return Promise.reject(new Error("未实现的操作"))
+      }
+
+      const res = await apiCategories.statistics({ value })
+      return Promise.resolve(res.data.data)
+    } catch (error) {
+      errorHandler.handle(error)
+      return Promise.reject(error)
+    }
+  }
+
+  deleteCategories = async (value: number[]) => {
     this.setCategoriesLoading(true)
     try {
       await apiCategories.delete({ value })

@@ -7,6 +7,7 @@ import HolaDialog from "./components/HolaDialog/HolaDialog"
 import LoginDialog from "./components/LoginDialog/LoginDialog"
 import TagManagerDialog from "./components/TagManagerDialog/TagManagerDialog"
 import UserDialog from "./components/UserDialog/UserDialog"
+import ZMessageBoxContainer from "./components/ZMessageBox/ZMessageBoxContainer"
 import ZToastContainer from "./components/ZToastContainer/ZToastContainer"
 import Layout from "./layouts/Layout"
 import rootStore, { StoreContext } from "./store"
@@ -20,17 +21,19 @@ const App: FC = () => {
   return (
     <Provider rootStore={rootStore}>
       <StoreContext.Provider value={rootStore}>
-        <BrowserRouter>
-          <Layout />
+        <ZMessageBoxContainer>
+          <BrowserRouter>
+            <Layout />
 
-          <LoginDialog />
-          <HolaDialog />
-          <UserDialog />
-          <ActiveDialog />
-          <TagManagerDialog />
+            <LoginDialog />
+            <HolaDialog />
+            <UserDialog />
+            <ActiveDialog />
+            <TagManagerDialog />
 
-          <ZToastContainer />
-        </BrowserRouter>
+            <ZToastContainer />
+          </BrowserRouter>
+        </ZMessageBoxContainer>
       </StoreContext.Provider>
     </Provider>
   )
