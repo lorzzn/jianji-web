@@ -11,7 +11,7 @@ import ZButton from "../ZButton/ZButton"
 import ZCheckBox, { ZCheckBoxProps } from "../ZCheckBox/ZCheckBox"
 import ZInput from "../ZInput/ZInput"
 import ZLink from "../ZLink/ZLink"
-import { useZModalBox } from "../ZMessageBox/hooks/useZMessageBox"
+import { useZMessageBox } from "../ZMessageBox/hooks/useZMessageBox"
 import ZModal from "../ZModal/ZModal"
 import CategoriesSelector, { CategoriesSelectorProps } from "../ZPost/CategoriesSelector"
 import Textarea from "../ZPost/Textarea"
@@ -22,7 +22,7 @@ const SavePostDialog: FC = observer(() => {
   const { register, dialog } = useDialog(dialogNames.SavePostDialog)
   const { dialog: tagManagerDialog } = useDialog(dialogNames.TagManagerDialog)
   const [categoryFilterKeyword, setCategoryFilterKeyword] = useState<string>("")
-  const { showConfirm } = useZModalBox()
+  const { showConfirm } = useZMessageBox()
 
   const { postStore, categoriesStore, tagsStore, userStore } = useStore()
   const {

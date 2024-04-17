@@ -5,6 +5,16 @@ export interface ITag {
   value: number
 }
 
+export interface ITagStatistics {
+  totalPosts: number
+  createAt: string
+  updatedAt: string
+}
+
 export interface ITagsResponse extends IApiCommonResponse {
   data: ITag[]
+}
+
+export interface ITagStatisticsResponse extends IApiCommonResponse {
+  data: ITagStatistics
 }
