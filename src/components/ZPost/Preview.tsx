@@ -5,7 +5,7 @@ import hljs from "highlight.js"
 import MarkdownIt from "markdown-it"
 import mdAnchor from "markdown-it-anchor"
 import mdToc from "markdown-it-toc-done-right"
-import { CSSProperties, forwardRef, useEffect, useMemo, useRef } from "react"
+import { CSSProperties, forwardRef, useEffect, useMemo } from "react"
 import { injectLineNumbers } from "./utils/injectLineNumbers"
 
 interface PreviewProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -15,6 +15,7 @@ interface PreviewProps extends React.HTMLAttributes<HTMLDivElement> {
   prose?: boolean
   anchor?: boolean
   toc?: boolean
+  tocContainerRef?: React.RefObject<HTMLDivElement>
 }
 
 const createBaseMd = () => {
@@ -43,9 +44,7 @@ const createBaseMd = () => {
 }
 
 const Preview = forwardRef<HTMLDivElement, PreviewProps>(
-  ({ className, style, prose = true, children = "", anchor, toc, ...restProps }, ref) => {
-    const tocContainerRef = useRef<HTMLDivElement>(null)
-
+  ({ className, style, prose = true, children = "", anchor, toc, tocContainerRef, ...restProps }, ref) => {
     const anchorOptions = {
       permalink: mdAnchor.permalink.headerLink({
         symbol: "#",
@@ -61,7 +60,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
     }, [anchor, toc])
 
     useEffect(() => {
-      if (!tocContainerRef.current) return
+      if (!tocContainerRef?.current) return
       const tocContainer = tocContainerRef.current
 
       if (toc) {
@@ -103,8 +102,6 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
           dangerouslySetInnerHTML={{ __html: md.render(children) }}
           {...restProps}
         ></div>
-
-        <div ref={tocContainerRef} className="prose"></div>
       </div>
     )
   },
