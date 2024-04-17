@@ -1,17 +1,19 @@
 import ZButton from "@/components/ZButton/ZButton"
+import ZEmpty from "@/components/ZEmpty/ZEmpty"
 import CategoriesSelector, { CategoriesNode, CategoriesSelectorProps } from "@/components/ZPost/CategoriesSelector"
 import { useStore } from "@/store"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import { RiStackLine } from "@remixicon/react"
+import { isEmpty } from "lodash"
 import { observer } from "mobx-react"
 import Tree, { TreeProps } from "rc-tree"
 import { FC, useEffect, useMemo } from "react"
 import tw from "twin.macro"
 
-const Tags: FC = observer(() => {
+const Categories: FC = observer(() => {
   const { categoriesStore } = useStore()
-  const { categories, getCategories } = categoriesStore
+  const { categories, getCategories, categoriesLoading } = categoriesStore
 
   const expandedKeys = useMemo(() => categories.map((category) => category.value), [categories])
 
@@ -75,7 +77,11 @@ const Tags: FC = observer(() => {
     )
   }
 
-  return (
+  return isEmpty(categories) && !categoriesLoading ? (
+    <div className="flex-1 flex place-content-center">
+      <ZEmpty />
+    </div>
+  ) : (
     <>
       <div className="flex justify-center my-24">
         <div className="flex flex-wrap w-7/12 max-w-5xl -mr-5 -mb-4">
@@ -86,4 +92,4 @@ const Tags: FC = observer(() => {
   )
 })
 
-export default Tags
+export default Categories
