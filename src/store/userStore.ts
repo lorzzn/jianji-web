@@ -42,13 +42,9 @@ class UserStore {
     this.requestRefreshToken()
       .then(async () => {
         await this.getProfile()
-        console.log(11)
-
         this.setLoading(false)
       })
       .catch(() => {
-        console.log(1111)
-
         this.setLoading(false)
       })
   }
