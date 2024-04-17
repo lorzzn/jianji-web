@@ -8,7 +8,7 @@ import { useStore } from "@/store"
 import errorHandler from "@/utils/errorHandler"
 import Yup from "@/utils/yup"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useState } from "react"
+import { FC, useState } from "react"
 import { useForm } from "react-hook-form"
 
 const yupSchema = Yup.object().shape({
@@ -16,7 +16,11 @@ const yupSchema = Yup.object().shape({
   password: Yup.string().required("请您输入密码"),
 })
 
-const LoginForm = () => {
+interface LoginFormProps {
+  onLogin?: () => void
+}
+
+const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   const { dialog: loginDialog } = useDialog(dialogNames.LoginDialog)
   const [agreed, setAgreed] = useState<boolean | undefined>(false)
   const { dialog: activeDialog } = useDialog(dialogNames.ActiveDialog)
@@ -59,6 +63,8 @@ const LoginForm = () => {
         userStore.setUserInfo(res.data.data.userInfo)
         userStore.storeToken(res.data.data.token, res.data.data.refreshToken)
       }
+
+      onLogin?.()
     } catch (error) {
       errorHandler.handle(error)
     }
