@@ -67,7 +67,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
         md.use(mdToc, {
           containerClass: "toc",
           containerId: "toc",
-          listType: "ol",
+          listType: "ul",
           listClass: "catalog-list",
           linkClass: "catalog-link",
           callback: function (html: any) {

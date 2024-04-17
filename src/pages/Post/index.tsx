@@ -4,6 +4,7 @@ import Category from "@/components/ZPost/Category"
 import Datetime from "@/components/ZPost/Datetime"
 import Preview from "@/components/ZPost/Preview"
 import Tag from "@/components/ZPost/Tag"
+import ZToc from "@/components/ZToc/ZToc"
 import { useStore } from "@/store"
 import { uuidjs } from "@/utils/uuid"
 import { RiHashtag } from "@remixicon/react"
@@ -19,6 +20,7 @@ const Post = observer(() => {
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [deleted, setDeleted] = useState(false)
   const tocContainerRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const { uuid: uuidparam } = useParams()
 
@@ -88,14 +90,14 @@ const Post = observer(() => {
         </div>
 
         {/* 文章内容 */}
-        <div className="break-words">
+        <div ref={contentRef} className="break-words">
           <Preview anchor toc tocContainerRef={tocContainerRef}>
             {post.content}
           </Preview>
         </div>
 
         {/* 目录 */}
-        <div ref={tocContainerRef} className="prose sticky top-0"></div>
+        <ZToc ref={tocContainerRef} markdownContentRef={contentRef} />
       </div>
     </div>
   )
