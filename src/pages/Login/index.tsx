@@ -4,6 +4,11 @@ import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 
 const Login = () => {
+  const onLogin = () => {
+    // 登录成功后跳转到首页
+    window.location.href = "/"
+  }
+
   return (
     <div
       className={twclx([
@@ -15,7 +20,7 @@ const Login = () => {
     >
       <div className="w-96 h-fit p-5 rounded-lg bg-white">
         <div className="text-2xl font-bold">登录/注册</div>
-        <LoginForm />
+        <LoginForm onLogin={onLogin} />
       </div>
     </div>
   )
