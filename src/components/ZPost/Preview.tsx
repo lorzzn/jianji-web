@@ -45,7 +45,8 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
             "max-w-full",
             { prose: prose },
             css`
-              pre {
+              .hljs {
+                background-color: transparent;
                 padding: 0;
               }
             `,
