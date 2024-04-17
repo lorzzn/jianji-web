@@ -1,6 +1,6 @@
 import service from "@/utils/service"
-import { ICreateTagsRequest, IDeleteTagsRequest, IUpdateTagsRequest } from "./types/request/tags"
-import { ITagsResponse } from "./types/response/tags"
+import { ICreateTagsRequest, IDeleteTagsRequest, ITagStatisticsRequest, IUpdateTagsRequest } from "./types/request/tags"
+import { ITagStatisticsResponse, ITagsResponse } from "./types/response/tags"
 
 export const apiTags = {
   list() {
@@ -26,6 +26,13 @@ export const apiTags = {
   delete(data?: IDeleteTagsRequest) {
     return service({
       url: "/api/v1/tags/delete",
+      method: "POST",
+      data,
+    })
+  },
+  statistics(data?: ITagStatisticsRequest) {
+    return service<ITagStatisticsResponse>({
+      url: "/api/v1/tags/statistics",
       method: "POST",
       data,
     })

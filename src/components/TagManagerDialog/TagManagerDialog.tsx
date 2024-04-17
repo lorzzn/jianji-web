@@ -1,4 +1,5 @@
 import { ITag } from "@/api/types/request/tags"
+import { useZMessageBox } from "@/components/ZMessageBox/hooks/useZMessageBox"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
 import { useStore } from "@/store"
 import fuzzysort from "fuzzysort"
@@ -6,6 +7,7 @@ import { observer } from "mobx-react"
 import { forwardRef, useMemo, useState } from "react"
 import ConfirmAbleButton from "../ConfirmAbleButton/ConfirmAbleButton"
 import ZInput from "../ZInput/ZInput"
+import ZLink from "../ZLink/ZLink"
 import ZList from "../ZList/ZList"
 import ZListItem from "../ZList/ZListItem"
 import ZModal, { ZModalRef } from "../ZModal/ZModal"
@@ -15,9 +17,10 @@ const TagManagerDialog = observer(
     const { register } = useDialog(dialogNames.TagManagerDialog)
     const [tagFilterKeyword, setTagFilterKeyword] = useState("")
     const [optingTag, setOptingTag] = useState<ITag | null>(null)
+    const { showConfirm } = useZMessageBox()
 
     const { tagsStore } = useStore()
-    const { tags, deleteTags, loading: tagsLoading } = tagsStore
+    const { tags, deleteTags, loading: tagsLoading, getTagStatistics } = tagsStore
 
     // 模糊搜索
     const fzsortResult = useMemo(() => {
@@ -29,9 +32,34 @@ const TagManagerDialog = observer(
       setTagFilterKeyword(e.target.value)
     }
 
-    const onDeleteTag = (tag: ITag) => {
-      setOptingTag(tag)
-      deleteTags([tag.value])
+    const onDeleteTag = async (tag: ITag) => {
+      try {
+        setOptingTag(tag)
+        const tagValue = tag.value
+        if (!tagValue) return
+
+        const res = await getTagStatistics(tagValue)
+        if (res.totalPosts > 0) {
+          showConfirm({
+            title: "注意",
+            content: (
+              <div>
+                <span>该标签有</span>
+                <ZLink href={`/tag/${tagValue}`}>{res.totalPosts}</ZLink>
+                <span>篇文章正在使用，删除后不会删除文章，但是文章将失去该标签</span>
+              </div>
+            ),
+            okText: "确认继续",
+            onOk: () => {
+              deleteTags([tagValue])
+            },
+          })
+        } else {
+          deleteTags([tagValue])
+        }
+      } catch (error) {
+        //
+      }
     }
 
     return (

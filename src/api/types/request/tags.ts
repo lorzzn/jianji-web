@@ -14,3 +14,7 @@ export interface ICreateTagsRequest {
 export interface IDeleteTagsRequest {
   value: number | number[]
 }
+
+export interface ITagStatisticsRequest {
+  value: number
+}
