@@ -39,9 +39,9 @@ const ZMessageBox = forwardRef<ZMessageBoxRef, ZMessageBoxProps>((props, ref) =>
   }))
 
   useDidMount(() => {
-    // if (props.autoShow) {
-    modalRef.current?.show()
-    // }
+    if (props.autoShow) {
+      modalRef.current?.show()
+    }
   })
 
   const footerRenderer = () => {
