@@ -5,51 +5,71 @@ import errorHandler from "@/utils/errorHandler"
 import eventBus, { events } from "@/utils/eventBus"
 import { code } from "@/utils/r/code"
 import { getStorage, removeStroage, setStorage } from "@/utils/storage"
-import { makeAutoObservable } from "mobx"
+import { autorun, makeAutoObservable } from "mobx"
+
+const initialUserInfo: IUserInfo = {
+  id: 0,
+  uuid: "",
+  createdAt: "",
+  updatedAt: "",
+  name: "",
+  avatar: "",
+  email: "",
+  status: 0,
+}
 
 class UserStore {
-  loading = false
-  initialUserInfo: IUserInfo = {
-    id: 0,
-    uuid: "",
-    createdAt: "",
-    updatedAt: "",
-    name: "",
-    avatar: "",
-    email: "",
-    status: 0,
-  }
-  userInfo: IUserInfo = { ...this.initialUserInfo }
-  token: string | null = null
-  refreshToken: string | null = null
+  loading = true
+  userInfo: IUserInfo = { ...initialUserInfo }
 
   constructor() {
     makeAutoObservable(this)
 
-    this.token = getStorage("token")
-    this.refreshToken = getStorage("refreshToken")
-    this.loading = true
+    eventBus.on(events.userAuthorizationExpired, this.resetAuthorization)
+    this.setupAutorun()
+    this.initStore()
+  }
 
+  private setupAutorun() {
+    autorun(() => {
+      if (!this.authed) {
+        this.resetAuthorization()
+      }
+    })
+  }
+
+  initStore = () => {
     this.requestRefreshToken()
       .then(async () => {
         await this.getProfile()
+        console.log(11)
+
         this.setLoading(false)
       })
       .catch(() => {
+        console.log(1111)
+
         this.setLoading(false)
       })
-
-    eventBus.on(events.userAuthorizationExpired, this.resetAuthorization)
   }
 
-  setLoading = (loading: boolean) => (this.loading = loading)
+  get token() {
+    return getStorage("token")
+  }
 
-  get authed() {
-    const value = this.token && this.refreshToken && this.userInfo.id !== 0
-    if (!value) {
-      this.resetAuthorization()
+  get refreshToken() {
+    return getStorage("refreshToken")
+  }
+
+  get authed(): boolean {
+    if (this.loading) {
+      return true
     }
-    return value
+    return Boolean(this.token && this.refreshToken && this.userInfo.id !== 0)
+  }
+
+  setLoading = (loading: boolean) => {
+    this.loading = loading
   }
 
   setUserInfo = (data: IUserInfo) => {
@@ -81,15 +101,13 @@ class UserStore {
 
   // 清除token
   removeToken = () => {
-    this.token = null
-    this.refreshToken = null
     removeStroage("token")
     removeStroage("refreshToken")
   }
 
   resetUserInfo = () => {
     eventBus.emit(events.beforeResetUserInfo)
-    this.setUserInfo({ ...this.initialUserInfo })
+    this.setUserInfo({ ...initialUserInfo })
   }
 
   logout = async () => {
@@ -124,7 +142,7 @@ class UserStore {
   }
 
   getProfile = async () => {
-    if (this.token) {
+    if (this.authed) {
       try {
         const res = await apiUser.profile()
         if (res.data.code === code.USER_NOT_LOGIN) {
