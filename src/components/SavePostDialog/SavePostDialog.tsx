@@ -1,7 +1,6 @@
 import { ITag } from "@/api/types/response/tags"
 import useDialog, { dialogNames } from "@/hooks/useDialog"
 import { useStore } from "@/store"
-import errorHandler from "@/utils/errorHandler"
 import { getPlainTextFromMarkdown } from "@/utils/stringFuncs"
 import { RiInformation2Line } from "@remixicon/react"
 import classNames from "classnames"
@@ -113,9 +112,11 @@ const SavePostDialog: FC = observer(() => {
             deleteCategories([categoryValue])
           },
         })
+      } else {
+        deleteCategories([categoryValue])
       }
     } catch (error) {
-      errorHandler.handle(error)
+      //
     }
   }
 
@@ -140,7 +141,7 @@ const SavePostDialog: FC = observer(() => {
                   <div>拖动分类可以排序</div>
                   <div>右键可以选择更多操作</div>
                   <div>点击图标或者双击分类名称展开/收起子分类</div>
-                  <div>注意：删除分类时子分类也会一起被删除</div>
+                  <div>注意：删除分类时子分类将会被移动到根目录</div>
                 </ZTooltipContent>
               </ZTooltip>
             </div>

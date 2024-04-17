@@ -83,6 +83,17 @@ class CategoriesStore {
     }
   }
 
+  // 和后端同步逻辑：删除父级后父级置为null
+  onParentDeleteSetNull = (categories: ICategory[]): ICategory[] => {
+    const values = categories.map((c) => c.value)
+    categories.forEach((c) => {
+      if (c.parentValue && !values.includes(c.parentValue)) {
+        c.parentValue = null
+      }
+    })
+    return categories
+  }
+
   deleteCategories = async (value: number[]) => {
     this.setCategoriesLoading(true)
     try {
@@ -96,7 +107,7 @@ class CategoriesStore {
           categories.splice(index, 1)
         }
       }
-      this.setCategories(categories)
+      this.setCategories(this.onParentDeleteSetNull(categories))
     } catch (error) {
       errorHandler.handle(error)
     }
