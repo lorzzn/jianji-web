@@ -19,7 +19,8 @@ const initialUserInfo: IUserInfo = {
 }
 
 class UserStore {
-  loading = true
+  loading: boolean = true
+  loaded: boolean = false
   userInfo: IUserInfo = { ...initialUserInfo }
 
   constructor() {
@@ -43,6 +44,7 @@ class UserStore {
       .then(async () => {
         await this.getProfile()
         this.setLoading(false)
+        this.setLoaded(true)
       })
       .catch(() => {
         this.setLoading(false)
@@ -58,14 +60,19 @@ class UserStore {
   }
 
   get authed(): boolean {
-    if (this.loading) {
-      return true
+    const tokened = Boolean(this.token && this.refreshToken)
+    if (this.loading || !this.loaded) {
+      return tokened
     }
-    return Boolean(this.token && this.refreshToken && this.userInfo.id !== 0)
+    return tokened && this.userInfo.id !== 0
   }
 
   setLoading = (loading: boolean) => {
     this.loading = loading
+  }
+
+  setLoaded = (value: boolean) => {
+    this.loaded = value
   }
 
   setUserInfo = (data: IUserInfo) => {
@@ -142,7 +149,7 @@ class UserStore {
       try {
         const res = await apiUser.profile()
         if (res.data.code === code.USER_NOT_LOGIN) {
-          this.removeToken()
+          this.resetAuthorization()
         } else {
           this.setUserInfo(res.data.data.userInfo)
         }
