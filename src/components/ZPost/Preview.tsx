@@ -1,3 +1,4 @@
+import errorHandler from "@/utils/errorHandler"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 import hljs from "highlight.js"
@@ -24,8 +25,8 @@ const md: MarkdownIt = new MarkdownIt({
           hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
           "</code></pre>"
         )
-      } catch (__) {
-        // ignore
+      } catch (error) {
+        errorHandler.handle(error)
       }
     }
 
