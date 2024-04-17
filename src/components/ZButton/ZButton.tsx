@@ -22,6 +22,8 @@ export const ZButtonVariants = cva(classNames("inline-flex items-center justify-
       primary_plain: classNames("text-blue-500 enabled:hover:text-blue-600 enabled:active:text-blue-700 transition"),
       success_plain: classNames("text-green-500 enabled:hover:text-green-600 enabled:active:text-green-700 transition"),
       danger_plain: classNames("text-red-500 enabled:hover:text-red-600 enabled:active:text-red-700 transition"),
+      normal: classNames("bg-gray-200 text-gray-700 enabled:hover:bg-gray-300 enabled:active:bg-gray-400 transition"),
+      normal_plain: classNames("text-gray-500 enabled:hover:text-gray-600 enabled:active:text-gray-700 transition"),
     },
     scale: {
       small: classNames("h-6 px-3 text-xs"),
