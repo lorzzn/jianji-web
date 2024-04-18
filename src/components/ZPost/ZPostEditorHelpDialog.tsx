@@ -1,5 +1,5 @@
 import { entries } from "lodash"
-import { forwardRef, useImperativeHandle, useRef } from "react"
+import { forwardRef } from "react"
 import { Keys } from "react-hotkeys-hook"
 import ZModal, { ZModalRef } from "../ZModal/ZModal"
 import { hotkeysRecord } from "./ZPostEditor"
@@ -9,17 +9,6 @@ interface ZPostEditorHelpDialogProps {
 }
 
 const ZPostEditorHelpDialog = forwardRef<ZModalRef, ZPostEditorHelpDialogProps>((props, ref) => {
-  const modalRef = useRef<ZModalRef>(null)
-
-  useImperativeHandle(ref, () => ({
-    show() {
-      modalRef.current?.show()
-    },
-    hide() {
-      modalRef.current?.hide()
-    },
-  }))
-
   const shortcutRender = (key: string, keys: string | Keys, description: string) => {
     return (
       <div className="flex items-center justify-center space-x-2 my-2" key={key}>
@@ -30,7 +19,7 @@ const ZPostEditorHelpDialog = forwardRef<ZModalRef, ZPostEditorHelpDialogProps>(
   }
 
   return (
-    <ZModal ref={modalRef} title={"帮助"}>
+    <ZModal ref={ref} title={"帮助"}>
       <div className="prose">
         <h3 className="text-center">快捷键</h3>
         {entries(props.hotkeys).map(([key, { keys, description }]) => {
