@@ -1,13 +1,13 @@
-export const assetsBaseURL = import.meta.env.VITE_APP_ASSETS_BASEURL
+export const staticsBaseURL = import.meta.env.VITE_APP_STATICS_BASEURL
 
-export const assestsRoot = "!"
+export const staticsRoot = "!"
 
-export const joinAssetsUrl = (url: string | undefined): string => {
+export const joinStaticsUrl = (url: string | undefined): string => {
   if (!url) {
     return ""
   }
-  if (url.startsWith(assestsRoot)) {
-    return url.replace(assestsRoot, assetsBaseURL)
+  if (url.startsWith(staticsRoot)) {
+    return url.replace(staticsRoot, staticsBaseURL)
   }
 
   return url

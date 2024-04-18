@@ -1,5 +1,5 @@
 import LoginForm from "@/components/LoginForm/LoginForm"
-import { joinAssetsUrl } from "@/components/ZImage/utils"
+import { joinStaticsUrl } from "@/components/ZImage/utils"
 import { twclx } from "@/utils/twclx"
 import { css } from "@emotion/css"
 
@@ -14,7 +14,7 @@ const Login = () => {
       className={twclx([
         "flex justify-center items-center flex-1",
         css`
-          background: url(${joinAssetsUrl("!/backgrounds/login.jpg")}) no-repeat center center;
+          background: url(${joinStaticsUrl("!/backgrounds/login.jpg")}) no-repeat center center;
         `,
       ])}
     >

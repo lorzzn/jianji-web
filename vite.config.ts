@@ -23,8 +23,8 @@ const getExtraPlugins = (mode: ConfigEnv["command"]) => {
         viteStaticCopy({
           targets: [
             {
-              src: normalizePath(join(srcPath, "assets/*")),
-              dest: normalizePath(join(distPath, "statics")),
+              src: normalizePath(join(srcPath, "statics")),
+              dest: distPath,
             },
           ],
         }),

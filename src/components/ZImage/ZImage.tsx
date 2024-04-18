@@ -2,11 +2,11 @@ import { RiImageLine } from "@remixicon/react"
 import classNames from "classnames"
 import { FC, useState } from "react"
 import { LazyLoadImage, LazyLoadImageProps } from "react-lazy-load-image-component"
-import { joinAssetsUrl } from "./utils"
+import { joinStaticsUrl } from "./utils"
 
 export const ZImage: FC<LazyLoadImageProps> = ({ src, className, ...restProps }) => {
   const [loadError, setLoadError] = useState<boolean>(false)
-  src = joinAssetsUrl(src)
+  src = joinStaticsUrl(src)
 
   return !loadError ? (
     <LazyLoadImage src={src} className={className} onError={() => setLoadError(true)} {...restProps} />
