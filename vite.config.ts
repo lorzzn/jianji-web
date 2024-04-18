@@ -1,21 +1,53 @@
 import react from "@vitejs/plugin-react"
 import autoprefixer from "autoprefixer"
 import { join } from "node:path"
+import { visualizer } from "rollup-plugin-visualizer"
 import tailwindcss from "tailwindcss"
-import { defineConfig } from "vite"
+import { ConfigEnv, PluginOption, defineConfig, normalizePath } from "vite"
+import { viteStaticCopy } from "vite-plugin-static-copy"
+
+const srcPath = normalizePath(join(__dirname, "src"))
+const distPath = normalizePath(join(__dirname, "dist"))
+
+const getExtraPlugins = (mode: ConfigEnv["command"]) => {
+  switch (mode) {
+    case "build":
+      return [
+        visualizer({
+          template: "treemap",
+          open: true,
+          gzipSize: true,
+          brotliSize: true,
+          filename: "analyse.html",
+        }) as PluginOption,
+        viteStaticCopy({
+          targets: [
+            {
+              src: normalizePath(join(srcPath, "assets/*")),
+              dest: normalizePath(join(distPath, "statics")),
+            },
+          ],
+        }),
+      ]
+
+    default:
+      return []
+  }
+}
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [
     react({
       babel: {
         configFile: true,
       },
     }),
+    ...getExtraPlugins(command),
   ],
   resolve: {
     alias: {
-      "@": join(__dirname, "src"),
+      "@": srcPath,
     },
   },
   css: {
@@ -24,7 +56,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: join(__dirname, "dist"),
+    outDir: distPath,
     minify: "terser",
     sourcemap: false,
     commonjsOptions: {},
@@ -45,4 +77,15 @@ export default defineConfig({
       },
     },
   },
-})
+  preview: {
+    port: 5273,
+    host: "localhost",
+    proxy: {
+      "/api": {
+        target: "http://localhost:8800",
+        changeOrigin: true,
+        rewrite: (path) => path,
+      },
+    },
+  },
+}))
