@@ -41,7 +41,7 @@ const ZToc = forwardRef<HTMLDivElement, ZTocProps>((props, ref) => {
     const scrollY = window.scrollY + 100
     if (!scrollMap.current) scrollMap.current = buildScrollMap()
 
-    let activeHeading = null
+    let activeHeading = ""
     for (let i = 0; i < scrollMap.current.length; i++) {
       const position = scrollMap.current[i]
       if (scrollY >= position.top && scrollY < position.bottom) {
