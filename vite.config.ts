@@ -60,6 +60,13 @@ export default defineConfig(({ command }) => ({
     minify: "terser",
     sourcemap: false,
     commonjsOptions: {},
+    rollupOptions: {
+      output: {
+        assetFileNames: "assets/[ext]/index.[hash][extname]",
+        chunkFileNames: "assets/chunks/index.[hash].js",
+        entryFileNames: "assets/index.[hash].js",
+      },
+    },
   },
   esbuild: {
     // 使用 react 的 createElement 处理 jsx
