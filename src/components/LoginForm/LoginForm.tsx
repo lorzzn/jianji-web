@@ -94,11 +94,11 @@ const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
             label={
               <span className="text-sm flex items-center space-x-1 leading-4">
                 <span>接受</span>
-                <a className="text-blue-500 hover:text-blue-400" href="/">
+                <a className="text-blue-500 hover:text-blue-400" href="/tos">
                   用户协议
                 </a>
                 <span>和</span>
-                <a className="text-blue-500 hover:text-blue-400" href="/">
+                <a className="text-blue-500 hover:text-blue-400" href="/tos">
                   隐私政策
                 </a>
               </span>
