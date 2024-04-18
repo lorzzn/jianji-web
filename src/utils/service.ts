@@ -1,10 +1,10 @@
-import rootStore from '@/store'
-import axios, { AxiosResponse } from 'axios'
-import { encryptRSAWithAES } from './rsa'
-import { getStorage } from './storage'
-import { IApiCommonResp } from '@/api/types/response/common'
-import ServiceError from './serviceError'
-import { code } from './r/code'
+import { IApiCommonResponse } from "@/api/types/response/common"
+import rootStore from "@/store"
+import axios, { AxiosResponse } from "axios"
+import { code } from "./r/code"
+import { encryptRSAWithAES } from "./rsa"
+import ServiceError from "./serviceError"
+import { getStorage } from "./storage"
 
 const baseURL = import.meta.env.VITE_APP_BASEURL
 
@@ -12,7 +12,9 @@ const service = axios.create({
   baseURL,
 })
 
-const retryCheck = async (response: AxiosResponse<IApiCommonResp>): Promise<boolean> => {
+// 检查是否需要重试
+const retryCheck = async (response: AxiosResponse<IApiCommonResponse>): Promise<boolean> => {
+  // 用户token失效，请求后端刷新token，然后进行重试
   if (response.data.code === code.TOKEN_AUTHORIZATION_INVALID) {
     await rootStore.userStore.requestRefreshToken()
     return true
@@ -21,7 +23,7 @@ const retryCheck = async (response: AxiosResponse<IApiCommonResp>): Promise<bool
   return false
 }
 
-const retry = (response: AxiosResponse<IApiCommonResp>) => {
+const retry = (response: AxiosResponse<IApiCommonResponse>) => {
   const delay = 2000
 
   return new Promise<AxiosResponse>((resolve) => {
@@ -37,10 +39,10 @@ service.interceptors.request.use(async (config) => {
   // 携带cookie
   config.withCredentials = config.withCredentials ?? true
   // 携带token
-  config.withToken = config.withToken ?? true 
+  config.withToken = config.withToken ?? true
 
   if (config.encrypt) {
-     // 标识请求为加密请求
+    // 标识请求为加密请求
     config.headers.Encrypted = true
 
     // 获取rsa publicKey， 对请求参数进行加密
@@ -48,7 +50,7 @@ service.interceptors.request.use(async (config) => {
 
     // 没有 publicKey 返回错误
     if (!publicKey) {
-      return Promise.reject(new axios.Cancel('公钥获取失败'));
+      return Promise.reject(new axios.Cancel("公钥获取失败"))
     }
 
     config.data = encryptRSAWithAES(config.data, publicKey)
@@ -62,8 +64,7 @@ service.interceptors.request.use(async (config) => {
   return config
 })
 
-service.interceptors.response.use(async (response: AxiosResponse<IApiCommonResp>) => {
-
+service.interceptors.response.use(async (response: AxiosResponse<IApiCommonResponse>) => {
   if (await retryCheck(response)) {
     return retry(response)
   }

@@ -1,56 +1,36 @@
-import { CSSProperties, ForwardRefRenderFunction, ReactNode, forwardRef, useImperativeHandle, useRef, useState } from "react";
-import Select, { ClassNamesConfig, SelectInstance, SingleValue, StylesConfig } from 'react-select';
-import classNames from "classnames";
-import { omit } from 'lodash';
-import { twMerge } from "tailwind-merge";
+import { CSSProperties, forwardRef, useImperativeHandle, useState } from "react"
+import { ClassNamesConfig } from "react-select"
+import { ZFloatingMenu, ZFloatingMenuItem, ZFloatingMenuProps } from "../ZFloatingMenu/ZFloatingMenu"
 
 export interface DropdownOption {
-  readonly value: string;
-  readonly label: string;
+  readonly value: string
+  readonly label: string
   readonly style?: CSSProperties
   readonly selectable?: boolean
 }
 
 interface ZDropdownProps {
-  target?: ReactNode
+  target?: ZFloatingMenuProps["label"]
   options: DropdownOption[]
   onChange?: (option: DropdownOption) => void
   onClick?: (type: "target" | "option", option?: DropdownOption) => void
   classNames?: ClassNamesConfig<DropdownOption, false>
 }
 
-const selectStyles:StylesConfig<DropdownOption, false> = {
-  control: () => ({ display: "none" }),
-  menu: () => ({}),
-  option: (base, props) => {
-    return {
-      ...base,
-      ...props.data.style
-    }
-  },
-}
-
 export interface ZDropdownRef {
-  open: Function
-  close: Function
+  open: () => void
+  close: () => void
 }
 
-const ZDropdown:ForwardRefRenderFunction<ZDropdownRef, ZDropdownProps> = ({ target, options, onChange, onClick, classNames: propClassNames }, ref) => {
- 
+const ZDropdown = forwardRef<ZDropdownRef, ZDropdownProps>(({ target, options, onChange, onClick }, ref) => {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState<DropdownOption | null>(null)
-  const selectRef = useRef<SelectInstance<DropdownOption> | null>(null)
-  const buttonRef = useRef<HTMLButtonElement | null>(null)
+  // const [value, setValue] = useState<DropdownOption | null>(null)
   const onOpen = () => setOpen(true)
   const onClose = () => setOpen(false)
-  const onButtonClick = () => {
-    (open ? onClose:onOpen)()
-    onClick?.("target")
-  }
 
-  const onSelectChange = (item: SingleValue<DropdownOption>) => {
+  const onOptionChange = (item: DropdownOption) => {
     if (item?.selectable) {
-      setValue(item)
+      // setValue(item)
       onChange?.(item)
     }
     if (item) {
@@ -59,36 +39,18 @@ const ZDropdown:ForwardRefRenderFunction<ZDropdownRef, ZDropdownProps> = ({ targ
     onClose()
   }
 
-  const selectClassNames:ClassNamesConfig<DropdownOption, false> = {
-    menu: (props) => twMerge(classNames(['bg-white rounded-md shadow-md', propClassNames?.menu?.(props)])),
-    menuList: (props) => twMerge(classNames(['px-[4px]', propClassNames?.menuList?.(props)])),
-    option: (props) => twMerge(classNames(['text-center rounded-md hover:text-blue-600 !text-sm !cursor-pointer', propClassNames?.option?.(props)])),
-    ...omit(propClassNames, "menu", "menuList", "option")
-  }
-
   useImperativeHandle(ref, () => ({
     close: onClose,
-    open: onOpen
+    open: onOpen,
   }))
 
-  return <div className="relative">
-    <button ref={buttonRef} onClick={onButtonClick}>{target}</button>
-    {
-      open && <div className="absolute" >
-        <button className="fixed inset-0 cursor-default" onClick={onClose}></button>
-        <Select
-          ref={selectRef}
-          styles={selectStyles}
-          classNames={selectClassNames}
-          menuIsOpen
-          options={options}
-          onChange={onSelectChange}
-          value={value}
-        />
-      </div>
-    }
-  </div>
+  return (
+    <ZFloatingMenu label={target} placement="bottom" resetClassName onOpenChange={(open) => setOpen(open)} open={open}>
+      {options.map((option) => (
+        <ZFloatingMenuItem label={option.label} onClick={() => onOptionChange(option)} key={option.value} />
+      ))}
+    </ZFloatingMenu>
+  )
+})
 
-}
-
-export default forwardRef(ZDropdown)
+export default ZDropdown

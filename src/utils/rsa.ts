@@ -3,8 +3,7 @@ import { encryptAES, generateKeyIvPair } from "./aes"
 
 const encryptor = new JSEncrypt()
 
-export function encryptRSA(text: string, publicKey: string): string|false {
-
+export function encryptRSA(text: string, publicKey: string): string | false {
   encryptor.setPublicKey(publicKey)
 
   const encrypted = encryptor.encrypt(text)
@@ -12,7 +11,7 @@ export function encryptRSA(text: string, publicKey: string): string|false {
 }
 
 export function encryptRSAWithAES(data: any, publicKey: string) {
-  const dataStr = typeof data === "string" ? data:JSON.stringify(data)
+  const dataStr = typeof data === "string" ? data : JSON.stringify(data)
 
   const keyIv = generateKeyIvPair()
   const keyIvStr = JSON.stringify(keyIv)
@@ -24,8 +23,7 @@ export function encryptRSAWithAES(data: any, publicKey: string) {
   if (encryptedData && encryptedKeyIv) {
     return {
       key: encryptedKeyIv,
-      data: encryptedData
+      data: encryptedData,
     }
   }
-
 }

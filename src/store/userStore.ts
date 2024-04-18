@@ -1,47 +1,79 @@
-import { IActiveReq, IEditProfileReq } from "@/api/types/request/user";
-import { IUserInfo } from "@/api/types/response/user";
-import { apiUser } from "@/api/user";
-import errorHandler from "@/utils/errorHandler";
-import eventBus, { events } from "@/utils/eventBus";
-import { code } from "@/utils/r/code";
-import { getStorage, removeStroage, setStorage } from "@/utils/storage";
-import { makeAutoObservable } from "mobx";
+import { IActiveRequest, IEditProfileRequest } from "@/api/types/request/user"
+import { IUserInfo } from "@/api/types/response/user"
+import { apiUser } from "@/api/user"
+import errorHandler from "@/utils/errorHandler"
+import eventBus, { events } from "@/utils/eventBus"
+import { code } from "@/utils/r/code"
+import { getStorage, removeStroage, setStorage } from "@/utils/storage"
+import { autorun, makeAutoObservable } from "mobx"
+
+const initialUserInfo: IUserInfo = {
+  id: 0,
+  uuid: "",
+  createdAt: "",
+  updatedAt: "",
+  name: "",
+  avatar: "",
+  email: "",
+  status: 0,
+}
 
 class UserStore {
-
-  loading = false
-  initialUserInfo: IUserInfo= {
-    id: 0,
-    uuid: "",
-    createdAt: "",
-    updatedAt: "",
-    name: "",
-    avatar: "",
-    email: "",
-    status: 0,
-  }
-  userInfo: IUserInfo= { ...this.initialUserInfo }
-  token: string|null = null
-  refreshToken: string|null = null
+  loading: boolean = true
+  loaded: boolean = false
+  userInfo: IUserInfo = { ...initialUserInfo }
 
   constructor() {
     makeAutoObservable(this)
 
-    this.token = getStorage("token")
-    this.refreshToken = getStorage("refreshToken")
-    this.loading = true
-
-    this.requestRefreshToken().then(async () => {
-      await this.getProfile()
-      this.setLoading(false)
-    }).catch(() => {
-      this.setLoading(false)
-    })
-
     eventBus.on(events.userAuthorizationExpired, this.resetAuthorization)
+    this.setupAutorun()
+    this.initStore()
   }
 
-  setLoading = (loading: boolean) => this.loading = loading
+  private setupAutorun() {
+    autorun(() => {
+      if (!this.authed) {
+        this.resetAuthorization()
+      }
+    })
+  }
+
+  initStore = () => {
+    this.requestRefreshToken()
+      .then(async () => {
+        await this.getProfile()
+        this.setLoading(false)
+        this.setLoaded(true)
+      })
+      .catch(() => {
+        this.setLoading(false)
+      })
+  }
+
+  get token() {
+    return getStorage("token")
+  }
+
+  get refreshToken() {
+    return getStorage("refreshToken")
+  }
+
+  get authed(): boolean {
+    const tokened = Boolean(this.token && this.refreshToken)
+    if (this.loading || !this.loaded) {
+      return tokened
+    }
+    return tokened && this.userInfo.id !== 0
+  }
+
+  setLoading = (loading: boolean) => {
+    this.loading = loading
+  }
+
+  setLoaded = (value: boolean) => {
+    this.loaded = value
+  }
 
   setUserInfo = (data: IUserInfo) => {
     this.userInfo = data
@@ -50,7 +82,6 @@ class UserStore {
   resetAuthorization = () => {
     this.removeToken()
     this.resetUserInfo()
-    window.location.replace("/")
   }
 
   // 保存token
@@ -60,7 +91,7 @@ class UserStore {
   }
 
   // 激活账户
-  activeUser = async (params: IActiveReq) => {
+  activeUser = async (params: IActiveRequest) => {
     try {
       const res = await apiUser.active(params)
       this.setUserInfo(res.data.data.userInfo)
@@ -69,7 +100,7 @@ class UserStore {
       errorHandler.handle(error)
       return Promise.reject(error)
     }
-  } 
+  }
 
   // 清除token
   removeToken = () => {
@@ -79,7 +110,7 @@ class UserStore {
 
   resetUserInfo = () => {
     eventBus.emit(events.beforeResetUserInfo)
-    this.setUserInfo({ ...this.initialUserInfo })
+    this.setUserInfo({ ...initialUserInfo })
   }
 
   logout = async () => {
@@ -97,11 +128,11 @@ class UserStore {
 
   // 刷新token
   requestRefreshToken = async () => {
-    if (this.refreshToken && this.token) {
+    if (this.refreshToken && this.token && this.authed) {
       try {
         const res = await apiUser.refreshToken({
           token: this.token,
-          refreshToken: this.refreshToken
+          refreshToken: this.refreshToken,
         })
         this.storeToken(res.data.data.token, res.data.data.refreshToken)
         return Promise.resolve(res)
@@ -114,11 +145,11 @@ class UserStore {
   }
 
   getProfile = async () => {
-    if (this.token) {
+    if (this.authed) {
       try {
         const res = await apiUser.profile()
         if (res.data.code === code.USER_NOT_LOGIN) {
-          this.removeToken()
+          this.resetAuthorization()
         } else {
           this.setUserInfo(res.data.data.userInfo)
         }
@@ -130,7 +161,7 @@ class UserStore {
     }
   }
 
-  editProfile = async (data: IEditProfileReq) => {
+  editProfile = async (data: IEditProfileRequest) => {
     try {
       const res = await apiUser.editProfile(data)
       this.setUserInfo(res.data.data.userInfo)
@@ -139,7 +170,6 @@ class UserStore {
       return Promise.reject(error)
     }
   }
-
 }
 
 export default UserStore

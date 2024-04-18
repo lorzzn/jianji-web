@@ -7,10 +7,11 @@ export const dialogNames = {
   HolaDialog: "HolaDialog",
   UserDialog: "UserDialog",
   ActiveDialog: "ActiveDialog",
+  SavePostDialog: "SavePostDialog",
+  TagManagerDialog: "TagManagerDialog",
 }
 
 const useDialog = (dialogName: string) => {
-  
   const { dialogStore } = useStore()
   const ref = useRef<ZModalRef | null>(null)
 
@@ -19,13 +20,12 @@ const useDialog = (dialogName: string) => {
     dialogStore.register(dialogName, ref)
   }
 
-  const dialog = ():ZModalRef|null|undefined => dialogStore.dialog(dialogName)
+  const dialog = (): ZModalRef | null | undefined => dialogStore.dialog(dialogName)
 
   return {
     register,
-    dialog
+    dialog,
   }
-
 }
 
 export default useDialog

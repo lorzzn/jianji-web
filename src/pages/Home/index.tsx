@@ -1,13 +1,8 @@
-import { FC } from "react";
+import { FC } from "react"
+import Base from "./Base"
 
-const Home:FC = () => {
-
-  return <div>
-    home
-    <div className="h-[3000px] bg-red-50">
-      height: 3000px
-    </div>
-  </div>
+const Home: FC = () => {
+  return <Base extraParams={{ archived: false }} />
 }
 
 export default Home
