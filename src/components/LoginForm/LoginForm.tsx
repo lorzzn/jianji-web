@@ -10,6 +10,7 @@ import Yup from "@/utils/yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { FC, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 
 const yupSchema = Yup.object().shape({
   email: Yup.string().email("请您输入格式正确的邮箱地址").required("请您输入邮箱"),
@@ -49,6 +50,11 @@ const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   }
 
   const onSubmit = async (formData: ILoginFormData) => {
+    if (!agreed) {
+      toast.error("请先勾选接受用户协议和隐私政策")
+      return
+    }
+
     setLoginLoading(true)
     try {
       formData.fingerprint = appStore.fingerprint
