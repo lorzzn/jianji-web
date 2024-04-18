@@ -1,11 +1,14 @@
-import { FC } from "react";
+import { FC } from "react"
+import Base from "../Home/Base"
 
-
-const Favlist:FC = () => {
-
-  return <div>
-    Favlist
-  </div>
+const Home: FC = () => {
+  return (
+    <Base
+      extraParams={{
+        favoured: true,
+      }}
+    />
+  )
 }
 
-export default Favlist
+export default Home

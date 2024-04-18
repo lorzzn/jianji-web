@@ -1,11 +1,17 @@
 import service from "@/utils/service"
-import { ILoginReq, IRefreshTokenReq, IEditProfileReq, IActiveReq } from "./types/request/user"
-import { IActiveResp, IEditProfileResp, ILoginResp, IProfileResp, IRefreshTokenResp } from "./types/response/user"
-
+import { IActiveRequest, IEditProfileRequest, ILoginRequest, IRefreshTokenRequest } from "./types/request/user"
+import {
+  IActiveResponse,
+  IEditProfileResponse,
+  ILoginResponse,
+  IProfileResponse,
+  IRefreshTokenResponse,
+  IStatisticsResponse,
+} from "./types/response/user"
 
 export const apiUser = {
-  login(data: ILoginReq) {
-    return service<ILoginResp>({
+  login(data: ILoginRequest) {
+    return service<ILoginResponse>({
       url: "api/v1/user/login",
       method: "POST",
       encrypt: true,
@@ -16,35 +22,41 @@ export const apiUser = {
   logout() {
     return service({
       url: "api/v1/user/logout",
-      method: "POST"
+      method: "POST",
     })
   },
-  active(data: IActiveReq) {
-    return service<IActiveResp>({
+  active(data: IActiveRequest) {
+    return service<IActiveResponse>({
       url: "api/v1/user/active",
       method: "POST",
-      data
+      data,
     })
   },
-  refreshToken(data: IRefreshTokenReq){
-    return service<IRefreshTokenResp>({
+  refreshToken(data: IRefreshTokenRequest) {
+    return service<IRefreshTokenResponse>({
       url: "api/v1/user/refresh-token",
       withToken: false,
       method: "POST",
-      data
+      data,
     })
   },
-  profile(){
-    return service<IProfileResp>({
+  profile() {
+    return service<IProfileResponse>({
       url: "api/v1/user/profile",
       method: "POST",
     })
   },
-  editProfile(data: IEditProfileReq){
-    return service<IEditProfileResp>({
+  editProfile(data: IEditProfileRequest) {
+    return service<IEditProfileResponse>({
       url: "api/v1/user/edit-profile",
       method: "POST",
       data,
     })
-  }
+  },
+  statistics() {
+    return service<IStatisticsResponse>({
+      url: "api/v1/user/statistics",
+      method: "POST",
+    })
+  },
 }

@@ -1,46 +1,97 @@
-import classNames from "classnames"
-import { ForwardRefRenderFunction, forwardRef } from "react"
-import { VariantProps, cva } from "class-variance-authority"
-import { twMerge } from "tailwind-merge"
+import { twclx } from "@/utils/twclx"
+import { RiCloseLine } from "@remixicon/react"
+import { VariantProps } from "class-variance-authority"
+import { FocusEventHandler, forwardRef, useState } from "react"
+import { inputVariant } from "./variant"
 
-interface ZInputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariant> {}
-
-const inputVariant = cva(
-  classNames('border outline-none disabled:ring-0 hover:ring-1 transition-shadow duration-200'),
-  {
-    variants: {
-      variant: {
-        primary: classNames('hover:ring-blue-200 focus:ring-1 focus:ring-blue-400'),
-        success: classNames('hover:ring-green-200 focus:ring-1 focus:ring-green-400'),
-        danger: classNames('hover:ring-red-200 focus:ring-1 focus:ring-red-400'),
-      },
-      scale: {
-        small: classNames('w-80 h-6 px-2 text-xs'),
-        middle: classNames('w-80 h-8 px-2 text-sm'),
-        large: classNames('w-80 h-10 px-3 text-[1rem]'),
-      },
-      shape: {
-        round: classNames('rounded-full px-4'),
-        square: classNames('rounded-e rounded-s'),
-      },
-    },
-    defaultVariants: {
-      variant: "primary",
-      scale: "middle",
-      shape: "square"
-    }
-  }
-)
-
-const ZInput:ForwardRefRenderFunction<HTMLInputElement, ZInputProps> = ({ className, variant, scale, shape, ...restProps }, ref) => {
-
-  return <input
-    ref={ref}
-    className={twMerge(
-      classNames(inputVariant({ variant, scale, shape, className }))
-    )}
-    {...restProps}
-  />
+export interface ZInputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariant> {
+  showClearIcon?: "always" | "focus" | "never" | "hover" | "not-empty"
+  clearIconRender?: (show?: boolean) => React.ReactNode
+  onClear?: () => void
 }
 
-export default forwardRef(ZInput)
+const ZInput = forwardRef<HTMLInputElement, ZInputProps>(
+  (
+    {
+      className,
+      variant,
+      scale,
+      shape,
+      onFocus,
+      onBlur,
+      disabled,
+      showClearIcon = "never",
+      onClear,
+      clearIconRender,
+      ...restProps
+    },
+    ref,
+  ) => {
+    const [focus, setFocus] = useState(false)
+    const [hover, setHover] = useState(false)
+
+    const onInputFocus: FocusEventHandler<HTMLInputElement> = (e) => {
+      setFocus(true)
+      onFocus?.(e)
+    }
+
+    const onInputBlur: FocusEventHandler<HTMLInputElement> = (e) => {
+      setFocus(false)
+      onBlur?.(e)
+    }
+
+    const onClearClick = () => {
+      onClear?.()
+    }
+
+    const renderClearIcon = () => {
+      const show = Boolean(
+        showClearIcon === "always" ||
+          (showClearIcon === "focus" && focus) ||
+          (showClearIcon === "hover" && hover) ||
+          (showClearIcon === "not-empty" && restProps.value),
+      )
+
+      return (
+        <button onClick={onClearClick}>
+          {clearIconRender
+            ? clearIconRender(show)
+            : show && (
+                <RiCloseLine
+                  size={"1.2rem"}
+                  className={
+                    "z-input-clear-icon text-gray-400 bg-transparent cursor-pointer hover:text-gray-500 active:text-gray-600"
+                  }
+                />
+              )}
+        </button>
+      )
+    }
+
+    return (
+      <div
+        className={twclx([
+          "flex items-center bg-white overflow-hidden",
+          { "is-focus": focus },
+          { "is-hover": hover },
+          { "is-disabled": disabled },
+          inputVariant({ variant, scale, shape, className }),
+        ])}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <input
+          ref={ref}
+          className="flex-1 bg-transparent w-full"
+          onFocus={onInputFocus}
+          onBlur={onInputBlur}
+          disabled={disabled}
+          {...restProps}
+        />
+        {renderClearIcon()}
+      </div>
+    )
+  },
+)
+
+export default ZInput

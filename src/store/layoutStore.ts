@@ -1,11 +1,12 @@
-import { makeAutoObservable } from "mobx";
-import { RiAlignJustify, RiArchiveLine, RiHashtag, RiHomeLine, RiStarLine } from '@remixicon/react'
-import { Location } from "react-router-dom";
-import { concat, takeRight } from "lodash";
+import { RiArchiveLine, RiHashtag, RiHomeLine, RiStackLine, RiStarLine } from "@remixicon/react"
+import { concat, takeRight } from "lodash"
+import { makeAutoObservable } from "mobx"
+import { Location } from "react-router-dom"
 
 export interface INavItem {
   href: string
   active?: boolean
+  activePath?: string[] | string
   label: string
   RiIcon: typeof RiHomeLine
 }
@@ -17,6 +18,7 @@ class LayoutStore {
   layout: "large" | "medium" | "small"
   location: Location | undefined
   clickTrace: Element[] = []
+  scrollTop: number = 0
 
   constructor() {
     this.layout = "large"
@@ -27,8 +29,8 @@ class LayoutStore {
     { href: "/", label: "首页", RiIcon: RiHomeLine },
     { href: "/archives", label: "归档", RiIcon: RiArchiveLine },
     { href: "/favlist", label: "收藏", RiIcon: RiStarLine },
-    { href: "/categories", label: "分类", RiIcon: RiAlignJustify },
-    { href: "/tags", label: "标签", RiIcon: RiHashtag },
+    { href: "/categories", label: "分类", RiIcon: RiStackLine, activePath: ["categories", "category"] },
+    { href: "/tags", label: "标签", RiIcon: RiHashtag, activePath: ["tags", "tag"] },
   ]
 
   updateLayoutState = (width: number, height: number, focus: boolean) => {
@@ -46,8 +48,13 @@ class LayoutStore {
 
   updateLocationState = (location: Location) => {
     this.location = location
-    this.navItems = this.navItems.map(item => {
-      item.active = location.pathname === item.href.split("?")[0]
+    this.navItems = this.navItems.map((item) => {
+      item.active = false
+      if (Array.isArray(item.activePath)) {
+        item.activePath.forEach((path) => (item.active ||= location.pathname.split("/")[1] === path))
+      } else {
+        item.active ||= location.pathname === (item.activePath || item.href)
+      }
       return item
     })
   }
@@ -56,6 +63,9 @@ class LayoutStore {
     this.clickTrace = takeRight(concat(this.clickTrace, elem), 50)
   }
 
+  updateScrollTop = (scrollTop: number) => {
+    this.scrollTop = scrollTop
+  }
 }
 
 export default LayoutStore

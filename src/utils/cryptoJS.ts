@@ -1,3 +1,3 @@
-import * as CryptoJS from 'crypto-js';
+import * as CryptoJS from "crypto-js"
 
 export default CryptoJS
