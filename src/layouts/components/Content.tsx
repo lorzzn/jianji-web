@@ -14,6 +14,7 @@ const Search = lazy(() => import("@/pages/Search"))
 const Tags = lazy(() => import("@/pages/Tags"))
 const Tag = lazy(() => import("@/pages/Tag"))
 const Login = lazy(() => import("@/pages/Login"))
+const Tos = lazy(() => import("@/pages/Tos"))
 
 const NotFoundPage = lazy(() => import("@/pages/BadStatus/404"))
 const ServerErrorPage = lazy(() => import("@/pages/BadStatus/500"))
@@ -65,6 +66,7 @@ const Content: FC = () => {
             }
           />
           <Route path="/login" Component={Login} />
+          <Route path="/tos" Component={Tos} />
           <Route
             path="/search"
             element={
